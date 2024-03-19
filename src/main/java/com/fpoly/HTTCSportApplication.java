@@ -6,10 +6,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class Ps27179AsmApplication {
+public class HTTCSportApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Ps27179AsmApplication.class, args);
+		SpringApplication.run(HTTCSportApplication.class, args);
 	}
 
 }

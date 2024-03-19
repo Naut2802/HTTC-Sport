@@ -1,0 +1,84 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<div id="layoutAuthentication">
+		<div id="layoutAuthentication_content">
+			<main>
+				<div class="container">
+					<div class="row justify-content-center">
+						<div
+							class="col-lg-4 bg-success-subtle border rounded border-3 pb-5"
+							style="margin-top: 50px;">
+							<div class="card shadow-lg border-0 rounded-lg"
+								style="margin-top: 70px;">
+								<div class="card-header">
+									<h3 class="text-center font-weight-light my-4">Đăng Nhập</h3>
+								</div>
+								<div class="card-body" style="height: 300px;">
+									<form th:action="@{/account/doLogin}" method="post">
+										<div class="form-floating mb-3">
+											<input class="form-control" id="username" type="text"
+												name="username" placeholder="Username"
+												required requiredmsg="Vui Lòng Nhập Username" autofocus/> <label
+												for="username">Tài Khoản</label>
+										</div>
+										<div class="form-floating mb-3">
+											<input class="form-control" id="password" type="password"
+												name="password" placeholder="Password"
+												required requiredmsg="Vui Lòng Nhập Password"/> <label
+												for="password">Mật Khẩu</label>
+										</div>
+										<div class="mb-3 form-check">
+											<input type="checkbox" class="form-check-input" name="remember-me"
+												id="remember"><label class="form-check-label"
+												for="remember">Ghi Nhớ Tài Khoản ?</label>
+										</div>
+										<div class="mb-3 row">
+											<div class="col-7">
+												<a class="text-danger fs-2"
+													th:href="@{/oauth2/authorization/google}"><i
+													class="fa-brands fa-google-plus"></i></a> <a
+													class="text-primary fs-2 mx-1"
+													th:href="@{/oauth2/authorization/facebook}"><i
+													class="fa-brands fa-facebook"></i></a>
+											</div>
+											<div class="col-5 pt-1 text-end">
+												<button type="submit" class="btn btn-primary">Đăng
+													Nhập</button>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="card-footer text-center py-3">
+									<div class="small row">
+										<a th:href="@{/account/forgotPassword}">Quên Mật
+											Khẩu ?</a> <a th:href="@{/account/register}">Bạn
+											Chưa Có Tài Khoản? Đăng Ký Tại Đây!</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+	<script type="text/javascript"
+		src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(
+				function() {
+					var elements = $("input");
+					for (var i = 0; i < elements.length; i++) {
+						elements[i].oninvalid = function(e) {
+							e.target.setCustomValidity("");
+							if (!e.target.validity.valid) {
+e.target.setCustomValidity(e.target
+										.getAttribute("requiredmsg"));
+							}
+						};
+						elements[i].oninput = function(e) {
+							e.target.setCustomValidity("");
+						};
+					}
+				})
+	</script>
+</html>

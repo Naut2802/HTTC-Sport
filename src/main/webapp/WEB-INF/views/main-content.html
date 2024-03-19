@@ -1,0 +1,7 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<div class="container">
+		<div th:if="${ session.rq != null }">
+			<th:block th:replace="~{ ${session.rq} }"/>
+		</div>
+	</div>
+</html>

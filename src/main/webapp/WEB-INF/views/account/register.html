@@ -1,0 +1,77 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<main>
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-7 bg-success-subtle border rounded border-3 pb-5"
+				style="margin-top: 25px;">
+				<div class="card shadow-lg border-0 rounded-lg mt-5">
+					<div class="card-header">
+						<h3 class="text-center font-weight-light my-4">Đăng Ký Tài
+							Khoản</h3>
+					</div>
+					<div class="card-body">
+						<form th:action="@{/account/register}"
+							th:object="${user}" method="post">
+							<div class="row mb-3">
+								<div class="col-md-6">
+									<div class="form-floating mb-3 mb-md-0">
+										<input class="form-control" id="username" th:field="*{username}"
+											type="text" placeholder="Enter your username" required
+											requiredmsg="Vui Lòng Nhập Username" /> <label for="username">Tài
+											Khoản</label>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-floating">
+										<input class="form-control" id="password" th:field="*{password}"
+											type="password" placeholder="Enter your password" required
+											requiredmsg="Vui Lòng Nhập Password" /> <label for="password">Mật
+											Khẩu</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-floating mb-3">
+								<input class="form-control" id="inputEmail" th:field="*{email}"
+									type="email" placeholder="name@example.com" required
+									requiredmsg="Vui Lòng Nhập Email VD: abc222xyz@gmail.com" /> <label
+									for="inputEmail"> Địa Chỉ Email</label>
+							</div>
+							<div class="mt-4 mb-0">
+								<div class="d-grid">
+									<button class="btn btn-primary btn-block">Đăng Ký</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="card-footer text-center py-3">
+						<div class="small">
+							<a th:href="@{/account/login}">Bạn Đã Có Tài Khoản?
+								Đi Tới Trang Đăng Nhập</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<script type="text/javascript"
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(
+			function() {
+				var elements = $("input, select");
+				for (var i = 0; i < elements.length; i++) {
+					elements[i].oninvalid = function(e) {
+						e.target.setCustomValidity("");
+						if (!e.target.validity.valid) {
+							e.target.setCustomValidity(e.target
+									.getAttribute("requiredmsg"));
+						}
+					};
+					elements[i].oninput = function(e) {
+						e.target.setCustomValidity("");
+					};
+				}
+			})
+</script>
+</html>

@@ -1,0 +1,53 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <main>
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Đặt Sân</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a class="text-decoration-none text-black fw-bolder" th:href="@{/home}">Trang Chủ</a></li>
+        <li class="breadcrumb-item active">Sân</li>
+        <li class="breadcrumb-item active">Đặt Sân</li>
+        <li class="breadcrumb-item active">Thanh Toán</li>
+      </ol>
+      <div class="card mb-4"></div>
+      <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6">
+          <form class="form-control card mb-3 w-100" th:action="@{/san-bong-da/dat-san/thanh-toan/xac-nhan-thanh-toan}" method="post">
+            <h5 class="card-header text-center">Thanh Toán</h5>
+            <div class="card-body">
+              <div class="row">
+                <div class="row mb-3">
+                  <div class="col mt-4">
+                    <div class="form-floating mb-3 mb-md-0">
+                      <input class="form-control" id="Tongtien" name="Tongtien" th:value="${ session.thongtin.tongTien }" type="text" placeholder="" disabled />
+                      <label for="Tongtien">Tổng Tiền</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col mb-4">
+                    <div class="form-floating mb-3 mb-md-0">
+                      <input class="form-control" id="tienCoc" name="tienCoc" th:value="${ session.thongtin.tongTien * 0.35 }" type="text" placeholder="" disabled />
+                      <label for="tienCoc">Tiền cọc</label>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-center">
+                  <b class="text-danger">LƯU Ý: Nội Dung Chuyển Khoản </b>
+                </p>
+                <p class="text-uppercase text-center">
+                  <b>Họ tên + Số Điện Thoại</b>
+                </p>
+                <div class="d-flex justify-content-center">
+                  <a class="btn btn-outline-primary" th:href="@{/san-bong-da/dat-san/thanh-toan/xac-nhan-thanh-toan/coc}">Thanh Toán Tiền Cọc (35%)</a>
+                  <a class="btn btn-outline-primary ms-4" th:href="@{/san-bong-da/dat-san/thanh-toan/xac-nhan-thanh-toan/full}">Thanh Toán Tất Cả ?</a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-lg-3"></div>
+      </div>
+    </div>
+  </main>
+</html>

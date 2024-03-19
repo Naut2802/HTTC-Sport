@@ -1,0 +1,71 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<nav
+		class="navbar navbar-expand-xxl bg-body-tertiary text-center border-top border-bottom fixed-top">
+		<div class="container-fluid">
+			<a class="navbar-brand fw-bolder fs-1" th:href="@{/home}">HTTC
+				Sport</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse row" id="navbarSupportedContent">
+				<div class="col-xxl-1 d-md-none d-lg-block"></div>
+				<div class="col-xxl-6 col-lg-6 col-md-12">
+					<form action="${ contextPath }/san-bong-da/find/keywords"
+						method="get" class="d-flex my-2" role="search">
+						<input class="form-control me-1" type="search"
+							placeholder="Tìm Kiếm" aria-label="Search" name="keywords"
+							th:value="${ keywords }" />
+						<button class="btn btn-outline-dark" type="submit">
+							<i class="bi bi-search"></i>
+						</button>
+					</form>
+				</div>
+				<div class="col-xxl-5 col-lg-6 col-md-12">
+					<ul class="nav justify-content-end">
+						<li class="nav-item"><a class="nav-link text-dark fw-bolder"
+							th:href="@{/home}">Trang Chủ</a></li>
+						<li class="nav-item"><a class="nav-link text-dark fw-bolder"
+							th:href="@{/san-bong-da/danh-sach-san}">Sân Bóng</a></li>
+						<li class="nav-item text-dark"><a
+							class="nav-link text-dark fw-bolder" th:href="@{/news}">Tin
+								Tức</a></li>
+						<li class="nav-item"><a class="nav-link text-dark fw-bolder"
+							th:href="@{/contact}">Liên Hệ</a></li>
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle text-dark fw-bolder border-2 border-black border-start"
+							id="navbarDropdown" href="#" role="button"
+							data-bs-toggle="dropdown" aria-expanded="false"><span th:text="${session.user != null ? session.user.lastName + ' ' + session.user.firstName : ''}"></span><i
+								class="fas fa-user fa-fw ms-1"></i>
+						</a>
+							<ul th:if="${ session.user != null }"
+								class="dropdown-menu dropdown-menu-end"
+								aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item"
+									th:href="@{/account/info}">Thông Tin Tài Khoản</a></li>
+								<li><hr class="dropdown-divider" /></li>
+								<li><a class="dropdown-item"
+									th:href="@{/user/ttDatSanUser}">Thông Tin Đặt Sân</a>
+								</li>
+								<li><hr class="dropdown-divider" /></li>
+								<li><a class="dropdown-item"
+									th:href="@{/user/bill}">Lịch Sử Giao Dịch</a></li>
+								<li><hr class="dropdown-divider" /></li>
+								<li><a class="dropdown-item"
+									th:href="@{/account/logout}">Đăng Xuất</a></li>
+							</ul>
+							<ul 
+								class="dropdown-menu dropdown-menu-end"
+								aria-labelledby="navbarDropdown">
+								<li th:if="${ session.user == null }"><a
+									class="dropdown-item" th:href="@{/account/login}">Đăng
+										Nhập</a></li>
+							</ul></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>
+</html>

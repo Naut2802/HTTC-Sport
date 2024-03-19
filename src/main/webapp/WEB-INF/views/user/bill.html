@@ -1,0 +1,137 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<main>
+	<div class="container-fluid px-4">
+		<h1 class="mt-4">Lịch Sử Giao Dịch</h1>
+		<ol class="breadcrumb mb-4">
+			<li class="breadcrumb-item"><a
+				class="text-decoration-none text-black fw-bolder"
+				th:href="@{/home}">Trang Chủ</a></li>
+			<li class="breadcrumb-item active">Lịch sử giao dịch</li>
+		</ol>
+		<div class="card mb-4"></div>
+		<div class="card mb-4">
+			<div class="card-header">
+				<i class="fas fa-table me-1"></i> Lịch Sử Giao Dịch
+			</div>
+			<div class="card-body">
+				<table id="datatablesSimple">
+					<thead>
+						<tr>
+							<th>Mã hóa đơn</th>
+							<th>SĐT</th>
+							<th>Email</th>
+							<th>Ngày Thanh Toán</th>
+							<th>Thời Gian Bắt Đầu</th>
+							<th>Thời Gian Kết Thúc</th>
+							<!-- <th>Tổng Thời Gian</th> -->
+							<th>Tổng Tiền</th>
+							<th>Đánh Giá</th>
+						</tr>
+					</thead>
+					<tbody>
+							<tr th:each="bill : ${bill}">
+								<td th:text="*{bill.maHd}"></td>
+								<td th:text="*{bill.user.phoneNumber}"></td>
+								<td th:text="*{bill.user.email}"></td>
+								<td th:text="*{ bill.ngayXuat  }"></td>
+								<td th:text="*{ bill.thoiGianBatDau }"></td>
+								<td th:text="*{ bill.thoiGianKetThuc }"></td>
+								<td th:text="*{bill.tongTien}"></td>
+								<td>
+									<span th:if="${ bill.isRate != null}">
+										Đã gửi đánh giá
+									</span>
+									<span th:if="${ bill.isRate == null}" th:with="maHd=${ bill.maHd }">
+										<a th:href="@{/user/bill/rate}" data-bs-toggle="modal"
+										th:attr="data-bs-target='#exampleModal' + ${maHd} ">Gửi đánh giá</a>
+									</span>
+								</td>
+							</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</main>
+
+
+<div th:each="bill : ${bill}" th:with="maHd=${ bill.maHd }">
+	<style th:inline="text">
+		#rating_box_[[${ maHd }]] input:checked ~ label {
+		  color: #fd4;
+		}
+		#rate-5_[[${ maHd }]] input:checked ~ label {
+		  color: #fe7;
+		  text-shadow: 0 0 20px #952;
+		}
+		#rate-1_[[${ maHd }]]:checked ~ header:before {
+		  content: "Tôi hoàn toàn không thích";
+		}
+		#rate-2_[[${ maHd }]]:checked ~ header:before {
+		  content: "Tôi cảm thấy hơi tệ ";
+		}
+		#rate-3_[[${ maHd }]]:checked ~ header:before {
+		  content: "Tôi cảm thấy bình thường ";
+		}
+		#rate-4_[[${ maHd }]]:checked ~ header:before {
+		  content: "Tôi rất thích ";
+		}
+		#rate-5_[[${ maHd }]]:checked ~ header:before {
+		  content: "Tôi rất hài lòng về dịch vụ";
+		}
+		form #header_[[${ maHd }]] {
+		  width: 100%;
+		  font-size: 25px;
+		  color: #fe7;
+		  font-weight: 500;
+		  margin: 5px 0 10px 0;
+		  text-align: center;
+		  transition: all 0.2s ease;
+		}
+	</style>
+	<div class="modal fade" th:attr="id='exampleModal' + ${maHd} " tabindex="-1"
+		aria-labelledby="exampleModalLabel${ maHd }" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" th:attr="aria-labelledby='exampleModalLabel' + ${ maHd }">Đánh Giá
+						Sân Bóng</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<form th:action="@{/user/bill/rate}">
+					<input type="hidden" th:value="*{ bill.maHd }" name="maHd"/>
+					<div class="modal-body p-0">
+						<div class="rating-box" th:attr="id='rating_box_' + ${ maHd }">
+							<div class="star-widget">
+								<input type="radio" name="rate" value="5" th:attr="id='rate-5_' + ${ maHd }" /> <label
+									th:attr="for='rate-5_' + ${ maHd }" class="star"><i class="fa-solid fa-star"></i></label>
+								<input type="radio" name="rate" value="4" th:attr="id='rate-4_' + ${ maHd }" /> <label
+									th:attr="for='rate-4_' + ${ maHd }" class="star"><i class="fa-solid fa-star"></i></label>
+								<input type="radio" name="rate" value="3" th:attr="id='rate-3_' + ${ maHd }" /> <label
+									th:attr="for='rate-3_' + ${ maHd }" class="star"><i class="fa-solid fa-star"></i></label>
+								<input type="radio" name="rate" value="2" th:attr="id='rate-2_' + ${ maHd }" /> <label
+									th:attr="for='rate-2_' + ${ maHd }" class="star"><i class="fa-solid fa-star"></i></label>
+								<input type="radio" name="rate" value="1" th:attr="id='rate-1_' + ${ maHd }" /> <label
+									th:attr="for='rate-1_' + ${ maHd }" class="star"><i class="fa-solid fa-star"></i></label>
+
+								<header th:attr="id='header_' + ${ maHd }"></header>
+								<div class="row">
+									<textarea class="form-control my-2" rows="3" th:attr="name='nhanXet' + ${ maHd }"
+										placeholder="Hãy nêu thêm cảm nghĩ cá nhân của bạn"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary"
+							data-bs-dismiss="modal">Đóng</button>
+						<button type="submit" class="btn btn-outline-primary">Đánh
+							Giá</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+</html>

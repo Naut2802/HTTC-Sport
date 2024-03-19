@@ -1,0 +1,158 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <main>
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Danh Sách Sân</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a class="text-decoration-none text-black fw-bolder" th:href="@{/home}">Trang Chủ</a></li>
+        <li class="breadcrumb-item active">Sân</li>
+      </ol>
+      <div class="card mb-4"></div>
+      <div class="row">
+        <aside class="col-md-3">
+          <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button fw-bolder"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#panelsStayOpen-collapseOne"
+                  aria-expanded="true"
+                  aria-controls="panelsStayOpen-collapseOne">
+                  ĐÁNH GIÁ
+                </button>
+              </h2>
+              <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                <div class="accordion-body py-2">
+                  <div class="form-check my-3">
+                    <input class="form-check-input border-2 border-black" type="checkbox" name="sao" th:value="5" id="5sao" onchange="sendRequest()" />
+                    <label class="form-check-label ms-3" for="5sao"> 5 Sao </label>
+                  </div>
+                  <div class="form-check my-3">
+                    <input class="form-check-input border-2 border-black" type="checkbox" name="sao" th:value="4" id="4sao" onchange="sendRequest()" />
+                    <label class="form-check-label ms-3" for="4sao"> 4 Sao </label>
+                  </div>
+                  <div class="form-check my-3">
+                    <input class="form-check-input border-2 border-black" type="checkbox" name="sao" th:value="3" id="3sao" onchange="sendRequest()" />
+                    <label class="form-check-label ms-3" for="3sao"> 3 Sao </label>
+                  </div>
+                  <div class="form-check my-3">
+                    <input class="form-check-input border-2 border-black" type="checkbox" name="sao" th:value="2" id="2sao" onchange="sendRequest()" />
+                    <label class="form-check-label ms-3" for="2sao"> 2 Sao </label>
+                  </div>
+                  <div class="form-check my-3">
+                    <input class="form-check-input border-2 border-black" type="checkbox" name="sao" th:value="1" id="1sao" onchange="sendRequest()" />
+                    <label class="form-check-label ms-3" for="1sao"> 1 Sao </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed fw-bolder"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#panelsStayOpen-collapseTwo"
+                  aria-expanded="false"
+                  aria-controls="panelsStayOpen-collapseTwo">
+                  LOẠI SÂN
+                </button>
+              </h2>
+              <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                  <div class="form-check my-3">
+                    <input class="form-check-input border-2 border-black" type="checkbox" th:value="7" name="loaiSan" id="7nguoi" onchange="sendRequest()" />
+                    <label class="form-check-label ms-3" for="7nguoi"> Sân 7 Người </label>
+                  </div>
+                  <div class="form-check my-3">
+                    <input class="form-check-input border-2 border-black" type="checkbox" th:value="5" name="loaiSan" id="5nguoi" onchange="sendRequest()" />
+                    <label class="form-check-label ms-3" for="5nguoi"> Sân 5 Người </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+        <article class="col-md-9" id="tbl">
+          <div class="row" th:each="san, status : ${session.listSanActive}">
+            <div class="card mb-3">
+              <div class="row g-0" th:with="maSan=${ san.maSan }, img=${ san.listHinhAnh.size() == 0 ? '' : san.listHinhAnh.get(0).tenAnh }">
+                <div class="col-lg-4 p-3">
+                  <a th:href="@{'/san-bong-da/' + ${maSan}}">
+                    <img th:src="@{'/imgs/' + ${img}}" class="card img-fluid rounded" />
+                  </a>
+                </div>
+                <div class="col-lg-8">
+                  <div class="card-body">
+                    <h5 class="card-title">
+                      <a class="text-decoration-none text-black fw-bolder" th:href="@{'/san-bong-da/' + ${maSan}}" th:text="*{ san.tenSan }"></a>
+                    </h5>
+                    <div class="my-4">
+                      <p class="card-text fw-bolder my-2">Loại Sân: <span class="fw-normal" th:text="*{ san.loaiSan.tenLoai }"></span></p>
+                      <p class="card-text fw-bolder my-2">
+                        Đánh Giá: <span class="fw-normal" th:text="${ session.listSao[__${ status.index }__] }"></span>
+                        <i class="text-warning fs-5 bi bi-star-fill"></i>
+                      </p>
+                      <p class="card-text fw-bolder my-2">Giá: <span class="fs-5 text-danger" th:text="*{ san.giaSan }"></span> / Giờ</p>
+                      <p class="card-text fw-bolder my-2">Địa Chỉ: <span class="fw-normal" th:text="*{ san.diaChi }"></span></p>
+                    </div>
+                    <div class="row">
+                      <div class="col-4">
+                        <p class="card-text"><i class="bi bi-wifi"></i> Wifi</p>
+                      </div>
+                      <div class="col-8">
+                        <p class="card-text"><i class="bi bi-shop-window"></i> Căn Tin</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+</html>
+
+<script>
+  function sendRequest() {
+    var starBoxes = document.querySelectorAll('input[name="sao"]:checked');
+    var starBoxValues = [];
+    starBoxes.forEach(function (starBox) {
+      starBoxValues.push(starBox.value);
+    });
+
+    var loaiBoxes = document.querySelectorAll('input[name="loaiSan"]:checked');
+    var loaiBoxValues = [];
+    loaiBoxes.forEach(function (loaiBox) {
+      loaiBoxValues.push(loaiBox.value);
+    });
+
+    // Sử dụng AJAX để gửi request đến servlet
+    $.ajax({
+      type: "GET",
+      url: "/san-bong-da/danh-sach-san/filter", // Thay đổi thành URL của servlet thực tế
+      data: {
+        stars: starBoxValues.join(","),
+        loai: loaiBoxValues.join(","),
+      },
+      success: function (response) {
+        // Xử lý kết quả từ servlet nếu cần
+        console.log(starBoxValues.join(","));
+        console.log(loaiBoxValues.join(","));
+        var domObject = $(response);
+        updateUI(domObject.find("#tbl").html());
+      },
+      error: function (error) {
+        console.error(error);
+      },
+    });
+  }
+  function updateUI(response) {
+    // Thực hiện các bước cập nhật trang web dựa trên kết quả từ servlet
+    // Ví dụ: Hiển thị kết quả trong một phần tử HTML có id là 'result'
+    $("#tbl").html(response);
+  }
+</script>

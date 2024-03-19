@@ -1,0 +1,214 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <main>
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Thông Tin Đặt Sân</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a class="text-decoration-none text-black fw-bolder" th:href="@{/admin}">Trang Chủ</a></li>
+        <li class="breadcrumb-item active">Thông tin đặt sân</li>
+      </ol>
+      <div class="card mb-4"></div>
+      <div class="d-flex justify-content-center">
+        <form th:action="@{/admin/ttDatSan/update/${ttSan.id}}" method="post" enctype="multipart/form-data" class="form-control w-50 card mb-3">
+          <h5 class="card-header text-center">Thông Tin</h5>
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col form-floating">
+                <div class="form-floating mb-3 mb-md-0">
+                  <input class="form-control" id="loaiSan" type="text" name="tenSan" placeholder="" th:value="${ttSan != null ? ttSan.san.tenSan : ''}" readonly /> <label for="loaiSan">Tên Sân</label>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="form-floating mb-3 mb-md-0">
+                  <input
+                    class="form-control"
+                    id="inputEmail"
+                    type="email"
+                    name="email"
+                    placeholder="name@example.com"
+                    th:value="${ttSan != null ? ttSan.user != null ? ttSan.user.email : ttSan.email : ''}" />
+                  <label for="inputEmail">Email</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating mb-3 mb-md-0">
+                  <input
+                    class="form-control"
+                    id="phonenumber"
+                    type="text"
+                    name="phoneNumber"
+                    placeholder="Enter your phonenumber"
+                    th:value="${ttSan != null ? ttSan.user != null ? ttSan.user.phoneNumber : ttSan.phoneNumber : ''}" />
+                  <label for="phonenumber">Số Điện Thoại</label>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col">
+                <div class="form-floating mb-3 mb-md-0">
+                  <input class="form-control" id="inputEmail" type="date" name="ngayDa" placeholder="name@example.com" th:value="${ttSan != null ? ttSan.ngayDat : ''}" />
+                  <label for="inputEmail">Ngày Đá</label>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="form-floating mb-3 mb-md-0">
+                  <input class="form-control" id="ThoiGianBatDau" name="ThoiGianBatDau" type="text" placeholder="" th:value="${ttSan != null ? ttSan.thoiGianNhanSan : ''}" />
+                  <label for="ThoiGianBatDau">Thời Gian Bắt Đầu</label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-floating mb-3 mb-md-0">
+                  <input class="form-control" id="ThoiGianKetThuc" name="ThoiGianKetThuc" type="text" placeholder="" th:value="${ttSan != null ? ttSan.thoiGianKetThuc : ''}" />
+                  <label for="ThoiGianKetThuc">Thời Gian Kết Thúc</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="${ isEdit ? '' : 'd-none' } btn btn-outline-success float-end">Cập Nhật</button>
+          </div>
+        </form>
+      </div>
+      <div class="card mb-4"></div>
+      <div class="card mb-4">
+        <div class="card-header"><i class="fas fa-table me-1"></i> Thông tin đặt sân của khách hàng</div>
+        <div class="card-body">
+          <table id="datatablesSimple">
+            <thead>
+              <tr>
+                <th>Tên Sân</th>
+                <th>Email</th>
+                <th>SĐT</th>
+                <th>Ngày Đá</th>
+                <th>Bắt Đầu</th>
+                <th>Kết Thúc</th>
+                <th>Đã Trả</th>
+                <th>Trạng Thái</th>
+                <th>Chỉnh Sửa</th>
+                <th>Dịch Vụ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="tt : ${ttdatSan}">
+                <td th:text="*{tt.san.tenSan }"></td>
+                <td th:text="*{tt.user == null ? tt.email : tt.user.email }"></td>
+                <td th:text="*{tt.user == null ? tt.phoneNumber : tt.user.phoneNumber }"></td>
+                <td th:text="*{tt.ngayDat }"></td>
+                <td th:text="*{tt.thoiGianNhanSan}"></td>
+                <td th:text="*{tt.thoiGianKetThuc }"></td>
+                <td th:text="*{tt.tienCoc}"></td>
+                <td th:text="*{tt.trangThai ? 'Đã Hoàn Thành' : 'Chưa Hoàn Thành' }"></td>
+                <td>
+                  <div th:if="${tt.trangThai}">Hoàn Tất</div>
+                  <div th:if="${!tt.trangThai}">
+                    <a th:with="id=${ tt.id }" class="link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" th:href="@{'/admin/ttDatSan/edit/' + ${id}}"
+                      >Chỉnh Sửa</a
+                    >
+                  </div>
+                </td>
+                <td>
+                  <div th:if="${tt.trangThai}">Hoàn Tất</div>
+                  <div th:if="${!tt.trangThai}">
+                    <a
+                      class="link-success link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                      data-bs-toggle="modal"
+                      href="#"
+                      th:attr="data-bs-target='#exampleModal' + ${tt.id}"
+                      >Xem</a
+                    >
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div th:each="tt : ${ttdatSan}">
+    <div
+      class="modal fade"
+      th:attr="id='staticBackdrop' + ${ tt.id }"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel${ tt.id }"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 fw-semibold" id="exampleModalLabel">Bảng Dịch Vụ</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form th:action="@{/admin/ttDatSan/updateModal}" method="post">
+            <input type="hidden" name="id" th:value="${tt.id}" />
+            <div class="modal-body">
+              <div class="row mb-3">
+                <div class="col form-floating">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input class="form-control" id="tongTien" type="text" readonly name="tongTien" placeholder="" value="${tt.tongTien }" /> <label for="tongTien">Tổng Tiền Cần Thanh Toán</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input class="form-control" id="daThanhToan" type="text" readonly name="tienDaThanhToan" placeholder="" value="${ tt.tienCoc }" />
+                    <label for="daThanhToan">Số Tiền Đã Thanh Toán</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input class="form-control" id="conLai" type="text" readonly name="tienConLai" placeholder="" value="${ tt.tongTien - tt.tienCoc }" /> <label for="conLai">Số Tiền Còn Lại</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col form-floating">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <textarea class="form-control" id="ghiChu" name="ghiChu" readonly placeholder="" th:value=" ${tt.ghiChu == null ? 'Không có' : tt.ghiChu}"> </textarea>
+                    <input class="form-control" id="ghiChu" type="text" readonly name="tongTien" placeholder="" value="${tt.ghiChu == null ? 'Không có' : tt.ghiChu}" />
+                    <label for="ghiChu">Ghi Chú</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <select class="form-select" aria-label="Default select example" name="trangThai">
+                      <option selected>Chọn---</option>
+                      <option value="1">Đang Đá</option>
+                      <option value="2">Đã Hoàn Thành</option>
+                    </select>
+                    <label>Trạng Thái</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-floating mb-3 mb-md-0">
+                  <input class="form-control" id="GioThem" name="gioThem" type="text" placeholder="" /> <label class="ms-2" for="GioThem">Thêm Thời Gian</label>
+                </div>
+                <%--
+                <div class="col-6">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input class="form-control" id="TienThem" name="tienThem" type="text" placeholder="" th:value="${ tienThem}" /> <label for="TienThem">Tiền Thêm Thời Gian</label>
+                  </div>
+                </div>
+                --%>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Quay Về</button>
+              <button class="btn btn-outline-success float-end">Cập Nhật</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</html>

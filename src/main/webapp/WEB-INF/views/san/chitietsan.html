@@ -1,0 +1,181 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <style>
+    .swiper {
+      width: 100%;
+      height: 100%;
+    }
+
+    .swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .swiper-slide img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .swiper {
+      width: 100%;
+      height: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .swiper-slide {
+      background-size: cover;
+      background-position: center;
+    }
+
+    .mySwiper2 {
+      height: 80%;
+      width: 100%;
+    }
+
+    .mySwiper {
+      height: 20%;
+      box-sizing: border-box;
+      padding: 10px 0;
+    }
+
+    .mySwiper .swiper-slide {
+      width: 25%;
+      height: 100%;
+      opacity: 0.4;
+    }
+
+    .mySwiper .swiper-slide-thumb-active {
+      opacity: 1;
+    }
+
+    .swiper-slide img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .rating-box1 .stars {
+      display: flex;
+      align-items: center;
+      /* gap: 25px; */
+    }
+
+    .stars1 i {
+      color: #ff9c1a;
+      font-size: 15px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    /* .stars i.active {
+					color: #ff9c1a ;
+					} */
+  </style>
+  <main>
+    <div class="container-fluid px-4">
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">
+          <a class="text-decoration-none text-black fw-bolder" th:href="@{/home}">Trang Chủ</a>
+        </li>
+        <li class="breadcrumb-item active">Sân</li>
+        <li class="breadcrumb-item active">Chi Tiết Sân</li>
+      </ol>
+      <div class="card mb-4"></div>
+      <div class="row mt-5">
+        <h1 th:text="${ san.tenSan }"></h1>
+        <div class="col-5" style="height: 640px">
+          <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiper2 rounded">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide" th:each="img, status : ${san.listHinhAnh}">
+                <img th:src="@{'/imgs/' + ${ img.tenAnh }}" alt="Hinh anh san bong" />
+              </div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+          </div>
+          <div thumbsSlider="" class="swiper mySwiper rounded">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide" th:each="img, status : ${san.listHinhAnh}">
+                <img th:src="@{'/imgs/' + ${ img.tenAnh }}" alt="Hinh anh san bong" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-7">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title" th:text="*{san.tenSan}"></h5>
+              <div class="row">
+                <div class="col-sm-6">
+                  <p class="card-text">Loại Sân: <span th:text="*{san.loaiSan.tenLoai}"></span></p>
+                </div>
+                <div class="col-sm-6">
+                  <p class="card-text">Đánh Giá: <span th:text="${ danhGia }"></span> <i class="bi bi-star-fill text-warning fs-5"></i></p>
+                </div>
+              </div>
+              <p class="card-text my-2">Giá: <span class="fs-5 text-danger" th:text="*{ san.giaSan }"></span> / Giờ</p>
+              <p class="card-text">Địa Chỉ: <span th:text="*{san.diaChi}"></span></p>
+              <div class="row">
+                <div class="col-xl-6 col-lg-6">
+                  <p class="card-text"><i class="bi bi-wifi"></i> Wifi</p>
+                </div>
+                <div class="col-xl-6 col-lg-6">
+                  <p class="card-text"><i class="bi bi-shop-window"></i> Căn Tin</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-6 col-lg-6">
+                  <table class="table my-3 caption-top">
+                    <caption class="text-success-emphasis">
+                      Tỷ Giá Theo Khung Giờ
+                    </caption>
+                    <thead class="table-secondary">
+                      <tr>
+                        <th class="small" scope="col">Bắt Đầu</th>
+                        <th class="small" scope="col">Kết Thúc</th>
+                        <th class="small" scope="col">Giá</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                      <tr th:each="ca, status : ${khungGio}" th:with="tien = ${ca.hot * san.giaSan}">
+                        <td th:text="${ ca.thoiGianBatDau }"></td>
+                        <td th:text="${ ca.thoiGianKetThuc }"></td>
+                        <td th:text="${tien}"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col-xl-6 col-lg-6">
+                  <a class="btn btn-success float-end mt-5" th:href="@{'/san-bong-da/dat-san/' + ${ san.maSan }}">Đặt Sân</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card my-4">
+            <div class="card-body offcanvas-start">
+              <h5 class="card-header my-2">Đánh Giá</h5>
+              <div th:each="danhgia, status : ${ danhGia_ }">
+                <div class="card-text">
+                  <label class="mx-2" th:text="${ danhgia.user.lastName + ' ' + danhgia.user.firstName}"></label>
+                  <div class="rating-box1 float-end">
+                    <div class="stars1"><span th:text="${ danhgia.mocSao + ' '}"></span><i class="bi bi-star-fill"></i></div>
+                  </div>
+                </div>
+                <div class="card-text my-3">
+                  <textarea disabled class="w-100 form-control" style="resize: none" th:text="${ danhgia.nhanXet}"></textarea>
+                </div>
+                <hr />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</html>

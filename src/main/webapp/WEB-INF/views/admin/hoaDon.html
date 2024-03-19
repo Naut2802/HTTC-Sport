@@ -1,0 +1,121 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<main>
+	<div class="container-fluid px-4">
+		<h1 class="mt-4">Danh Sách Hóa Đơn</h1>
+		<ol class="breadcrumb mb-4">
+			<li class="breadcrumb-item"><a
+				class="text-decoration-none text-black fw-bolder"
+				th:href="@{/admin}">Trang Chủ</a></li>
+			<li class="breadcrumb-item active">Hóa đơn</li>
+		</ol>
+		<div class="card mb-4"></div>
+		<div class="card mb-4">
+			<div class="card-header">
+				<i class="fas fa-table me-1"></i> Danh sách hóa đơn
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-lg-6 mb-2">
+						<label class="form-label">Ngày bắt đầu?</label> <input
+							class="form-control" type="date" name="startDate"
+							onchange="sendRequest()" id="startDate">
+					</div>
+					<div class="col-lg-6 mb-2">
+						<label class="form-label">Ngày kết thúc?</label> <input
+							class="form-control" type="date" name="endDate"
+							onchange="sendRequest()" id="endDate">
+					</div>
+				</div>
+				<table id="datatablesSimple" class="hoaDon">
+					<thead>
+						<tr>
+							<th>Mã Hóa Đơn</th>
+							<th>Email</th>
+							<th>Số Điện Thoại</th>
+							<th>Tên Sân</th>
+							<th>Ngày Xuất</th>
+							<th>Thời Gian Bắt Đầu</th>
+							<th>Thời Gian Kết Thúc</th>
+							<th>Tổng Tiền</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="hd : ${session.hoaDon}">
+							<td th:text="*{hd.maHd}"></td>
+							<td th:text="*{hd.user.email}"></td>
+							<td th:text="*{hd.user.phoneNumber}"></td>
+							<td th:text="*{hd.san.tenSan}"></td>
+							<td th:text="*{hd.ngayXuat}"></td>
+							<td th:text="*{hd.thoiGianBatDau}"></td>
+							<td th:text="*{hd.thoiGianKetThuc}"></td>
+							<td th:text="*{hd.tongTien}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="card-footer">
+				<span id="totalAmount"><strong>Tổng doanh thu:</strong> <b
+					th:text="${tongTien}"></b> </span> <a
+					class="btn btn-outline-success float-end"
+					th:href="@{/admin/xuat-hd}">Xuất File</a>
+			</div>
+		</div>
+	</div>
+</main>
+
+<script>
+	function sendRequest() {
+		var startDate = document.getElementById('startDate').value;
+		var endDate = document.getElementById('endDate').value;
+		console.log(startDate);
+		console.log(endDate);
+
+		// Sử dụng AJAX để gửi request đến servlet
+		$.ajax({
+			type : 'POST',
+			url : '/admin/hoaDon/searchDate', // Thay đổi thành URL của servlet thực tế
+			data : {
+				startDate : startDate,
+				endDate : endDate
+			},
+			success : function(response) {
+				// Xử lý kết quả từ servlet nếu cần
+				var domObject = $(response);
+				updateUI(domObject.find('.hoaDon').html());
+			},
+			error : function(error) {
+				console.error(error);
+			}
+		});
+	}
+	function updateUI(response) {
+		// Thực hiện các bước cập nhật trang web dựa trên kết quả từ servlet
+		// Ví dụ: Hiển thị kết quả trong một phần tử HTML có id là 'result'
+		$('.hoaDon').html(response);
+
+		// Tính tổng tiền
+		var tongTien = calculateTotalAmount();
+
+		// Cập nhật tổng tiền vào phần tử HTML
+		var formattedTongTien = tongTien.toLocaleString('vi-VN', {
+			style : 'currency',
+			currency : 'VND'
+		});
+		$('#totalAmount').text(formattedTongTien);
+	}
+	function calculateTotalAmount() {
+		// Khởi tạo tổng tiền
+		var tongTien = 0;
+
+		// Lặp qua các hàng trong bảng để tính tổng tiền
+		$('#datatablesSimple tbody tr').each(function() {
+			var cellValue = $(this).find('td:last').text();
+			// Lọc ra số từ chuỗi và cộng dồn vào tổng tiền
+			var numericValue = parseFloat(cellValue.replace(/[^0-9.-]+/g, ""));
+			tongTien += numericValue;
+		});
+
+		return tongTien;
+	}
+</script>
+</html>

@@ -1,0 +1,137 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <main>
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Đặt Sân</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">
+          <a class="text-decoration-none text-black fw-bolder" th:href="@{/home}">Trang Chủ</a>
+        </li>
+        <li class="breadcrumb-item active">Sân</li>
+        <li class="breadcrumb-item active">Đặt Sân</li>
+      </ol>
+      <div class="card mb-4"></div>
+      <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+          <form th:action="@{/san-bong-da/dat-san/thanh-toan}" method="post">
+            <h5 class="card-header text-center">Đặt Sân</h5>
+            <div class="card-body">
+              <p class="text-center">Vui lòng điền thông tin cá nhân</p>
+              <input type="hidden" id="maSan" name="maSan" th:value="${ san.maSan }" />
+              <div class="row mb-3">
+                <div class="col-6">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input
+                      class="form-control"
+                      id="lastName"
+                      name="lastName"
+                      th:value="${ session.user != null ? session.user.lastName : '' }"
+                      type="text"
+                      placeholder=""
+                      required
+                      requiredmsg="Vui lòng Nhập Họ Người Đặt" />
+                    <label for="lastName">Họ</label>
+                  </div>
+                </div>
+                <div class="col-6 form-floating">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input
+                      class="form-control"
+                      id="firstName"
+                      name="firstName"
+                      th:value="${ session.user != null ? session.user.firstName : '' }"
+                      type="text"
+                      placeholder=""
+                      required
+                      requiredmsg="Vui lòng Nhập Tên Người Đặt" />
+                    <label for="firstName">Tên</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input
+                      class="form-control"
+                      id="inputEmail"
+                      name="email"
+                      type="email"
+                      th:value="${ session.user != null ? session.user.email : '' }"
+                      placeholder="name@example.com"
+                      required
+                      requiredmsg="Vui lòng Nhập Email" />
+                    <label for="inputEmail">Email address</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input
+                      class="form-control"
+                      id="phonenumber"
+                      name="phoneNumber"
+                      type="text"
+                      th:value="${ session.user != null ? session.user.phoneNumber : '' }"
+                      placeholder="Enter your phonenumber"
+                      required
+                      requiredmsg="Vui lòng Nhập Số Điện Thoại" />
+                    <label for="phonenumber">Phone Number</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input class="form-control" id="inputEmail" type="date" name="ngayDat" placeholder="name@example.com" required requiredmsg="Vui lòng Chọn Ngày Đá" />
+                    <label for="inputEmail">Ngày Đá</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-6">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input class="form-control" id="thoiGianNhanSan" name="thoiGianNhanSan" type="time" placeholder="" required requiredmsg="Thời Gian Không Hợp Lệ Ví Dụ: 10:00:00" />
+                    <label for="thoiGianNhanSan">Thời Gian Nhận Sân</label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <input class="form-control" id="ThoiGianKetThuc" name="thoiGianKetThuc" type="time" placeholder="" required requiredmsg="Thời Gian Không Hợp Lệ Ví Dụ: 12:00:00" />
+                    <label for="ThoiGianKetThuc">Thời Gian Kết Thúc</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <div class="form-floating mb-3 mb-md-0">
+                    <textarea class="form-control" id="ghiChu" name="ghiChu" placeholder=""></textarea>
+                    <label for="ghiChu">Ghi Chú</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-outline-secondary float-end">Đặt Sân</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var elements = $("input, select");
+      for (var i = 0; i < elements.length; i++) {
+        elements[i].oninvalid = function (e) {
+          e.target.setCustomValidity("");
+          if (!e.target.validity.valid) {
+            e.target.setCustomValidity(e.target.getAttribute("requiredmsg"));
+          }
+        };
+        elements[i].oninput = function (e) {
+          e.target.setCustomValidity("");
+        };
+      }
+    });
+  </script>
+</html>

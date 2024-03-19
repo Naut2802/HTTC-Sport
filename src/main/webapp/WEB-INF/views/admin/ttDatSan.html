@@ -23,12 +23,12 @@
                 <div class="form-floating mb-3 mb-md-0">
                   <input
                     class="form-control"
-                    id="inputEmail"
+                    id="inputEmail1"
                     type="email"
                     name="email"
                     placeholder="name@example.com"
                     th:value="${ttSan != null ? ttSan.user != null ? ttSan.user.email : ttSan.email : ''}" />
-                  <label for="inputEmail">Email</label>
+                  <label for="inputEmail1">Email</label>
                 </div>
               </div>
               <div class="col-md-6">
@@ -151,29 +151,28 @@
               <div class="row mb-3">
                 <div class="col form-floating">
                   <div class="form-floating mb-3 mb-md-0">
-                    <input class="form-control" id="tongTien" type="text" readonly name="tongTien" placeholder="" value="${ tt.tongTien }" /> <label for="tongTien">Tổng Tiền Cần Thanh Toán</label>
+                    <input class="form-control" id="tongTien" type="text" readonly name="tongTien" placeholder="" th:value="*{ tt.tongTien }" /> <label for="tongTien">Tổng Tiền Cần Thanh Toán</label>
                   </div>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="col-md-6">
                   <div class="form-floating mb-3 mb-md-0">
-                    <input class="form-control" id="daThanhToan" type="text" readonly name="tienDaThanhToan" placeholder="" value="${ tt.tienCoc }" />
+                    <input class="form-control" id="daThanhToan" type="text" readonly name="tienDaThanhToan" placeholder="" th:value="*{ tt.tienCoc }" />
                     <label for="daThanhToan">Số Tiền Đã Thanh Toán</label>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-floating mb-3 mb-md-0">
-                    <input class="form-control" id="conLai" type="text" readonly name="tienConLai" placeholder="" value="${ tt.tongTien - tt.tienCoc }" /> <label for="conLai">Số Tiền Còn Lại</label>
+                    <input class="form-control" id="conLai" type="text" readonly name="tienConLai" placeholder="" th:value="*{ tt.tongTien - tt.tienCoc }" /> <label for="conLai">Số Tiền Còn Lại</label>
                   </div>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="col form-floating">
                   <div class="form-floating mb-3 mb-md-0">
-                    <textarea class="form-control" name="ghiChu" readonly placeholder="" th:value=" ${tt.ghiChu == null ? 'Không có' : tt.ghiChu}"> </textarea>
-                    <input class="form-control" id="ghiChu" type="text" readonly name="tongTien" placeholder="" value="${tt.ghiChu == null ? 'Không có' : tt.ghiChu}" />
-                    <label for="ghiChu">Ghi Chú</label>
+                    <textarea class="form-control" id="ghiChu" name="ghiChu" readonly placeholder="" th:text="*{tt.ghiChu == null ? 'Không có' : tt.ghiChu}"> </textarea>
+                    <label for="ghiChu">Ghi chú</label>
                   </div>
                 </div>
               </div>

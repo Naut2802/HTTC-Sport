@@ -31,8 +31,8 @@
                 <td th:text="*{tt.ngayDat }"></td>
                 <td th:text="*{tt.tongTien}"></td>
                 <td>
-                	<a th:href="@{/user/ttDatSanUser}" th:with="id=${tt.id}" class="link-success link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-                    data-bs-toggle="modal" th:attr="data-bs-target='staticBackdrop' + ${ id }">Xem Chi Tiết</a>
+                	<a href="" th:with="id=${tt.id}" class="link-success link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                    data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${ id }">Xem Chi Tiết</a>
                 </td>
               </tr>
           </tbody>
@@ -43,200 +43,190 @@
 </main>
 
 <!-- Modal -->
-  <div
-    th:each="tt : ${ttDatSan}" th:with="id=${tt.id}"
-    class="modal fade"
-    th:attr="id='staticBackdrop' + ${ id }"
-    tabindex="-1"
-    aria-labelledby="staticBackdropLabel${id}"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5 fw-semibold" id="exampleModalLabel">Thông Tin Chi Tiết</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div th:each="tt : ${session.ttDatSan}" th:with="id=${tt.id}, maSan=${ tt.san.maSan }, img=${ tt.san.listHinhAnh.size() == 0 ? '' : tt.san.listHinhAnh.get(0).tenAnh }">
+    <div class="modal fade"
+         th:attr="id='staticBackdrop' + ${ id }"
+         tabindex="-1"
+         aria-labelledby="staticBackdropLabel${id}"
+         aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 fw-semibold" id="exampleModalLabel">Thông Tin Chi Tiết</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form class="form-control" th:action="@{/user/ttDatSanUser}">
+            <input type="hidden" name="id" th:value="${ id }">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-lg-5 mb-3">
+                  <div class="card">
+                    <div class="card-body">
+                      <h3 class="card-title mb-0 fw-semibold">
+                        <a class="text-decoration-none text-black"
+                           th:href="@{|/san-bong-da/${maSan}|}"
+                           th:text="*{tt.san.tenSan}"></a>
+                      </h3>
+                    </div>
+                    <img class="card-img-bottom img-fluid" th:src="|/imgs/${img}|">
+                  </div>
+                </div>
+                <div class="col-lg-7">
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <div class="form-floating mb-3 mb-md-0">
+                        <input
+                                class="form-control"
+                                id="username"
+                                type="text"
+                                readonly
+                                name="username"
+                                placeholder=""
+                                th:value="*{ tt.user.username }" />
+                        <label for="username">Tài khoản</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input
+                                class="form-control"
+                                id="email"
+                                type="email"
+                                readonly
+                                name="email"
+                                placeholder=""
+                                th:value="*{ tt.user.email }" />
+                        <label for="email">Email</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input
+                                class="form-control"
+                                id="fullname"
+                                type="text"
+                                readonly
+                                name="fullname"
+                                placeholder=""
+                                th:value="*{ tt.user.lastName + ' ' + tt.user.firstName }" />
+                        <label for="fullname">Họ Tên</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input
+                                class="form-control"
+                                id="phonenumber"
+                                type="text"
+                                readonly
+                                name="phoneNumber"
+                                placeholder=""
+                                th:value="*{ tt.user.phoneNumber }" />
+                        <label for="phonenumber">Số Điện Thoại</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col">
+                      <div class="form-floating">
+                        <input
+                                class="form-control"
+                                id="inputEmail"
+                                type="date"
+                                name="ngayDa"
+                                placeholder="name@example.com"
+                                th:value="*{ tt.ngayDat }" />
+                        <label for="inputEmail">Ngày Đá</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-floating mb-3">
+                        <input
+                                class="form-control"
+                                id="ThoiGianBatDau"
+                                name="ThoiGianBatDau"
+                                type="time" readonly="readonly"
+                                placeholder=""
+                                th:value="*{ tt.thoiGianNhanSan }" />
+                        <label for="ThoiGianBatDau">Thời Gian Bắt Đầu</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input
+                                class="form-control"
+                                id="ThoiGianKetThuc"
+                                name="ThoiGianKetThuc"
+                                type="time" readonly="readonly"
+                                placeholder=""
+                                th:value="*{ tt.thoiGianKetThuc }" />
+                        <label for="ThoiGianKetThuc">Thời Gian Kết Thúc</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col">
+                      <div class="form-floating">
+                        <input
+                                class="form-control"
+                                id="tongTien"
+                                type="text"
+                                readonly
+                                name="tongTien"
+                                placeholder=""
+                                th:value="*{ tt.tongTien }" />
+                        <label for="tongTien">Tổng Tiền</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-floating mb-3">
+                        <input
+                                class="form-control"
+                                id="daThanhToan"
+                                type="text"
+                                readonly
+                                name="tienDaThanhToan"
+                                placeholder=""
+                                th:value="*{ tt.tienCoc }" />
+                        <label for="daThanhToan">Số Tiền Đã Thanh Toán</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input
+                                class="form-control"
+                                id="conLai"
+                                type="text"
+                                readonly
+                                name="tienConLai"
+                                placeholder=""
+                                th:value="*{ tt.tongTien - tt.tienCoc }" />
+                        <label for="conLai">Số Tiền Còn Lại</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col form-floating">
+                      <div class="form-floating">
+                        <textarea class="form-control" id="ghiChu" name="ghiChu" th:text="*{tt.ghiChu == null ? 'Không có' : tt.ghiChu}" readonly placeholder=""></textarea>
+                        <label for="ghiChu">Ghi Chú</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Quay Về</button>
+            </div>
+          </form>
         </div>
-        <form class="form-control" th:action="@{/user/ttDatSanUser}">
-           <input type="hidden" name="id" th:value="${ id }">
-          <div class="modal-body">
-          <div class="row">
-          	<div class="col-lg-5 mb-3">
-          		<div class="card">
-          			<div class="card-body">
-          				<h3 class="card-title mb-0 fw-semibold">
-          					<a class="text-decoration-none text-black"
-          					th:href="@{/san-bong-da/${ tt.san.maSan }}"
-          					th:text="*{tt.san.tenSan }"></a>
-          				</h3>
-          			</div>
-          			<img class="card-img-bottom img-fluid" src="/imgs/*{ tt.san.listHinhAnh.get(0).tenAnh }">
-          		</div>
-          	</div>
-          	<div class="col-lg-7">
-          		<div class="row mb-3">
-              <div class="col-md-6">
-                <div class="form-floating mb-3 mb-md-0">
-                  <input	
-                    class="form-control"
-                    id="username"
-                    type="text"
-                    readonly
-                    name="username"
-                    placeholder=""
-                    th:value="${ tt.user.username }" />
-                  <label for="username">Tài khoản</label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <input
-                    class="form-control"
-                    id="email"
-                    type="email"
-                    readonly
-                    name="email"
-                    placeholder=""
-                    th:value="${ tt.user.email }" />
-                  <label for="email">Email</label>
-                </div>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <input
-                    class="form-control"
-                    id="fullname"
-                    type="text"
-                    readonly
-                    name="fullname"
-                    placeholder=""
-                    th:value="${ tt.user.lastName } ${ tt.user.firstName }" />
-                  <label for="fullname">Họ Tên</label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <input
-                    class="form-control"
-                    id="phonenumber"
-                    type="text"
-                    readonly
-                    name="phoneNumber"
-                    placeholder=""
-                    value="${ tt.user.phoneNumber }" />
-                  <label for="phonenumber">Số Điện Thoại</label>
-                </div>
-              </div>
-            </div>
-             <div class="row mb-3">
-            <div class="col">
-              <div class="form-floating">
-                <input
-                  class="form-control"
-                  id="inputEmail"
-                  type="date"
-                  name="ngayDa"
-                  placeholder="name@example.com"
-                  value="${ tt.ngayDat }" />
-                <label for="inputEmail">Ngày Đá</label>
-              </div>
-            </div>
-          </div>
-            <div class="row">
-            <div class="col-md-6">
-              <div class="form-floating mb-3">
-                <input
-                  class="form-control"
-                  id="ThoiGianBatDau"
-                  name="ThoiGianBatDau"
-                  type="time" readonly="readonly"
-                  placeholder=""
-                  value="${ tt.thoiGianNhanSan }" />
-                <label for="ThoiGianBatDau">Thời Gian Bắt Đầu</label>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-floating">
-                <input
-                  class="form-control"
-                  id="ThoiGianKetThuc"
-                  name="ThoiGianKetThuc"
-                  type="time" readonly="readonly"
-                  placeholder=""
-                  value="${ tt.thoiGianKetThuc }" />
-                <label for="ThoiGianKetThuc">Thời Gian Kết Thúc</label>
-              </div>
-            </div>
-          </div>
-            <div class="row mb-3">
-              <div class="col">
-                <div class="form-floating">
-                  <input
-                    class="form-control"
-                    id="tongTien"
-                    type="text"
-                    readonly
-                    name="tongTien"
-                    placeholder=""
-                    value="${ tt.tongTien }" />
-                  <label for="tongTien">Tổng Tiền</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-floating mb-3">
-                  <input
-                    class="form-control"
-                    id="daThanhToan"
-                    type="text"
-                    readonly
-                    name="tienDaThanhToan"
-                    placeholder=""
-                    value="${ tt.tienCoc }" />
-                  <label for="daThanhToan">Số Tiền Đã Thanh Toán</label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <input
-                    class="form-control"
-                    id="conLai"
-                    type="text"
-                    readonly
-                    name="tienConLai"
-                    placeholder=""
-                    value="${ tt.tongTien - tt.tienCoc }" />
-                  <label for="conLai">Số Tiền Còn Lại</label>
-                </div>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col form-floating">
-                <div class="form-floating">
-                  <%-- <textarea class="form-control" id="ghiChu" name="ghiChu" readonly placeholder="">
-                  ${tt.ghiChu == null ? 'Không có' : tt.ghiChu}
-                  </textarea> --%>
-                  <input
-                    class="form-control"
-                    id="ghiChu"
-                    type="text"
-                    readonly
-                    name="tongTien"
-                    placeholder=""
-                    value="${ tt.ghiChu == null ? 'Không có' : tt.ghiChu }" />
-					<label for="ghiChu">Ghi Chú</label>
-                </div>
-              </div>
-            </div>
-          	</div>
-          </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Quay Về</button>
-          </div>
-        </form>
       </div>
     </div>
   </div>

@@ -77,10 +77,10 @@
         <article class="col-md-9" id="tbl">
           <div class="row" th:each="san, status : ${session.listSanActive}">
             <div class="card mb-3">
-              <div class="row g-0" th:with="maSan=${ san.maSan }, img=${ san.listHinhAnh.size() == 0 ? '' : san.listHinhAnh.get(0).tenAnh }">
+              <div class="row g-0" th:with="maSan=${ san.maSan }">
                 <div class="col-lg-4 p-3">
-                  <a th:href="@{'/san-bong-da/' + ${maSan}}">
-                    <img th:src="@{'/imgs/' + ${img}}" class="card img-fluid rounded" />
+                  <a th:href="@{'/san-bong-da/' + ${ maSan }}">
+                    <img th:src="@{|/imgs/*{ san.listHinhAnh.size() == 0 ? '' : san.listHinhAnh.get(0).tenAnh }|}" class="card img-fluid rounded"  alt=""/>
                   </a>
                 </div>
                 <div class="col-lg-8">

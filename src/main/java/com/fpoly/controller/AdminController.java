@@ -139,22 +139,21 @@ public class AdminController {
 		return "index";
 	}
 	
-	@PostMapping("ttDatSan/update/{id}")
-	public String updateTTDatSan(@PathVariable("id") Long id, @RequestParam("email") String email, 
-			@RequestParam("phoneNumber") String phoneNumber, @RequestParam("ngayDa") LocalDate ngayDa, 
-			@RequestParam("ThoiGianBatDau") String ThoiGianBatDau,
-			@RequestParam("ThoiGianKetThuc") String ThoiGianKetThuc) {
+	@PostMapping("ttDatSan/update")
+	public String updateTTDatSan(@RequestParam("id") Long id, @RequestParam("email") String email,
+			@RequestParam("phoneNumber") String phoneNumber, @RequestParam("ngayDa") LocalDate ngayDa,
+			@RequestParam("ThoiGianBatDau") LocalTime ThoiGianBatDau,
+			@RequestParam("ThoiGianKetThuc") LocalTime ThoiGianKetThuc) {
 		ThongTinDatSan ttds = thongTinService.getTTSan(id);
 		San san = sanService.getSan(ttds.getSan().getMaSan());
 		LocalDate localDate = LocalDate.now();
 		LocalTime localTime = LocalTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 		boolean flag = false;
 		if (ttds.getId() != null) {
 			try {
-				Double tongTien = 0d;
-				LocalTime time_Bd = LocalTime.parse(ThoiGianBatDau, formatter).plusMinutes(1);
-				LocalTime time_Kt = LocalTime.parse(ThoiGianKetThuc, formatter);
+				double tongTien = 0d;
+				LocalTime time_Bd = ThoiGianBatDau.plusMinutes(1);
+				LocalTime time_Kt = ThoiGianKetThuc;
 				if(ngayDa.getYear() > localDate.getYear()) {
 					flag = true;
 				} else if (ngayDa.getYear() == localDate.getYear()) {
@@ -200,15 +199,14 @@ public class AdminController {
 							tongTien += _tt;
 						}
 						tongTien = (double) Math.round(tongTien);
-} else {
+					} else
 						flag = false;
-					}
 				}
 				if(flag) {
 					ttds.setEmail(email);
 					ttds.setPhoneNumber(phoneNumber);
 					ttds.setNgayDat(ngayDa);
-					ttds.setThoiGianNhanSan(time_Bd); 
+					ttds.setThoiGianNhanSan(time_Bd);
 					ttds.setThoiGianKetThuc(time_Kt);
 					ttds.setTongTien(tongTien);
 					thongTinService.save(ttds);

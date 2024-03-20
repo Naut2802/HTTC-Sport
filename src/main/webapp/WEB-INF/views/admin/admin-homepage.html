@@ -1,157 +1,138 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<main>
-	<div class="container-fluid px-4">
-		<h1 class="mt-4">Trang Chủ</h1>
-		<ol class="breadcrumb mb-4">
-			<li class="breadcrumb-item active">Trang Chủ</li>
-		</ol>
-		<div class="row justify-content-center">
-			<div class="col-xl-4 col-md-4">
-				<div class="card bg-primary text-white mb-4">
-					<div class="card-body">
-						<i class="bi bi-person-circle"></i> Tổng Khách Hàng
-					</div>
-					<div
-						class="card-footer d-flex align-items-center justify-content-between">
-						<a class="small text-white stretched-link"
-							th:href="@{/admin/user}">Xem Danh Sách</a>
-						<div class="small text-white">
-							<i class="fas fa-angle-right"></i>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-4 col-md-4">
-				<div class="card bg-warning text-white mb-4">
-					<div class="card-body">
-						<i class="bi bi-alexa"></i> Tổng Sân
-					</div>
-					<div
-						class="card-footer d-flex align-items-center justify-content-between">
-						<a class="small text-white stretched-link" th:href="@{/admin/san}">Xem
-							Danh Sách</a>
-						<div class="small text-white">
-							<i class="fas fa-angle-right"></i>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xl-2"></div>
-			<div class="col-xl-8 w-75">
-				<div class="card mb-4">
-					<form th:action="@{/admin/chart}" method="post">
-						<div class="card-header">
-							<i class="fas fa-chart-bar me-1"></i> Biểu Đồ
-						</div>
-						<div class="card-body">
-							<div class="row mx-2 ">
-								<div class="col d-flex">
-									<select name="year" class="form-select form-select-sm">
-										<option th:each="year : ${years}" th:value="${year}"
-											th:selected="${year == selectedYear}" th:text="${year}"></option>
-									</select>
-									<button type="submit" class="btn btn-outline-success mx-1">Tìm</button>
-								</div>
-							</div>
-							<canvas id="myBarChart" width="100%" height="40"></canvas>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="card mb-4">
-			<div class="card-header">
-				<i class="fas fa-table me-1"></i> Danh Sách Khách Hàng
-			</div>
-			<div class="card-body">
-				<table id="datatablesSimple">
-					<thead>
-						<tr>
-							<th>Email</th>
-							<th>Tên Tài Khoản</th>
-							<th>Tên</th>
-							<th>Họ</th>
-							<th>Số Điện Thoại</th>
-							<th>VIP</th>
-							<th>Trạng Thái</th>
-							<th>Hoạt Động</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="user : ${listUser}">
-							<th th:text="*{ user.email }"></th>
-							<th th:text="*{ user.username }"></th>
-							<th th:text="*{ user.firstName }"></th>
-							<th th:text="*{ user.lastName }"></th>
-							<th th:text="*{ user.phoneNumber }"></th>
-							<th th:text="*{ user.vip.bacVip }"></th>
-							<th
-								th:text="*{ user.status ? 'Đang hoạt động' : 'Ngưng hoạt động' }"></th>
-							<th><a th:href="@{/admin/user/delete/${user.username}}">Xóa</a></th>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</main>
-<script>
-/*<![CDATA[*/
-var thangList = [(${thangList == null ? 'undefined' : thangList})];
-var tongTienList = [(${tongTienList == null ? 'undefined' : tongTienList})];
-/*]]>*/
-	/* var thangList = $
-	{
-		thangList
-	};
-	var tongTienList = $
-	{
-		tongTienList
-	}; */
-	var ctx = document.getElementById("myBarChart").getContext('2d');
-	var myLineChart = new Chart(ctx, {
-		type : 'bar',
-		data : {
-			labels : thangList.map(function(thang) {
-				return 'Tháng ' + thang;
-			}),
-			datasets : [ {
-				label : " Tổng Doanh Thu ",
-				backgroundColor : "rgba(0, 250, 154, 1)",
-				borderColor : "rgba(0, 250, 154, 1)",
-				data : tongTienList,
-			} ],
-		},
-		options : {
-			scales : {
-				xAxes : [ {
-					time : {
-						unit : 'month'
-					},
-					gridLines : {
-						display : false
-					},
-					ticks : {
-						maxTicksLimit : 6
-					}
-				} ],
-				yAxes : [ {
-					ticks : {
-						min : 0,
-						max : 15000,
-						maxTicksLimit : 5
-					},
-					gridLines : {
-						display : true
-					}
-				} ],
-			},
-			legend : {
-				display : false
-			}
-		}
-	});
-</script>
+  <main>
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Trang Chủ</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Trang Chủ</li>
+      </ol>
+      <div class="row justify-content-center">
+        <div class="col-xl-4 col-md-4">
+          <div class="card bg-primary text-white mb-4">
+            <div class="card-body"><i class="bi bi-person-circle"></i> Tổng Khách Hàng</div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+              <a class="small text-white stretched-link" th:href="@{/admin/user}">Xem Danh Sách</a>
+              <div class="small text-white">
+                <i class="fas fa-angle-right"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4 col-md-4">
+          <div class="card bg-warning text-white mb-4">
+            <div class="card-body"><i class="bi bi-alexa"></i> Tổng Sân</div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+              <a class="small text-white stretched-link" th:href="@{/admin/san}">Xem Danh Sách</a>
+              <div class="small text-white">
+                <i class="fas fa-angle-right"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-2"></div>
+        <div class="col-xl-8 w-75">
+          <div class="card mb-4">
+            <form th:action="@{/admin/chart}" method="post">
+              <div class="card-header"><i class="fas fa-chart-bar me-1"></i> Biểu Đồ</div>
+              <div class="card-body">
+                <div class="row mx-2">
+                  <div class="col d-flex">
+                    <select name="year" class="form-select form-select-sm">
+                      <option
+                        th:each="year : ${years}"
+                        th:value="${year}"
+                        th:selected="${year == selectedYear}"
+                        th:text="${year}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-outline-success mx-1">Tìm</button>
+                  </div>
+                </div>
+                <canvas id="myBarChart" width="100%" height="40"></canvas>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-header"><i class="fas fa-table me-1"></i> Danh Sách Khách Hàng</div>
+        <div class="card-body">
+          <table id="datatablesSimple">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Tên Tài Khoản</th>
+                <th>Tên</th>
+                <th>Họ</th>
+                <th>Số Điện Thoại</th>
+                <th>VIP</th>
+                <th>Trạng Thái</th>
+                <th>Hoạt Động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="user : ${listUser}">
+                <th th:text="*{ user.email }"></th>
+                <th th:text="*{ user.username }"></th>
+                <th th:text="*{ user.firstName }"></th>
+                <th th:text="*{ user.lastName }"></th>
+                <th th:text="*{ user.phoneNumber }"></th>
+                <th th:text="*{ user.vip.bacVip }"></th>
+                <th th:text="*{ user.status ? 'Đang hoạt động' : 'Ngưng hoạt động' }"></th>
+                <th><a th:href="@{/admin/user/delete/${user.username}}">Xóa</a></th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+    var thangList = [(${thangList == null ? 'undefined' : thangList})];
+    var tongTienList = [(${tongTienList == null ? 'undefined' : tongTienList})];
+
+    	var ctx = document.getElementById("myBarChart").getContext('2d');
+    	var myLineChart = new Chart(ctx, {
+    		type : 'bar',
+    		data : {
+    			labels : thangList.map(function(thang) {
+    				return 'Tháng ' + thang;
+    			}),
+    			datasets : [ {
+    				label : " Tổng Doanh Thu ",
+    				backgroundColor : "rgba(0, 250, 154, 1)",
+    				borderColor : "rgba(0, 250, 154, 1)",
+    				data : tongTienList,
+    			} ],
+    		},
+    		options : {
+    			scales : {
+    				xAxes : [ {
+    					time : {
+    						unit : 'month'
+    					},
+    					gridLines : {
+    						display : false
+    					},
+    					ticks : {
+    						maxTicksLimit : 6
+    					}
+    				} ],
+    				yAxes : [ {
+    					ticks : {
+    						min : 0,
+    						max : 15000,
+    						maxTicksLimit : 5
+    					},
+    					gridLines : {
+    						display : true
+    					}
+    				} ],
+    			},
+    			legend : {
+    				display : false
+    			}
+    		}
+    	});
+  </script>
 </html>

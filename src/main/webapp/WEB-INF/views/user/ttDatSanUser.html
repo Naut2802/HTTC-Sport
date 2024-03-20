@@ -1,13 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> <%@ taglib
-uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"
-prefix="fmt"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-
+<html xmlns:th="http://www.thymeleaf.org">
 <main>
   <div class="container-fluid px-4">
     <h1 class="mt-4">Thông Tin Đặt Sân</h1>
     <ol class="breadcrumb mb-4">
       <li class="breadcrumb-item">
-        <a class="text-decoration-none text-black fw-bolder" href="${ contextPath }/home">Trang Chủ</a>
+        <a class="text-decoration-none text-black fw-bolder" th:href="@{/home}">Trang Chủ</a>
       </li>
       <li class="breadcrumb-item active">Thông tin đặt sân</li>
     </ol>
@@ -27,25 +24,17 @@ prefix="fmt"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f
             </tr>
           </thead>
           <tbody>
-            <c:forEach var="tt" items="${ ttdatSan }">
-              <tr>
-                <td>${tt.san.tenSan }</td>
-                <td>${tt.user == null ? tt.email : tt.user.email }</td>
-                <td>${tt.user == null ? tt.phoneNumber : tt.user.phoneNumber }</td>
-                <td>${tt.ngayDat }</td>
+              <tr th:each="tt : ${session.ttDatSan}">
+                <td th:text="*{tt.san.tenSan}"></td>
+                <td th:text="*{tt.user == null ? tt.email : tt.user.email }"></td>
+                <td th:text="*{tt.user == null ? tt.phoneNumber : tt.user.phoneNumber }"></td>
+                <td th:text="*{tt.ngayDat }"></td>
+                <td th:text="*{tt.tongTien}"></td>
                 <td>
-                  <fmt:formatNumber
-                    type="currency"
-                    value="${ tt.tongTien }"
-                    currencyCode="VND"
-                    maxFractionDigits="0" />
-                </td>
-                <td>
-                	<a class="link-success link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-                    href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop${ tt.id }">Xem Chi Tiết</a>
+                	<a th:href="@{/user/ttDatSanUser}" th:with="id=${tt.id}" class="link-success link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                    data-bs-toggle="modal" th:attr="data-bs-target='staticBackdrop' + ${ id }">Xem Chi Tiết</a>
                 </td>
               </tr>
-            </c:forEach>
           </tbody>
         </table>
       </div>
@@ -54,14 +43,12 @@ prefix="fmt"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f
 </main>
 
 <!-- Modal -->
-<c:forEach var="tt" items="${ ttdatSan }">
   <div
+    th:each="tt : ${ttDatSan}" th:with="id=${tt.id}"
     class="modal fade"
-    id="staticBackdrop${ tt.id }"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
+    th:attr="id='staticBackdrop' + ${ id }"
     tabindex="-1"
-    aria-labelledby="staticBackdropLabel${ tt.id }"
+    aria-labelledby="staticBackdropLabel${id}"
     aria-hidden="true">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
@@ -69,8 +56,8 @@ prefix="fmt"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f
           <h1 class="modal-title fs-5 fw-semibold" id="exampleModalLabel">Thông Tin Chi Tiết</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form class="form-control">
-           <input type="hidden" name="id" value="${ tt.id }">
+        <form class="form-control" th:action="@{/user/ttDatSanUser}">
+           <input type="hidden" name="id" th:value="${ id }">
           <div class="modal-body">
           <div class="row">
           	<div class="col-lg-5 mb-3">
@@ -78,11 +65,11 @@ prefix="fmt"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f
           			<div class="card-body">
           				<h3 class="card-title mb-0 fw-semibold">
           					<a class="text-decoration-none text-black"
-          					href="${ contextPath }/san-bong-da/${ tt.san.maSan }"
-          					>${tt.san.tenSan }</a>
+          					th:href="@{/san-bong-da/${ tt.san.maSan }}"
+          					th:text="*{tt.san.tenSan }"></a>
           				</h3>
           			</div>
-          			<img class="card-img-bottom img-fluid" src="/imgs/${ tt.san.listHinhAnh.get(0).tenAnh }">
+          			<img class="card-img-bottom img-fluid" src="/imgs/*{ tt.san.listHinhAnh.get(0).tenAnh }">
           		</div>
           	</div>
           	<div class="col-lg-7">
@@ -96,7 +83,7 @@ prefix="fmt"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f
                     readonly
                     name="username"
                     placeholder=""
-                    value="${ tt.user.username }" />
+                    th:value="${ tt.user.username }" />
                   <label for="username">Tài khoản</label>
                 </div>
               </div>
@@ -109,7 +96,7 @@ prefix="fmt"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f
                     readonly
                     name="email"
                     placeholder=""
-                    value="${ tt.user.email }" />
+                    th:value="${ tt.user.email }" />
                   <label for="email">Email</label>
                 </div>
               </div>
@@ -124,7 +111,7 @@ prefix="fmt"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f
                     readonly
                     name="fullname"
                     placeholder=""
-                    value="${ tt.user.lastName } ${ tt.user.firstName }" />
+                    th:value="${ tt.user.lastName } ${ tt.user.firstName }" />
                   <label for="fullname">Họ Tên</label>
                 </div>
               </div>
@@ -253,4 +240,4 @@ prefix="fmt"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f
       </div>
     </div>
   </div>
-</c:forEach>
+</html>

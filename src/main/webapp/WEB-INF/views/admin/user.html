@@ -25,18 +25,16 @@
               </tr>
             </thead>
             <tbody>
-              <c:forEach var="user" items="${ listUser }">
-                <tr th:each="user : ${listUser}">
-                  <th th:text="${ user.email }"></th>
-                  <th th:text="${ user.username }"></th>
-                  <th th:text="${ user.firstName }"></th>
-                  <th th:text="${ user.lastName }"></th>
-                  <th th:text="${ user.phoneNumber }"></th>
-                  <th th:text="${ user.vip.bacVip }"></th>
-                  <th th:text="${ user.status ? 'Đang Hoạt Động' : 'Ngưng Hoạt Động' }"></th>
-                  <th><a th:href="@{'/admin/user/delete/' + ${ user.email }}">Delete</a></th>
-                </tr>
-              </c:forEach>
+              <tr th:each="user : ${listUser}">
+                <th th:text="${ user.email }"></th>
+                <th th:text="${ user.username }"></th>
+                <th th:text="${ user.firstName }"></th>
+                <th th:text="${ user.lastName }"></th>
+                <th th:text="${ user.phoneNumber }"></th>
+                <th th:text="${ user.vip.bacVip }"></th>
+                <th th:text="${ user.status ? 'Đang Hoạt Động' : 'Ngưng Hoạt Động' }"></th>
+                <th><a th:href="@{'/admin/user/delete/' + ${ user.email }}">Delete</a></th>
+              </tr>
             </tbody>
           </table>
         </div>

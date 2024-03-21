@@ -1,45 +1,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<main>
-	<div class="container-fluid px-4">
-		<h1 class="mt-4">Danh Sách Sân</h1>
-		<ol class="breadcrumb mb-4">
-			<li class="breadcrumb-item"><a
-				class="text-decoration-none text-black fw-bolder"
-				th:href="@{/admin}">Trang Chủ</a></li>
-			<li class="breadcrumb-item active">Sân</li>
-		</ol>
-		<div class="card mb-4"></div>
-		<div th:each="san, status : ${listSan}">
-			<div class="card mb-4 w-75 ">
-				<div class="card">
-					<div class="card-body row"
-						th:with="img=${ san.listHinhAnh.size() == 0 ? '' : san.listHinhAnh.get(0).tenAnh }">
-						<div class="col-md-6 col-xl-6">
-							<img th:src="@{'/imgs/' + ${img}}" style="width: 100%;"
-								class="border rounded">
-						</div>
-						<div class="col-md-6 col-xl-6">
-							<h5 class="text-uppercase mt-5">
-								<b th:text="*{san.tenSan}"></b>
-							</h5>
-							<label class="mt-2"><span class="fw-normal"
-								th:text="${listSao[__${ status.index }__] }"> </span> <i
-								class="text-warning fs-5 bi bi-star-fill"></i> </label><br> <label
-								class="mt-2" style="color: red;">Giá: <span
-								th:text="san.giaSan"></span>
-							</label> / Giờ<br> <label>Mô Tả: <span th:text="${san.moTa}"></span>
-							</label> <br>
-							<div class="form-inline mt-2">
-								<a th:href="@{/admin/san/edit/${ san.maSan }}"><button
-										class="btn btn-primary">Chỉnh Sửa</button></a> <a
-									th:href="@{/admin/san/delete/${ san.maSan }}"><button
-										class="btn btn-primary">Xóa</button></a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</main>
+  <main>
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Danh Sách Sân</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">
+          <a class="text-decoration-none text-black fw-bolder" th:href="@{/admin}">Trang Chủ</a>
+        </li>
+        <li class="breadcrumb-item active">Sân</li>
+      </ol>
+      <div class="card mb-4"></div>
+      <div th:each="san, status : ${listSan}">
+        <div class="card mb-4 w-75">
+          <div class="card">
+            <div
+              class="card-body row"
+              th:with="img=${ san.listHinhAnh.size() == 0 ? '' : san.listHinhAnh.get(0).tenAnh }">
+              <div class="col-md-6 col-xl-6">
+                <img th:src="@{'/imgs/' + ${img}}" style="width: 100%" class="border rounded" />
+              </div>
+              <div class="col-md-6 col-xl-6">
+                <h5 class="text-uppercase mt-5">
+                  <b th:text="*{san.tenSan}"></b>
+                </h5>
+                <label class="mt-2"
+                  ><span class="fw-normal" th:text="${listSao[__${ status.index }__] }"> </span>
+                  <i class="text-warning fs-5 bi bi-star-fill"></i> </label
+                ><br />
+                <label class="mt-2" style="color: red"
+                  >Giá: <span th:text="${san.giaSan}"></span>
+                </label>
+                / Giờ<br />
+                <label>Mô Tả: <span th:text="${san.moTa}"></span> </label> <br />
+                <div class="form-inline mt-2">
+                  <a th:href="@{'/admin/san/edit/' + ${san.maSan}}"
+                    ><button class="btn btn-primary">Chỉnh Sửa</button></a
+                  >
+                  <a th:href="@{'/admin/san/delete/' + ${ san.maSan }}"
+                    ><button class="btn btn-primary">Xóa</button></a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </html>

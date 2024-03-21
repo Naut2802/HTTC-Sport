@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <main>
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Danh Sách Khách Hàng</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">
+          <a class="text-decoration-none text-black fw-bolder" th:href="@{/admin}">Trang Chủ</a>
+        </li>
+        <li class="breadcrumb-item active">Danh Sách Khách Hàng</li>
+      </ol>
+      <div class="card mb-4">
+        <div class="card-header"><i class="fas fa-table me-1"></i> Danh Sách Khách Hàng</div>
+        <div class="card-body">
+          <table id="datatablesSimple">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone</th>
+                <th>VIP</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <c:forEach var="user" items="${ listUser }">
+                <tr th:each="user : ${listUser}">
+                  <th th:text="${ user.email }"></th>
+                  <th th:text="${ user.username }"></th>
+                  <th th:text="${ user.firstName }"></th>
+                  <th th:text="${ user.lastName }"></th>
+                  <th th:text="${ user.phoneNumber }"></th>
+                  <th th:text="${ user.vip.bacVip }"></th>
+                  <th th:text="${ user.status ? 'Đang Hoạt Động' : 'Ngưng Hoạt Động' }"></th>
+                  <th><a th:href="@{'/admin/user/delete/' + ${ user.email }}">Delete</a></th>
+                </tr>
+              </c:forEach>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</html>

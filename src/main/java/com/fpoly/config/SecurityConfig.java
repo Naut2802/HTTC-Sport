@@ -69,7 +69,7 @@ public class SecurityConfig {
 				        .redirectionEndpoint(e -> e.baseUri("/login/oauth2/code/*"))
 				        .userInfoEndpoint(e -> e.userService(auth2UserService))
 				        .successHandler(successHandler)
-				        .failureUrl("/account/loginFailure"))
+				        .failureHandler(failureHandler))
         .logout(logout ->
 		        logout.logoutUrl("/account/logout")
 				        .logoutSuccessHandler(logoutSuccessHander))

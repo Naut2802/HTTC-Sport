@@ -3,19 +3,32 @@
     <div class="container-fluid px-4">
       <h1 class="mt-4">Thông Tin Đặt Sân</h1>
       <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a class="text-decoration-none text-black fw-bolder" th:href="@{/admin}">Trang Chủ</a></li>
+        <li class="breadcrumb-item">
+          <a class="text-decoration-none text-black fw-bolder" th:href="@{/admin}">Trang Chủ</a>
+        </li>
         <li class="breadcrumb-item active">Thông tin đặt sân</li>
       </ol>
       <div class="card mb-4"></div>
       <div class="d-flex justify-content-center">
-        <form th:action="@{/admin/ttDatSan/update}" method="post" enctype="multipart/form-data" class="form-control w-50 card mb-3">
-          <input type="hidden" name="id" th:value="${ ttSan != null ? ttSan.id : '' }" />
+        <form
+          th:action="@{/admin/ttDatSan/update/${ttSan.id}}"
+          method="post"
+          enctype="multipart/form-data"
+          class="form-control w-50 card mb-3">
           <h5 class="card-header text-center">Thông Tin</h5>
           <div class="card-body">
             <div class="row mb-3">
               <div class="col form-floating">
                 <div class="form-floating mb-3 mb-md-0">
-                  <input class="form-control" id="loaiSan" type="text" name="tenSan" placeholder="" th:value="${ttSan != null ? ttSan.san.tenSan : ''}" readonly /> <label for="loaiSan">Tên Sân</label>
+                  <input
+                    class="form-control"
+                    id="loaiSan"
+                    type="text"
+                    name="tenSan"
+                    placeholder=""
+                    th:value="${ttSan != null ? ttSan.san.tenSan : ''}"
+                    readonly />
+                  <label for="loaiSan">Tên Sân</label>
                 </div>
               </div>
             </div>
@@ -48,7 +61,13 @@
             <div class="row mb-3">
               <div class="col">
                 <div class="form-floating mb-3 mb-md-0">
-                  <input class="form-control" id="inputEmail" type="date" name="ngayDa" placeholder="name@example.com" th:value="${ttSan != null ? ttSan.ngayDat : ''}" />
+                  <input
+                    class="form-control"
+                    id="inputEmail"
+                    type="date"
+                    name="ngayDa"
+                    placeholder="name@example.com"
+                    th:value="${ttSan != null ? ttSan.ngayDat : ''}" />
                   <label for="inputEmail">Ngày Đá</label>
                 </div>
               </div>
@@ -56,26 +75,42 @@
             <div class="row mb-3">
               <div class="col-6">
                 <div class="form-floating mb-3 mb-md-0">
-                  <input class="form-control" id="ThoiGianBatDau" name="ThoiGianBatDau" type="time" placeholder="" th:value="${ttSan != null ? ttSan.thoiGianNhanSan : ''}" />
+                  <input
+                    class="form-control"
+                    id="ThoiGianBatDau"
+                    name="ThoiGianBatDau"
+                    type="text"
+                    placeholder=""
+                    th:value="${ttSan != null ? ttSan.thoiGianNhanSan : ''}" />
                   <label for="ThoiGianBatDau">Thời Gian Bắt Đầu</label>
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-floating mb-3 mb-md-0">
-                  <input class="form-control" id="ThoiGianKetThuc" name="ThoiGianKetThuc" type="time" placeholder="" th:value="${ttSan != null ? ttSan.thoiGianKetThuc : ''}" />
+                  <input
+                    class="form-control"
+                    id="ThoiGianKetThuc"
+                    name="ThoiGianKetThuc"
+                    type="text"
+                    placeholder=""
+                    th:value="${ttSan != null ? ttSan.thoiGianKetThuc : ''}" />
                   <label for="ThoiGianKetThuc">Thời Gian Kết Thúc</label>
                 </div>
               </div>
             </div>
           </div>
           <div class="card-footer">
-            <button class="${ isEdit ? '' : 'd-none' } btn btn-outline-success float-end">Cập Nhật</button>
+            <button class="${ isEdit ? '' : 'd-none' } btn btn-outline-success float-end">
+              Cập Nhật
+            </button>
           </div>
         </form>
       </div>
       <div class="card mb-4"></div>
       <div class="card mb-4">
-        <div class="card-header"><i class="fas fa-table me-1"></i> Thông tin đặt sân của khách hàng</div>
+        <div class="card-header">
+          <i class="fas fa-table me-1"></i> Thông tin đặt sân của khách hàng
+        </div>
         <div class="card-body">
           <table id="datatablesSimple">
             <thead>
@@ -105,7 +140,10 @@
                 <td>
                   <div th:if="${tt.trangThai}">Hoàn Tất</div>
                   <div th:if="${!tt.trangThai}">
-                    <a th:with="id=${ tt.id }" class="link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" th:href="@{'/admin/ttDatSan/edit/' + ${id}}"
+                    <a
+                      th:with="id=${ tt.id }"
+                      class="link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                      th:href="@{'/admin/ttDatSan/edit/' + ${id}}"
                       >Chỉnh Sửa</a
                     >
                   </div>
@@ -144,7 +182,11 @@
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5 fw-semibold" id="exampleModalLabel">Bảng Dịch Vụ</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"></button>
           </div>
           <form th:action="@{/admin/ttDatSan/updateModal}" method="post">
             <input type="hidden" name="id" th:value="${ maTt }" />
@@ -180,7 +222,10 @@
               <div class="row mb-3">
                 <div class="col">
                   <div class="form-floating mb-3 mb-md-0">
-                    <select class="form-select" aria-label="Default select example" name="trangThai">
+                    <select
+                      class="form-select"
+                      aria-label="Default select example"
+                      name="trangThai">
                       <option selected>Chọn---</option>
                       <option value="1">Đang Đá</option>
                       <option value="2">Đã Hoàn Thành</option>
@@ -191,17 +236,20 @@
               </div>
               <div class="row mb-3">
                 <div class="form-floating mb-3 mb-md-0">
-                  <input class="form-control" id="GioThem" name="gioThem" type="text" placeholder="" /> <label class="ms-2" for="GioThem">Thêm Thời Gian</label>
+                  <input
+                    class="form-control"
+                    id="GioThem"
+                    name="gioThem"
+                    type="text"
+                    placeholder="" />
+                  <label class="ms-2" for="GioThem">Thêm Thời Gian</label>
                 </div>
-                <!--<div class="col-6">
-                  <div class="form-floating mb-3 mb-md-0">
-                    <input class="form-control" id="TienThem" name="tienThem" type="text" placeholder="" th:value="${ tienThem}" /> <label for="TienThem">Tiền Thêm Thời Gian</label>
-                  </div>
-                </div>-->
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Quay Về</button>
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                Quay Về
+              </button>
               <button class="btn btn-outline-success float-end">Cập Nhật</button>
             </div>
           </form>

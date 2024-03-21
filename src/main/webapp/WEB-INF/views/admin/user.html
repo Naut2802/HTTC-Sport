@@ -33,7 +33,7 @@
                   <th th:text="${ user.lastName }"></th>
                   <th th:text="${ user.phoneNumber }"></th>
                   <th th:text="${ user.vip.bacVip }"></th>
-                  <th th:text="${ user.status ? 'Đang Hoạt Động' : 'Ngưng Hoạt Động' }"></th>
+                  <th th:text="${ user.status ? ' Đang Hoạt Động ' : 'Ngưng Hoạt Động' }"></th>
                   <th><a th:href="@{'/admin/user/delete/' + ${ user.email }}">Delete</a></th>
                 </tr>
               </c:forEach>

@@ -49,10 +49,10 @@
                     <div class="form-floating mt-3">
                       <select class="form-select" id="loaiSan" name="loaiSan">
                         <div th:each="loaiSan : ${listLoaiSan}">
-                          <option th:value="${loaiSan.maLoai}" th:utext="${ loaiSan.tenLoai }"
-                          th:selected="${san != null} ? ${san.loaiSan.maLoai} == ${loaiSan.maLoai}">
-                            </th:block>
-                          </option>
+                          <option
+                            th:value="${loaiSan.maLoai}"
+                            th:utext="${ loaiSan.tenLoai }"
+                            th:selected="${san != null} ? ${san.loaiSan.maLoai} == ${loaiSan.maLoai}"></option>
                         </div>
                       </select>
                       <label for="loaiSan">Loại sân</label>

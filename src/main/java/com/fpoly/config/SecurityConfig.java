@@ -8,6 +8,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -49,31 +50,31 @@ public class SecurityConfig {
 	
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable()
-        .authorizeRequests()
-        	.requestMatchers("/account/info", "/account/changePassword", "/account/updateProfile", "/user/**").authenticated()
-        	.requestMatchers("/admin/**").hasAuthority("ADMIN")
-	        .anyRequest().permitAll()
-        .and()
-        .formLogin().loginPage("/account/login").loginProcessingUrl("/account/doLogin").failureHandler(failureHandler).successHandler(successHandler)
-        .and()
-        .rememberMe()
-	        .key("abc21412bf1u1ur2v2yf") // Key để tạo và xác minh cookie Remember Me
-	        .tokenValiditySeconds(86400)
-	    .and()
-        .oauth2Login()
-        	.loginPage("/account/login")
-            .authorizationEndpoint(e -> e.baseUri("/oauth2/authorization"))
-            .redirectionEndpoint(e -> e.baseUri("/login/oauth2/code/*"))
-            .userInfoEndpoint().userService(auth2UserService)
-            .and()
-            .failureHandler(failureHandler)
-            .successHandler(successHandler)
-        .and()
-        .logout().logoutUrl("/account/logout").logoutSuccessHandler(logoutSuccessHander)
-        .and()
-        .exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> response.sendRedirect("/home"))
-        .and()
+		http.csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(request ->
+		        request.requestMatchers("/account/info", "/account/changePassword", "/account/updateProfile", "/user/**").authenticated()
+			            .requestMatchers("/admin/**").hasAuthority("ADMIN")
+				        .anyRequest().permitAll())
+        .formLogin(login ->
+		        login.loginPage("/account/login")
+				        .loginProcessingUrl("/account/doLogin")
+				        .successHandler(successHandler)
+				        .failureHandler(failureHandler))
+        .rememberMe(remember ->
+		        remember.key("abc21412bf1u1ur2v2yf")
+				        .tokenValiditySeconds(86400))
+        .oauth2Login(login ->
+		        login.loginPage("/account/login")
+				        .authorizationEndpoint(e -> e.baseUri("/oauth2/authorization"))
+				        .redirectionEndpoint(e -> e.baseUri("/login/oauth2/code/*"))
+				        .userInfoEndpoint(e -> e.userService(auth2UserService))
+				        .successHandler(successHandler)
+				        .failureUrl("/account/loginFailure"))
+        .logout(logout ->
+		        logout.logoutUrl("/account/logout")
+				        .logoutSuccessHandler(logoutSuccessHander))
+        .exceptionHandling(e ->
+		        e.accessDeniedHandler((request, response, accessDeniedException) -> response.sendRedirect("/home")))
 		.authenticationProvider(authenticationProvider());
 		return http.build();
 	}

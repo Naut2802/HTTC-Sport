@@ -18,15 +18,12 @@ import jakarta.servlet.http.HttpSession;
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
 	@Autowired
 	ToastUtil toastUtil;
-	@Autowired
-	HttpSession session;
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
-		toastUtil.setAlertMsg(false, "logoutError", "Đăng nhập thất bại, tài khoản hoặc mật khẩu không chính xác");
 		System.out.println("Login failure handler is called!");
-		response.sendRedirect("/account/login");
+		response.sendRedirect("/account/loginFailure");
 	}
 
 }

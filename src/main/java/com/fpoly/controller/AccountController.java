@@ -1,6 +1,7 @@
 package com.fpoly.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -62,33 +64,26 @@ public class AccountController {
 	BCryptPasswordEncoder passwordEncoder;
 
 	@GetMapping("login")
-	public String getLogin(Model model) throws UnsupportedEncodingException {
+	public String getLogin() throws UnsupportedEncodingException {
 		if(session.getAttribute("user") != null) {
 			return "redirect:/home";
 		}
-		String username = CookieUtils.get("username", "", request);
-		String password = CookieUtils.get("password", "", request);
-		model.addAttribute("username", username);
-		model.addAttribute("password", password);
 		session.setAttribute("rq", "account/login.html");
 		return "index";
 	}
 
 	@GetMapping("loginProcessing")
-	public String loginProcessing(@AuthenticationPrincipal CustomUserDetails userDetails, @AuthenticationPrincipal CustomOAuth2User oAuth2UserDetails, Model model) throws UnsupportedEncodingException {
+	public String loginProcessing(Principal principal, Model model) throws UnsupportedEncodingException {
 		User user = null;
-		
-		if(userDetails != null) {
-			user = userDetails.getUser();
+		if(principal instanceof Authentication authentication) {
+			if(authentication.getPrincipal() instanceof CustomUserDetails userDetails)
+				user = userDetails.getUser();
+			if(authentication.getPrincipal() instanceof CustomOAuth2User oAuth2User)
+				user = oAuth2User.getUser();
 		}
-		
-		if(oAuth2UserDetails != null) {
-			user = oAuth2UserDetails.getUser();
-			System.out.println(oAuth2UserDetails.getAuthorities());
-		}
-		
 
 		session.setAttribute("user", user);
+		assert user != null;
 		if(user.checkRole()) {
 			toastUtil.setAlertMsg(true, "loginSuccess", "Đăng nhập thành công với quyền Admin");
 			return "redirect:/admin";
@@ -98,10 +93,18 @@ public class AccountController {
 		}
 	}
 	
+	@GetMapping("loginFailure")
+	public String loginFail() {
+		toastUtil.setAlertMsg(false, "logoutError", "Đăng nhập thất bại, tài khoản hoặc mật khẩu không chính xác");
+		return "redirect:/account/login";
+	}
+	
 	@GetMapping("logoutProcessing")
 	public String logoutProcessing(Model model) {
-		toastUtil.setAlertMsg(true, "logoutSuccess", "Đăng xuất thành công");
-		session.removeAttribute("user");
+		if(session.getAttribute("user") != null) {
+			toastUtil.setAlertMsg(true, "logoutSuccess", "Đăng xuất thành công");
+			session.removeAttribute("user");
+		}
 		return "redirect:/home";
 	}
 	

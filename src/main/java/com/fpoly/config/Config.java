@@ -31,12 +31,4 @@ public class Config implements WebMvcConfigurer {
 		ms.setDefaultEncoding("utf-8");
 		return ms;
 	}
-	
-	@Bean
-    ViewResolver viewResolver() {
-        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("/WEB-INF/views/");
-        resolver.setSuffix(".html");
-        return resolver;
-    }
 }

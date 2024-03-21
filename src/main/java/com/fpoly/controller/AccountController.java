@@ -93,6 +93,12 @@ public class AccountController {
 		}
 	}
 	
+	@GetMapping("loginFailure")
+	public String loginFail() {
+		toastUtil.setAlertMsg(false, "logoutError", "Đăng nhập thất bại, tài khoản hoặc mật khẩu không chính xác");
+		return "redirect:/account/login";
+	}
+	
 	@GetMapping("logoutProcessing")
 	public String logoutProcessing(Model model) {
 		if(session.getAttribute("user") != null) {

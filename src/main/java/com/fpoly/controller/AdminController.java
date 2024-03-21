@@ -138,24 +138,23 @@ public class AdminController {
 		session.setAttribute("rq", "admin/ttDatSan.html");
 		return "index";
 	}
-
-	@PostMapping("ttDatSan/update/{id}")
-	public String updateTTDatSan(@PathVariable("id") String id, @RequestParam("email") String email,
+	
+	@PostMapping("ttDatSan/update")
+	public String updateTTDatSan(@RequestParam("id") Long id, @RequestParam("email") String email,
 			@RequestParam("phoneNumber") String phoneNumber, @RequestParam("ngayDa") LocalDate ngayDa,
-			@RequestParam("ThoiGianBatDau") String ThoiGianBatDau,
-			@RequestParam("ThoiGianKetThuc") String ThoiGianKetThuc) {
-		ThongTinDatSan ttds = thongTinService.getTTSan(Long.parseLong(id));
+			@RequestParam("ThoiGianBatDau") LocalTime ThoiGianBatDau,
+			@RequestParam("ThoiGianKetThuc") LocalTime ThoiGianKetThuc) {
+		ThongTinDatSan ttds = thongTinService.getTTSan(id);
 		San san = sanService.getSan(ttds.getSan().getMaSan());
 		LocalDate localDate = LocalDate.now();
 		LocalTime localTime = LocalTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 		boolean flag = false;
 		if (ttds.getId() != null) {
 			try {
-				Double tongTien = 0d;
-				LocalTime time_Bd = LocalTime.parse(ThoiGianBatDau, formatter).plusMinutes(1);
-				LocalTime time_Kt = LocalTime.parse(ThoiGianKetThuc, formatter);
-				if (ngayDa.getYear() > localDate.getYear()) {
+				double tongTien = 0d;
+				LocalTime time_Bd = ThoiGianBatDau.plusMinutes(1);
+				LocalTime time_Kt = ThoiGianKetThuc;
+				if(ngayDa.getYear() > localDate.getYear()) {
 					flag = true;
 				} else if (ngayDa.getYear() == localDate.getYear()) {
 					if (ngayDa.getDayOfYear() > localDate.getDayOfYear()) {
@@ -202,9 +201,8 @@ public class AdminController {
 							tongTien += _tt;
 						}
 						tongTien = (double) Math.round(tongTien);
-					} else {
+					} else
 						flag = false;
-					}
 				}
 				if (flag) {
 					ttds.setEmail(email);

@@ -16,11 +16,6 @@ import jakarta.servlet.http.HttpSession;
 
 @Component
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
-
-	@Autowired
-	ToastUtil toastUtil;
-	@Autowired
-	HttpSession session;
 	
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)

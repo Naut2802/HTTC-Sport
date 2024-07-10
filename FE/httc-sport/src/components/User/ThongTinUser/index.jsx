@@ -33,13 +33,7 @@ function ThongTinUser() {
                 <Typography className="text-decoration-none text-dark fs-6" variant="h6" noWrap component={Link} to="/">
                     Trang Chủ
                 </Typography>
-                <Typography
-                    className="text-decoration-none text-dark fs-6"
-                    variant="h6"
-                    noWrap
-                    component={Link}
-                    to="/san"
-                >
+                <Typography className="text-decoration-none text-dark fs-6" variant="h6" noWrap component={Link} to="/tai-khoan">
                     Thông Tin Cá Nhân
                 </Typography>
             </Breadcrumbs>
@@ -49,11 +43,7 @@ function ThongTinUser() {
                     <div className="col-6 border rounded-2 my-2">
                         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                             <CardContent>
-                                <Typography
-                                    className="text-decoration-none text-center text-dark fw-bold"
-                                    variant="h6"
-                                    noWrap
-                                >
+                                <Typography className="text-decoration-none text-center text-dark fw-bold" variant="h6" noWrap>
                                     Thông Tin Cá Nhân
                                 </Typography>
 
@@ -70,7 +60,7 @@ function ThongTinUser() {
                                     </Typography>
                                     <Typography component="div" className="w-50 ms-1">
                                         <TextField
-                                            label="   Mật Khẩu"
+                                            label="Mật Khẩu"
                                             variant="outlined"
                                             id="matkhau"
                                             defaultValue=""

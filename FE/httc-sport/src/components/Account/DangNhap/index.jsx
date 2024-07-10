@@ -1,14 +1,40 @@
 import { Avatar, Box, Button, Checkbox, FormControlLabel, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import { Link } from 'react-router-dom';
-import fb from '../../Images/facebook-logo.png';
-import gg from '../../Images/google-logo.jpg';
-import logo from '../../Images/logo.png';
+import { handleGetMyInfoAPI, handleLogInAPI } from '~/apis';
+import fb from '~/components/Images/facebook-logo.png';
+import gg from '~/components/Images/google-logo.jpg';
+import logo from '~/components/Images/logo.png';
 
 function DangNhap() {
     const [rememberAccount, setRememberAccount] = useState(false);
+    const { register, handleSubmit } = useForm();
+    const navigate = useNavigate();
+
+    const submitLogin = async (data) => {
+        console.log(data);
+        const res = await handleLogInAPI(data);
+        localStorage.setItem('accessToken', res.data.result.accessToken);
+        localStorage.setItem('userId', res.data.result.userId);
+
+        // const res2 = await handleGetMyInfoAPI();
+        // const roleInfo = res2.data.result.roles[0].roleName;
+        // if (roleInfo === 'ADMIN') {
+        //     navigate('/page-admin');
+        // } else {
+        //     navigate('/home');
+        // }
+        navigate('/trang-chu');
+        toast.success('Đăng nhập thành công');
+    };
+
+    const loginWithGG = () => {
+        console.log('login with google');
+    };
 
     const handleCheckboxChange = (event) => {
         setRememberAccount(event.target.checked);
@@ -37,11 +63,12 @@ function DangNhap() {
                     <img src={logo} alt="" style={{ width: 120 }} />
                 </div>
                 <div className="row">
-                    <div className="col-4"></div>
-                    <div className="col-4">
+                    <div className="col-sm-1 col-md-2 col-lg-3"></div>
+                    <div className="col-sm-10 col-md-8 col-lg-6">
                         <Box
                             className="card"
                             component="form"
+                            onSubmit={handleSubmit(submitLogin)}
                             noValidate
                             sx={{
                                 top: '10%',
@@ -50,70 +77,79 @@ function DangNhap() {
                             <Typography className="card-header text-center fs-3" variant="h6" component="div">
                                 Đăng Nhập
                             </Typography>
-                            <Typography component="div" className="card-body ">
-                                <Typography component="div" className="w-100">
-                                    <ValidationTextField
-                                        label="Tài Khoản"
-                                        variant="outlined"
-                                        id="validation-outlined-input"
-                                        defaultValue=""
-                                        className="my-2 "
-                                    />
-                                </Typography>
-                                <Typography component="div" className="w-100">
-                                    <ValidationTextField
-                                        label="Mật Khẩu"
-                                        variant="outlined"
-                                        id="validation-outlined-input"
-                                        defaultValue=""
-                                        className="my-2 "
-                                    />
-                                </Typography>
-                                <Typography component="div">
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                value="a"
-                                                checked={rememberAccount}
-                                                onChange={handleCheckboxChange}
-                                            />
-                                        }
-                                        label="Ghi Nhớ Tài Khoản"
-                                    />
-                                </Typography>
-                                <Typography
-                                    component="div"
-                                    className="d-flex w-100 justify-content-between align-items-center my-2"
-                                >
-                                    <div className="d-flex align-items-center">
-                                        <Typography component={Link} to="/google" className="text-center">
-                                            <Avatar alt="Avatar 1" src={gg} />
-                                        </Typography>
-                                        <Typography component={Link} to="/facebook" className="text-center">
-                                            <Avatar alt="Avatar 2" src={fb} className="mx-2" />
-                                        </Typography>
-                                    </div>
-
-                                    <Typography component={Link} to="/trang-chu" className="text-center">
-                                        <Button variant="contained" className="text-capitalize">
-                                            Đăng Nhập
-                                        </Button>
-                                    </Typography>
+                            <Typography component="div" className="card-body">
+                                <ValidationTextField
+                                    label="Tài Khoản"
+                                    variant="outlined"
+                                    id="validation-outlined-input"
+                                    defaultValue=""
+                                    className="my-2 "
+                                    {...register('username')}
+                                />
+                                <ValidationTextField
+                                    label="Mật Khẩu"
+                                    variant="outlined"
+                                    id="validation-outlined-input"
+                                    defaultValue=""
+                                    type="password"
+                                    className="my-2 "
+                                    {...register('password')}
+                                />
+                                <FormControlLabel
+                                    control={<Checkbox value="a" checked={rememberAccount} onChange={handleCheckboxChange} />}
+                                    label="Ghi Nhớ Tài Khoản"
+                                />
+                                <Typography component="div" className="d-flex justify-content-end">
+                                    <Button type="submit" size="large" variant="contained" className="text-capitalize">
+                                        Đăng Nhập
+                                    </Button>
                                 </Typography>
                             </Typography>
                             <Typography component="div" className="card-footer text-center my-2">
-                                <Typography component={Link} to="/quen-mat-khau" variant="">
+                                <Button
+                                    sx={{
+                                        width: '100%',
+                                        mt: 1,
+                                        border: 1,
+                                        borderRadius: '8px',
+                                        '&:hover': {
+                                            color: 'white',
+                                            backgroundColor: 'navy',
+                                        },
+                                    }}
+                                    onClick={loginWithGG}
+                                >
+                                    <Avatar sx={{ width: 24, height: 24, mr: 1 }} alt="Avatar 1" src={gg} />
+                                    Đăng nhập với tài khoản Google
+                                </Button>
+
+                                <Button
+                                    sx={{
+                                        width: '100%',
+                                        my: 1,
+                                        border: 1,
+                                        borderRadius: '8px',
+                                        '&:hover': {
+                                            color: 'white',
+                                            backgroundColor: 'navy',
+                                        },
+                                    }}
+                                    onClick={loginWithGG}
+                                >
+                                    <Avatar sx={{ width: 24, height: 24, mr: 1 }} alt="Avatar 2" src={fb} />
+                                    Đăng nhập với tài khoản Facebook
+                                </Button>
+                                <Typography component={Link} to="/quen-mat-khau" variant="subtitle2">
                                     Quên Mật Khẩu ?
                                 </Typography>
                                 <br />
-                                <Typography component={Link} to="/dang-ky" variant="">
+                                <Typography component={Link} to="/dang-ky" variant="subtitle2">
                                     Bạn Chưa Có Tài Khoản? Đăng Ký Tại Đây!
                                 </Typography>
                             </Typography>
                         </Box>
                     </div>
-
-                    <div className="col-4"></div>
+                    <div className="col-sm-1 col-md-2 col-lg-3"></div>
                 </div>
             </div>
         </>

@@ -3,6 +3,10 @@ package com.fpoly.httc_sport.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,11 +22,11 @@ import jakarta.mail.internet.MimeMultipart;
 import jakarta.servlet.ServletContext;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MailerService {
-	@Autowired
 	JavaMailSender mailSender;
-	@Autowired
-	ServletContext application;
+	@NonFinal
 	List<MailInfo> list = new ArrayList<>();
 	
 	public void send(MailInfo mailInfo) throws MessagingException {
@@ -63,6 +67,20 @@ public class MailerService {
 			mail.setBcc(bcc.split(","));
 		}
 		queue(mail);
+	}
+	
+	public String generateVerificationBody(String url) {
+		return "<p>Cảm ơn bạn đã đăng ký tài khoản của HTTC-Sport</p>"+
+				"<p>Vui lòng nhấn vào đường link dưới đây để thực hiện kích hoạt tài khoản.</p>"+
+				"<a href=\"" + url + "\">Xác thực email để kích hoạt tài khoản</a>"+
+				"<p><br> Cảm ơn !";
+	}
+	
+	public String generateForgotPasswordBody(String url) {
+		return "<p>Bạn đã gửi yêu cầu reset mật khẩu</p>"+
+				"<p>Vui lòng nhấn vào đường link dưới đây để thực hiện reset mật khẩu.</p>"+
+				"<a href=\"" + url + "\">Click here</a>"+
+				"<p><br> Cảm ơn !";
 	}
 	
 	@Scheduled(fixedDelay = 1000)

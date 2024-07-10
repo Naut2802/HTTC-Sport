@@ -9,6 +9,7 @@ import com.fpoly.httc_sport.dto.request.RegisterRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.AuthenticationResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
+import com.fpoly.httc_sport.event.RegistrationCompleteEvent;
 import com.fpoly.httc_sport.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,10 +18,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/auth/")
+@RequestMapping("api/auth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
@@ -35,9 +37,35 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("sign-up")
-	public ApiResponse<UserResponse> signUp(@RequestBody RegisterRequest request) {
-		return ApiResponse.<UserResponse>builder()
-				.result(authenticationService.register(request))
+	public ApiResponse<String> signUp(@RequestBody RegisterRequest request, HttpServletRequest httpRequest) {
+		String response = authenticationService.register(request, httpRequest);
+		
+		return ApiResponse.<String>builder()
+				.message(response)
+				.build();
+	}
+	
+	@GetMapping("sign-up/resend-verification-token")
+	public ApiResponse<?> resendVerificationToken(@RequestParam("token") String oldToken, HttpServletRequest request) {
+		String response = authenticationService.resendVerificationToken(oldToken, request);
+		
+		return ApiResponse.builder()
+				.message(response)
+				.build();
+	}
+	
+	@GetMapping("sign-up/verify-email")
+	public ApiResponse<?> verifyEmail(@RequestParam("token") String token, HttpServletRequest request) {
+		String result = authenticationService.validateEmailToken(token);
+		
+		if (result.contains("expired"))
+			return ApiResponse.builder()
+					.message("Link xác thực đã hết hạn")
+					.result(token)
+					.build();
+		
+		return ApiResponse.builder()
+				.message("Account is verified now")
 				.build();
 	}
 	

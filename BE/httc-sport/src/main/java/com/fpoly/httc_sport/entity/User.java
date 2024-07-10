@@ -26,7 +26,7 @@ public class User {
 	String firstName;
 	String lastName;
 	String phoneNumber;
-	Boolean status;
+	Boolean isEnabled;
 	
 	@ManyToOne @JoinColumn(name = "vip")
 	Vip vip;

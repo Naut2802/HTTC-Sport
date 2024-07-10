@@ -103,6 +103,19 @@ public class SecurityConfig {
 				.build();
 	}
 	
+	@Order(5)
+	@Bean
+	public SecurityFilterChain forgotPasswordSecurityFilterChain(HttpSecurity httpSecurity) throws Exception{
+		return httpSecurity
+				.securityMatcher(new AntPathRequestMatcher("/user/forgot-password/**"))
+				.csrf(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(auth ->
+						auth.anyRequest().permitAll())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.httpBasic(AbstractHttpConfigurer::disable)
+				.build();
+	}
+	
 	@Bean
 	public CorsFilter corsFilter() {
 		CorsConfiguration configuration = new CorsConfiguration();

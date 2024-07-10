@@ -5,15 +5,20 @@ import com.fpoly.httc_sport.dto.request.RefreshRequest;
 import com.fpoly.httc_sport.dto.request.RegisterRequest;
 import com.fpoly.httc_sport.dto.response.AuthenticationResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
+import com.fpoly.httc_sport.entity.MailInfo;
 import com.fpoly.httc_sport.entity.RefreshTokenWhiteList;
 import com.fpoly.httc_sport.entity.User;
+import com.fpoly.httc_sport.entity.VerificationToken;
+import com.fpoly.httc_sport.event.RegistrationCompleteEvent;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.mapper.UserMapper;
 import com.fpoly.httc_sport.repository.RefreshTokenRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
+import com.fpoly.httc_sport.repository.VerificationTokenRepository;
 import com.fpoly.httc_sport.security.jwt.KeyUtils;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +28,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -33,6 +39,7 @@ import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -42,17 +49,20 @@ import java.util.*;
 public class AuthenticationService {
 	UserRepository userRepository;
 	RefreshTokenRepository refreshTokenRepository;
-	JwtService jwtService;
+	RoleRepository roleRepository;
+	VerificationTokenRepository verificationTokenRepository;
 	UserMapper userMapper;
 	PasswordEncoder passwordEncoder;
-	RoleRepository roleRepository;
+	ApplicationEventPublisher publisher;
+	JwtService jwtService;
+	MailerService mailerService;
 	KeyUtils keyUtils;
 	
 	@NonFinal
 	@Value("${jwt.refresh-token-valid-duration}")
 	long REFRESH_TOKEN_VALID_DURATION;
 	
-	public UserResponse register(RegisterRequest request) {
+	public String register(RegisterRequest request, HttpServletRequest httpRequest) {
 		if(userRepository.existsByUsername(request.username()))
 			throw new AppException(ErrorCode.USER_EXISTED);
 		if(userRepository.existsByEmail(request.email()))
@@ -61,13 +71,55 @@ public class AuthenticationService {
 		var user = userMapper.toUser(request);
 		
 		user.setPassword(encodePassword(user.getUsername(), user.getPassword()));
+		user.setIsEnabled(false);
 		
 		var role = roleRepository.findByRoleName("USER").orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 		
 		user.setRoles(new HashSet<>(List.of(role)));
+		userRepository.save(user);
+		String url = generateUrl(httpRequest);
+		publisher.publishEvent(new RegistrationCompleteEvent(user, url));
 		
-		return userMapper.toUserResponse(userRepository.save(user));
+		return "Đăng ký tài khoản thành công, vui lòng xác thực tài khoản thông qua email đã đăng ký";
+	}
+	
+	public String validateEmailToken(String token) {
+		var verificationToken = verificationTokenRepository.findByToken(token).orElseThrow(() ->
+				new AppException(ErrorCode.VERIFICATION_TOKEN_NOT_FOUND));
+		
+		var user = verificationToken.getUser();
+		if (user.getIsEnabled())
+			throw new AppException(ErrorCode.USER_ENABLED);
+		
+		if (verificationToken.getExpiryTime().before(Date.from(Instant.now())))
+			return "Invalid, token expired";
+		
+		user.setIsEnabled(true);
+		verificationTokenRepository.delete(verificationToken);
+		userRepository.save(user);
+		return "Valid";
+	}
+	
+	public String resendVerificationToken(String oldToken, HttpServletRequest request) {
+		var newVerificationToken = generateNewVerificationToken(oldToken);
+		var user = newVerificationToken.getUser();
+		String url = generateUrl(request)+"/verify-email?token="+newVerificationToken.getToken();
+		
+		MailInfo mailInfo = MailInfo.builder()
+				.from("maousama333@gmail.com")
+				.to(user.getEmail())
+				.subject("Email xác thực tài khoản")
+				.body(mailerService.generateVerificationBody(url))
+				.build();
+		
+		try {
+			mailerService.send(mailInfo);
+			log.info(url);
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
+		return "Đã gửi lại email xác thực tài khoản, vui lòng kiểm tra email";
 	}
 	
 	public AuthenticationResponse authenticate(LoginRequest request, HttpServletResponse response) throws NoSuchAlgorithmException {
@@ -76,9 +128,13 @@ public class AuthenticationService {
 				.findByUsername(request.username())
 				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
+		if (!user.getIsEnabled())
+			throw new AppException(ErrorCode.USER_NOT_EXISTED);
+		
 		boolean authenticated = passwordEncoder.matches(request.username() + request.password(), user.getPassword());
 		
-		if (!authenticated) throw new AppException(ErrorCode.USER_NOT_EXISTED);
+		if (!authenticated)
+			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		
 		KeyPair keyPair = keyUtils.generateKeyPair();
 		var accessToken = jwtService.generateAccessToken(user, keyPair);
@@ -160,5 +216,29 @@ public class AuthenticationService {
 	
 	private String encodePassword(String username, String password) {
 		return passwordEncoder.encode(username + password);
+	}
+	
+	public String generateUrl(HttpServletRequest request) {
+		return "http://"+request.getServerName()+":"+request.getServerPort()+"/api/auth/sign-up";
+	}
+	
+	public void saveVerificationToken(User user, String token) {
+		VerificationToken verificationToken = VerificationToken.builder()
+				.token(token)
+				.expiryTime(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)))
+				.user(user)
+				.build();
+		verificationTokenRepository.save(verificationToken);
+	}
+	
+	private VerificationToken generateNewVerificationToken(String oldToken) {
+		var verificationToken = verificationTokenRepository.findByToken(oldToken).orElseThrow(() ->
+				new AppException(ErrorCode.VERIFICATION_TOKEN_NOT_FOUND));
+		
+		verificationToken.setToken(UUID.randomUUID().toString());
+		verificationToken.setExpiryTime(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)));
+		verificationTokenRepository.save(verificationToken);
+		
+		return verificationToken;
 	}
 }

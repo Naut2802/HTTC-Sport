@@ -4,11 +4,13 @@ import java.util.List;
 
 import com.fpoly.httc_sport.dto.request.AuthorizeUserRequest;
 import com.fpoly.httc_sport.dto.request.ChangePasswordRequest;
+import com.fpoly.httc_sport.dto.request.ResetPasswordRequest;
 import com.fpoly.httc_sport.dto.request.UserUpdateRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.ChangePasswordResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
 import com.fpoly.httc_sport.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -33,35 +35,35 @@ public class UserController {
 				.build();
 	}
 	
-	@GetMapping("/{userId}")
+	@GetMapping("{userId}")
 	public ApiResponse<UserResponse> getUser(@PathVariable String userId) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.getUser(userId))
 				.build();
 	}
 	
-	@GetMapping("/my-info")
+	@GetMapping("my-info")
 	public ApiResponse<UserResponse> getMyInfo() {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.getMyInfo())
 				.build();
 	}
 	
-	@PutMapping("/{userId}")
+	@PutMapping("{userId}")
 	public ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.updateUser(userId, request))
 				.build();
 	}
 	
-	@PutMapping("/authorize/{userId}")
+	@PutMapping("authorize/{userId}")
 	public ApiResponse<UserResponse> authorizeUser(@PathVariable String userId, @RequestBody AuthorizeUserRequest request) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.authorizeUser(userId, request))
 				.build();
 	}
 	
-	@DeleteMapping("/{userId}")
+	@DeleteMapping("{userId}")
 	public ApiResponse<String> deleteUser(@PathVariable String userId) {
 		userService.deleteUser(userId);
 		return ApiResponse.<String>builder()
@@ -73,6 +75,41 @@ public class UserController {
 	public ApiResponse<List<UserResponse>> getUsers() {
 		return ApiResponse.<List<UserResponse>>builder()
 				.result(userService.getUsers())
+				.build();
+	}
+	
+	@GetMapping("forgot-password")
+	public ApiResponse<?> checkEmail(@RequestParam("email") String email, HttpServletRequest request) {
+		String response = userService.sendForgotPasswordEmail(email, request);
+		
+		return ApiResponse.builder()
+				.message(response)
+				.build();
+	}
+	
+	@GetMapping("forgot-password/verify-token")
+	public ApiResponse<?> validateToken(@RequestParam("token") String token) {
+		String response = userService.validateForgotPasswordToken(token);
+		
+		if (response.contains("expired")) {
+			return ApiResponse.builder()
+					.message(response)
+					.build();
+			}
+		
+		return ApiResponse.builder()
+				.message(response)
+				.result(token)
+				.build();
+	}
+	
+	@PostMapping("forgot-password/reset-password")
+	public ApiResponse<ChangePasswordResponse> resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordRequest request) {
+		ChangePasswordResponse response = userService.resetPassword(token, request);
+		
+		return ApiResponse.<ChangePasswordResponse>builder()
+				.message(response.getMessage())
+				.result(response)
 				.build();
 	}
 	

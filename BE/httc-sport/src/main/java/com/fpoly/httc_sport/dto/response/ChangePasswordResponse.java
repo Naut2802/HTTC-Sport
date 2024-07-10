@@ -11,4 +11,5 @@ import lombok.experimental.FieldDefaults;
 public class ChangePasswordResponse {
 	String username;
 	String message;
+	boolean isChanged;
 }

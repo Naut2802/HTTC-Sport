@@ -2,29 +2,41 @@ package com.fpoly.httc_sport.service;
 
 import com.fpoly.httc_sport.dto.request.AuthorizeUserRequest;
 import com.fpoly.httc_sport.dto.request.ChangePasswordRequest;
+import com.fpoly.httc_sport.dto.request.ResetPasswordRequest;
 import com.fpoly.httc_sport.dto.request.UserUpdateRequest;
 import com.fpoly.httc_sport.dto.response.ChangePasswordResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
+import com.fpoly.httc_sport.entity.ForgotPasswordToken;
 import com.fpoly.httc_sport.entity.Role;
 import com.fpoly.httc_sport.entity.User;
+import com.fpoly.httc_sport.entity.VerificationToken;
+import com.fpoly.httc_sport.event.ForgotPasswordEvent;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.mapper.UserMapper;
+import com.fpoly.httc_sport.repository.ForgotPasswordTokenRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
+import com.fpoly.httc_sport.repository.VerificationTokenRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,13 +46,18 @@ public class UserService {
 	PasswordEncoder passwordEncoder;
 	UserRepository userRepository;
 	RoleRepository roleRepository;
+	ForgotPasswordTokenRepository forgotPasswordTokenRepository;
+	ApplicationEventPublisher publisher;
 	UserMapper userMapper;
-	int time = 0;
 	
-	@PostAuthorize("returnObject.username == authentication.name")
 	public ChangePasswordResponse changePassword(String userId, ChangePasswordRequest request) {
 		var user = userRepository.findById(userId).orElseThrow(() ->
 				new AppException(ErrorCode.USER_NOT_EXISTED));
+		
+		var context = SecurityContextHolder.getContext();
+		String name = context.getAuthentication().getName();
+		if (!user.getUsername().equals(name))
+			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		
 		if (!passwordEncoder.matches(user.getUsername() + request.currentPassword(), user.getPassword()))
 			throw new AppException(ErrorCode.WRONG_PASSWORD);
@@ -48,12 +65,19 @@ public class UserService {
 		if (!request.newPassword().equals(request.confirmationPassword()))
 			throw new AppException(ErrorCode.WRONG_CONFIRMATION_PASSWORD);
 		
-		user.setPassword(encodePassword(user.getUsername(), request.newPassword()));
+		String message = "Thay đổi mật khẩu thất bại, mật khẩu mới không được giống mật khẩu cũ";
+		boolean flag = false;
+		if (!passwordEncoder.matches(user.getUsername() + request.newPassword(), user.getPassword())) {
+			user.setPassword(encodePassword(user.getUsername(), request.newPassword()));
+			userRepository.save(user);
+			message = "Thay đổi mật khẩu thành công";
+			flag = true;
+		}
 		
-		userRepository.save(user);
 		return ChangePasswordResponse.builder()
 				.username(user.getUsername())
-				.message("Thay đổi mật khẩu thành công")
+				.message(message)
+				.isChanged(flag)
 				.build();
 	}
 	
@@ -107,8 +131,67 @@ public class UserService {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
-		user.setStatus(false);
+		user.setIsEnabled(false);
 		userRepository.save(user);
+	}
+	
+	public String sendForgotPasswordEmail(String email, HttpServletRequest request) {
+		var user = userRepository.findByEmail(email).orElseThrow(() ->
+				new AppException(ErrorCode.USER_NOT_EXISTED));
+		
+		String url = generateUrl(request);
+		
+		publisher.publishEvent(new ForgotPasswordEvent(user, url));
+		
+		return "Đã gửi yêu cầu reset mật khẩu thông qua email đăng ký, vui lòng kiểm tra email";
+	}
+	
+	public String validateForgotPasswordToken(String token) {
+		var forgotPasswordToken = forgotPasswordTokenRepository.findByToken(token).orElseThrow(() ->
+				new AppException(ErrorCode.FORGOT_PASSWORD_TOKEN_NOT_FOUND));
+		
+		if (forgotPasswordToken.getExpiryTime().before(Date.from(Instant.now())))
+			return "Invalid, token expired";
+		
+		return "Link xác thực hợp lệ";
+	}
+	
+	public ChangePasswordResponse resetPassword(String token, ResetPasswordRequest request) {
+		var forgotPasswordToken = forgotPasswordTokenRepository.findByToken(token).orElseThrow(() ->
+				new AppException(ErrorCode.FORGOT_PASSWORD_TOKEN_NOT_FOUND));
+		var user = forgotPasswordToken.getUser();
+		
+		if (!request.newPassword().equals(request.confirmationPassword()))
+			throw new AppException(ErrorCode.WRONG_CONFIRMATION_PASSWORD);
+		
+		String message = "Reset mật khẩu thất bại, mật khẩu mới không được giống mật khẩu cũ";
+		boolean flag = false;
+		if (!passwordEncoder.matches(user.getUsername() + request.newPassword(), user.getPassword())) {
+			user.setPassword(encodePassword(user.getUsername(), request.newPassword()));
+			userRepository.save(user);
+			forgotPasswordTokenRepository.delete(forgotPasswordToken);
+			message = "Reset mật khẩu thành công";
+			flag = true;
+		}
+		
+		return ChangePasswordResponse.builder()
+				.username(user.getUsername())
+				.message(message)
+				.isChanged(flag)
+				.build();
+	}
+	
+	public void saveForgotPasswordToken(User user, String token) {
+		var forgotPasswordToken = ForgotPasswordToken.builder()
+				.token(token)
+				.expiryTime(Date.from(Instant.now().plus(2, ChronoUnit.MINUTES)))
+				.user(user)
+				.build();
+		forgotPasswordTokenRepository.save(forgotPasswordToken);
+	}
+	
+	public String generateUrl(HttpServletRequest request) {
+		return "http://"+request.getServerName()+":"+request.getServerPort()+"/api/v1/user/forgot-password";
 	}
 	
 	private String encodePassword(String username, String password) {

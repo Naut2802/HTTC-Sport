@@ -1,5 +1,6 @@
 package com.fpoly.httc_sport.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.fpoly.httc_sport.dto.request.AuthorizeUserRequest;
@@ -11,6 +12,7 @@ import com.fpoly.httc_sport.dto.response.ChangePasswordResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
 import com.fpoly.httc_sport.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -88,17 +90,19 @@ public class UserController {
 	}
 	
 	@GetMapping("forgot-password/verify-token")
-	ApiResponse<?> validateToken(@RequestParam("token") String token) {
-		String response = userService.validateForgotPasswordToken(token);
+	ApiResponse<?> validateToken(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
+		String result = userService.validateForgotPasswordToken(token);
 		
-		if (response.contains("expired")) {
+		if (result.contains("expired")) {
+			response.sendRedirect("http://localhost:3000/forgot-password-verify-error");
 			return ApiResponse.builder()
-					.message(response)
+					.message(result)
 					.build();
 			}
 		
+		response.sendRedirect("http://localhost:3000/forgot-password-verify-success");
 		return ApiResponse.builder()
-				.message(response)
+				.message(result)
 				.result(token)
 				.build();
 	}

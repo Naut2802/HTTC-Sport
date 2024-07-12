@@ -75,6 +75,7 @@ public class AuthenticationController {
 			response.sendRedirect("http://localhost:3000/auth-mail-error");
 			return ApiResponse.builder()
 					.message(result)
+					.result(token)
 					.build();
 		}
 		

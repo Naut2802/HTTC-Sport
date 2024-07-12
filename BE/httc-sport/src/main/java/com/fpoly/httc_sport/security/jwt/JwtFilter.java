@@ -63,8 +63,6 @@ public class JwtFilter extends OncePerRequestFilter {
 			
 			final String userId = jwtUtils.getUserId(jwtToken);
 			
-			System.out.println(getClientIp(request));
-			
 			if (!userId.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
 				CustomUserDetails userDetails = jwtUtils.userDetails(userId);
 				

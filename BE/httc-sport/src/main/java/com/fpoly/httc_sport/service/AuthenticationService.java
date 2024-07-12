@@ -1,14 +1,15 @@
 package com.fpoly.httc_sport.service;
 
+import com.fpoly.httc_sport.dto.request.ExchangeTokenRequest;
 import com.fpoly.httc_sport.dto.request.LoginRequest;
 import com.fpoly.httc_sport.dto.request.RefreshRequest;
 import com.fpoly.httc_sport.dto.request.RegisterRequest;
 import com.fpoly.httc_sport.dto.response.AuthenticationResponse;
-import com.fpoly.httc_sport.dto.response.UserResponse;
 import com.fpoly.httc_sport.entity.MailInfo;
 import com.fpoly.httc_sport.entity.RefreshTokenWhiteList;
 import com.fpoly.httc_sport.entity.User;
 import com.fpoly.httc_sport.entity.VerificationToken;
+import com.fpoly.httc_sport.event.OutboundCompleteEvent;
 import com.fpoly.httc_sport.event.RegistrationCompleteEvent;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
@@ -17,6 +18,8 @@ import com.fpoly.httc_sport.repository.RefreshTokenRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
 import com.fpoly.httc_sport.repository.VerificationTokenRepository;
+import com.fpoly.httc_sport.repository.httpclient.OutboundExchangeTokenClient;
+import com.fpoly.httc_sport.repository.httpclient.OutboundUserInfoClient;
 import com.fpoly.httc_sport.security.jwt.KeyUtils;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
@@ -51,6 +54,8 @@ public class AuthenticationService {
 	RefreshTokenRepository refreshTokenRepository;
 	RoleRepository roleRepository;
 	VerificationTokenRepository verificationTokenRepository;
+	OutboundExchangeTokenClient outboundExchangeTokenClient;
+	OutboundUserInfoClient outboundUserInfoClient;
 	UserMapper userMapper;
 	PasswordEncoder passwordEncoder;
 	ApplicationEventPublisher publisher;
@@ -61,6 +66,21 @@ public class AuthenticationService {
 	@NonFinal
 	@Value("${jwt.refresh-token-valid-duration}")
 	long REFRESH_TOKEN_VALID_DURATION;
+	
+	@NonFinal
+	@Value("${oauth2.google.client-id}")
+	String CLIENT_ID;
+	
+	@NonFinal
+	@Value("${oauth2.google.client-secret}")
+	String CLIENT_SECRET;
+	
+	@NonFinal
+	@Value("${oauth2.google.redirect-uri}")
+	String REDIRECT_URI;
+	
+	@NonFinal
+	final String GRANT_TYPE = "authorization_code";
 	
 	public String register(RegisterRequest request, HttpServletRequest httpRequest) {
 		if(userRepository.existsByUsername(request.username()))
@@ -135,6 +155,54 @@ public class AuthenticationService {
 		
 		if (!authenticated)
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
+		
+		KeyPair keyPair = keyUtils.generateKeyPair();
+		var accessToken = jwtService.generateAccessToken(user, keyPair);
+		String jti = accessToken.substring(accessToken.length()-10);
+		var refreshToken = jwtService.generateRefreshToken(user, jti, keyPair);
+		String publicKey = keyUtils.exchangeRSAPublicKeyToString((RSAPublicKey) keyPair.getPublic());
+		
+		saveRefreshToken(user, refreshToken, publicKey);
+		
+		createRefreshTokenCookie(response, refreshToken);
+		
+		return AuthenticationResponse.builder()
+				.accessToken(accessToken)
+				.userId(user.getId())
+				.authenticated(true)
+				.build();
+	}
+	
+	public AuthenticationResponse outboundAuthenticate(String code, HttpServletResponse response) throws NoSuchAlgorithmException {
+		var tokenExchanged = outboundExchangeTokenClient.exchangeToken(ExchangeTokenRequest.builder()
+						.code(code)
+						.clientId(CLIENT_ID)
+						.clientSecret(CLIENT_SECRET)
+						.redirectUri(REDIRECT_URI)
+						.grantType(GRANT_TYPE)
+				.build());
+		
+		log.info("Token exchanged {}", tokenExchanged);
+		
+		var userInfo = outboundUserInfoClient.getUserInfo("json", tokenExchanged.getAccessToken());
+		
+		var role = roleRepository.findByRoleName("USER").orElseThrow(() ->
+				new AppException(ErrorCode.ROLE_NOT_EXISTED));
+		
+		Random random = new Random();
+		String password = String.valueOf(random.nextInt(100_000, 999_999));
+		
+		var user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(() ->
+				userRepository.save(User.builder()
+								.username(userInfo.getEmail())
+								.password(passwordEncoder.encode(password))
+								.email(userInfo.getEmail())
+								.firstName(userInfo.getName())
+								.lastName(userInfo.getFamilyName())
+								.roles(new HashSet<>(List.of(role)))
+						.build()));
+		
+		publisher.publishEvent(new OutboundCompleteEvent(user, password));
 		
 		KeyPair keyPair = keyUtils.generateKeyPair();
 		var accessToken = jwtService.generateAccessToken(user, keyPair);

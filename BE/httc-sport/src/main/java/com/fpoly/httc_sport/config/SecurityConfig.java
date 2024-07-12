@@ -57,17 +57,15 @@ public class SecurityConfig {
 	
 	@Order(2)
 	@Bean
-	public SecurityFilterChain apiFilterChain(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity
-				.securityMatcher(new AntPathRequestMatcher("/api/v1/**"))
+	public SecurityFilterChain registerSecurityFilterChain(HttpSecurity httpSecurity) throws Exception{
+		return httpSecurity
+				.securityMatcher(new AntPathRequestMatcher("/auth/**"))
 				.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(http -> http.anyRequest().authenticated())
-				.sessionManagement(session -> session
-						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.addFilterBefore(new JwtFilter(jwtUtils, keyService), UsernamePasswordAuthenticationFilter.class)
-				.httpBasic(AbstractHttpConfigurer::disable);
-		
-		return httpSecurity.build();
+				.authorizeHttpRequests(auth ->
+						auth.anyRequest().permitAll())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.httpBasic(AbstractHttpConfigurer::disable)
+				.build();
 	}
 	
 	@Order(3)
@@ -92,28 +90,19 @@ public class SecurityConfig {
 	
 	@Order(4)
 	@Bean
-	public SecurityFilterChain registerSecurityFilterChain(HttpSecurity httpSecurity) throws Exception{
-		return httpSecurity
-				.securityMatcher(new AntPathRequestMatcher("/auth/sign-up/**"))
+	public SecurityFilterChain apiFilterChain(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity
+				.securityMatcher(new AntPathRequestMatcher("/api/v1/**"))
 				.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth ->
-						auth.anyRequest().permitAll())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.httpBasic(AbstractHttpConfigurer::disable)
-				.build();
-	}
-	
-	@Order(5)
-	@Bean
-	public SecurityFilterChain forgotPasswordSecurityFilterChain(HttpSecurity httpSecurity) throws Exception{
-		return httpSecurity
-				.securityMatcher(new AntPathRequestMatcher("/user/forgot-password/**"))
-				.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth ->
-						auth.anyRequest().permitAll())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.httpBasic(AbstractHttpConfigurer::disable)
-				.build();
+				.authorizeHttpRequests(http -> http
+								.requestMatchers("/api/v1/user/forgot-password/**").permitAll()
+						.anyRequest().authenticated())
+				.sessionManagement(session -> session
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(new JwtFilter(jwtUtils, keyService), UsernamePasswordAuthenticationFilter.class)
+				.httpBasic(AbstractHttpConfigurer::disable);
+		
+		return httpSecurity.build();
 	}
 	
 	@Bean

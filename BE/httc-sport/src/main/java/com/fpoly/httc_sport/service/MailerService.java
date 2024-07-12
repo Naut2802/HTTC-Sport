@@ -83,6 +83,13 @@ public class MailerService {
 				"<p><br> Cảm ơn !";
 	}
 	
+	public String generateCreatePasswordBody(String password) {
+		return "<p>Bạn đã gửi đăng ký tài khoản thông qua gmail</p>"+
+				"<p>Đây là mật khẩu đăng nhập của bạn, vui lòng thay đổi lại mật khẩu và không chia sẻ cho bất cứ ai.</p>"+
+				"<h1>\""+ password +"\"</h1>"+
+				"<p><br> Cảm ơn !";
+	}
+	
 	@Scheduled(fixedDelay = 1000)
 	public void run() {
 		while(!list.isEmpty()) {

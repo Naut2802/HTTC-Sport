@@ -26,7 +26,7 @@ public class UserController {
 	UserService userService;
 	
 	@PatchMapping("change-password/{id}")
-	public ApiResponse<ChangePasswordResponse> changePassword(@PathVariable String id, @RequestBody ChangePasswordRequest request) {
+	ApiResponse<ChangePasswordResponse> changePassword(@PathVariable String id, @RequestBody ChangePasswordRequest request) {
 		ChangePasswordResponse response = userService.changePassword(id, request);
 		
 		return ApiResponse.<ChangePasswordResponse>builder()
@@ -36,35 +36,35 @@ public class UserController {
 	}
 	
 	@GetMapping("{userId}")
-	public ApiResponse<UserResponse> getUser(@PathVariable String userId) {
+	ApiResponse<UserResponse> getUser(@PathVariable String userId) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.getUser(userId))
 				.build();
 	}
 	
 	@GetMapping("my-info")
-	public ApiResponse<UserResponse> getMyInfo() {
+	ApiResponse<UserResponse> getMyInfo() {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.getMyInfo())
 				.build();
 	}
 	
 	@PutMapping("{userId}")
-	public ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
+	ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.updateUser(userId, request))
 				.build();
 	}
 	
 	@PutMapping("authorize/{userId}")
-	public ApiResponse<UserResponse> authorizeUser(@PathVariable String userId, @RequestBody AuthorizeUserRequest request) {
+	ApiResponse<UserResponse> authorizeUser(@PathVariable String userId, @RequestBody AuthorizeUserRequest request) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.authorizeUser(userId, request))
 				.build();
 	}
 	
 	@DeleteMapping("{userId}")
-	public ApiResponse<String> deleteUser(@PathVariable String userId) {
+	ApiResponse<String> deleteUser(@PathVariable String userId) {
 		userService.deleteUser(userId);
 		return ApiResponse.<String>builder()
 				.result("User has been deleted")
@@ -72,14 +72,14 @@ public class UserController {
 	}
 	
 	@GetMapping
-	public ApiResponse<List<UserResponse>> getUsers() {
+	ApiResponse<List<UserResponse>> getUsers() {
 		return ApiResponse.<List<UserResponse>>builder()
 				.result(userService.getUsers())
 				.build();
 	}
 	
 	@GetMapping("forgot-password")
-	public ApiResponse<?> checkEmail(@RequestParam("email") String email, HttpServletRequest request) {
+	ApiResponse<?> checkEmail(@RequestParam("email") String email, HttpServletRequest request) {
 		String response = userService.sendForgotPasswordEmail(email, request);
 		
 		return ApiResponse.builder()
@@ -88,7 +88,7 @@ public class UserController {
 	}
 	
 	@GetMapping("forgot-password/verify-token")
-	public ApiResponse<?> validateToken(@RequestParam("token") String token) {
+	ApiResponse<?> validateToken(@RequestParam("token") String token) {
 		String response = userService.validateForgotPasswordToken(token);
 		
 		if (response.contains("expired")) {
@@ -104,7 +104,7 @@ public class UserController {
 	}
 	
 	@PostMapping("forgot-password/reset-password")
-	public ApiResponse<ChangePasswordResponse> resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordRequest request) {
+	ApiResponse<ChangePasswordResponse> resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordRequest request) {
 		ChangePasswordResponse response = userService.resetPassword(token, request);
 		
 		return ApiResponse.<ChangePasswordResponse>builder()

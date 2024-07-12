@@ -139,6 +139,9 @@ public class UserService {
 		var user = userRepository.findByEmail(email).orElseThrow(() ->
 				new AppException(ErrorCode.USER_NOT_EXISTED));
 		
+		if (!user.getIsEnabled())
+			throw new AppException(ErrorCode.USER_NOT_EXISTED);
+		
 		String url = generateUrl(request);
 		
 		publisher.publishEvent(new ForgotPasswordEvent(user, url));

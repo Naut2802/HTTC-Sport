@@ -10,7 +10,7 @@ import { handleGetMyInfoAPI, handleLogInAPI } from '~/apis';
 import fb from '~/components/Images/facebook-logo.png';
 import gg from '~/components/Images/google-logo.jpg';
 import logo from '~/components/Images/logo.png';
-import { OAuthConfigGoogle } from '~/utils/constants';
+import { OAuthConfigGoogle, OAuthConfigFacebook } from '~/utils/constants';
 
 function DangNhap() {
     const [rememberAccount, setRememberAccount] = useState(false);
@@ -48,7 +48,17 @@ function DangNhap() {
     };
 
     const handleLoginWithFB = () => {
-        console.log('login with google');
+        const callbackUrl = OAuthConfigFacebook.redirectUri;
+        const authUrl = OAuthConfigFacebook.authUri;
+        const facebookClientId = OAuthConfigFacebook.clientId;
+
+        const targetUrl = `${authUrl}?client_id=${facebookClientId}&redirect_uri=${encodeURIComponent(
+            callbackUrl,
+        )}&state=httcsport123512514`;
+
+        console.log(targetUrl);
+
+        window.location.href = targetUrl;
     };
 
     const handleCheckboxChange = (event) => {

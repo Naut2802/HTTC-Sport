@@ -46,12 +46,10 @@ public class LogoutHandler implements org.springframework.security.web.authentic
 			
 			log.info("[LogoutHandler:doLogout]Logout at Http Request: {}", request.getRequestURI());
 			final String headers = request.getHeader(HttpHeaders.AUTHORIZATION);
-			
-			final String accessToken = headers.substring(7);
 			String jti = getRefreshTokenFromCookies(request);
-			JwtDecoder jwtDecoder = NimbusJwtDecoder.withPublicKey(keyService.getPublicKey(keyService.getPublicKeyFromDb(jti))).build();
-			final Jwt jwtToken = jwtDecoder.decode(accessToken);
-			final String userId = jwtUtils.getUserId(jwtToken);
+			
+			if (jti ==  null)
+				throw new AppException(ErrorCode.UNAUTHENTICATED);
 			
 			Cookie cookie = new Cookie("rti", null);
 			cookie.setHttpOnly(true);
@@ -59,17 +57,27 @@ public class LogoutHandler implements org.springframework.security.web.authentic
 			cookie.setPath("/");
 			cookie.setMaxAge(0);
 			response.addCookie(cookie);
-			refreshTokenRepository.deleteById(jti);
 			
-			if (!userId.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
-				if (jwtUtils.isTokenValid(jwtToken)) {
-					invalidatedTokenRepository.save(InvalidatedToken.builder()
-							.token(jwtToken.getTokenValue())
-							.expiryTime(Date.from(jwtToken.getIssuedAt()))
-							.build());
+			if (headers == null || !headers.startsWith("Bearer ")) {
+				refreshTokenRepository.deleteById(jti);
+			} else {
+				final String accessToken = headers.substring(7);
+				JwtDecoder jwtDecoder = NimbusJwtDecoder.withPublicKey(keyService.getPublicKey(keyService.getPublicKeyFromDb(jti))).build();
+				refreshTokenRepository.deleteById(jti);
+				final Jwt jwtToken = jwtDecoder.decode(accessToken);
+				final String userId = jwtUtils.getUserId(jwtToken);
+				
+				if (!userId.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
+					if (jwtUtils.isTokenValid(jwtToken)) {
+						invalidatedTokenRepository.save(InvalidatedToken.builder()
+								.token(jwtToken.getTokenValue())
+								.expiryTime(Date.from(jwtToken.getIssuedAt()))
+								.build());
+					}
 				}
 			}
 		} catch (Exception e) {
+			log.info(e.getMessage());
 			response.setStatus(HttpStatus.OK.value());
 		}
 	}

@@ -70,7 +70,7 @@ authorizedAxiosInstance.interceptors.response.use(
                 await handleLogoutAPI();
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('userId');
-                // window.location.replace('/dang-nhap');
+                window.location.replace('/dang-nhap');
                 // toast.info('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!!!');
                 return Promise.reject(err);
             } finally {

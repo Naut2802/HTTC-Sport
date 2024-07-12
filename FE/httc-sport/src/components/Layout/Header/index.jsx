@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-globals */
+import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -17,16 +19,32 @@ import {
 import { alpha, styled } from '@mui/material/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import slugify from 'slugify'; // Import slugify nè
 
+import { handleLogoutAPI } from '~/apis';
 import avt from '~/components/Images/avt.jpg';
 
 const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mảng trang trên navbar nè
-const settings = ['Đăng Nhập', 'Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch', 'Đăng Xuất']; //Mảng dòng của cái avatar click ra nè
+const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch']; //Mảng dòng của cái avatar click ra nè
 
 function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+    var checkUser = null;
+    const checkUserInStorage = localStorage.getItem('accessToken');
+    if (checkUserInStorage) {
+        checkUser = checkUserInStorage;
+    }
+
+    const handleLogOut = async () => {
+        await handleLogoutAPI();
+        toast.info('Bạn đã đăng xuất!');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userId');
+        location.href = '/trang-chu';
+    };
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -185,46 +203,69 @@ function Header() {
                                     }}
                                 />
                             </SearchIconWrapper>
-                            <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
+                            <StyledInputBase placeholder="Tìm kiếm..." inputProps={{ 'aria-label': 'search' }} />
                         </Search>
                     </Box>
-                    <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="" src={avt} />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography component="div" textAlign="center">
-                                        <Typography
-                                            component={Link} //Cái này là hiển thị mảng của Settings nè
-                                            to={`/${slugify(setting, { lower: true, strict: true, locale: 'vi' })}`}
-                                            className="text-decoration-none text-dark"
-                                        >
-                                            {setting}
+
+                    {!checkUser ? (
+                        <Typography component={Link} to="/dang-nhap" variant="">
+                            <Button sx={{ ml: 1, color: 'teal' }} startIcon={<LoginIcon />} size="small">
+                                Đăng nhập
+                            </Button>
+                        </Typography>
+                    ) : (
+                        <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
+                            <Tooltip title="Open settings">
+                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                    <Avatar alt="" src={avt} />
+                                </IconButton>
+                            </Tooltip>
+                            <Menu
+                                sx={{ mt: '45px' }}
+                                id="menu-appbar"
+                                anchorEl={anchorElUser}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorElUser)}
+                                onClose={handleCloseUserMenu}
+                            >
+                                {settings.map((setting) => (
+                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                        <Typography component="div" textAlign="center">
+                                            <Typography
+                                                component={Link} //Cái này là hiển thị mảng của Settings nè
+                                                to={`/${slugify(setting, { lower: true, strict: true, locale: 'vi' })}`}
+                                                className="text-decoration-none text-dark"
+                                            >
+                                                {setting}
+                                            </Typography>
                                         </Typography>
-                                    </Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
+                                    </MenuItem>
+                                ))}
+                                <Button
+                                    sx={{
+                                        fontSize: '1rem',
+                                        fontWeight: 400,
+                                        textTransform: 'none',
+                                        justifyContent: 'start',
+                                        pl: 2,
+                                    }}
+                                    size="small"
+                                    className="text-dark w-100"
+                                    onClick={handleLogOut}
+                                >
+                                    Đăng Xuất
+                                </Button>
+                            </Menu>
+                        </Box>
+                    )}
                 </Toolbar>
             </Container>
         </AppBar>

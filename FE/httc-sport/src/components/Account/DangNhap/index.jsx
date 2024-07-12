@@ -1,22 +1,22 @@
+/* eslint-disable no-restricted-globals */
 import { Avatar, Box, Button, Checkbox, FormControlLabel, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { handleGetMyInfoAPI, handleLogInAPI } from '~/apis';
 import fb from '~/components/Images/facebook-logo.png';
 import gg from '~/components/Images/google-logo.jpg';
 import logo from '~/components/Images/logo.png';
+import { OAuthConfigGoogle } from '~/utils/constants';
 
 function DangNhap() {
     const [rememberAccount, setRememberAccount] = useState(false);
     const { register, handleSubmit } = useForm();
-    const navigate = useNavigate();
 
     const submitLogin = async (data) => {
-        console.log(data);
         const res = await handleLogInAPI(data);
         localStorage.setItem('accessToken', res.data.result.accessToken);
         localStorage.setItem('userId', res.data.result.userId);
@@ -28,11 +28,25 @@ function DangNhap() {
         // } else {
         //     navigate('/home');
         // }
-        navigate('/trang-chu');
+        location.href = '/trang-chu';
         toast.success('Đăng nhập thành công');
     };
 
-    const loginWithGG = () => {
+    const handleLoginWithGG = () => {
+        const callbackUrl = OAuthConfigGoogle.redirectUri;
+        const authUrl = OAuthConfigGoogle.authUri;
+        const googleClientId = OAuthConfigGoogle.clientId;
+
+        const targetUrl = `${authUrl}?redirect_uri=${encodeURIComponent(
+            callbackUrl,
+        )}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
+
+        console.log(targetUrl);
+
+        window.location.href = targetUrl;
+    };
+
+    const handleLoginWithFB = () => {
         console.log('login with google');
     };
 
@@ -82,16 +96,16 @@ function DangNhap() {
                                     label="Tài Khoản"
                                     variant="outlined"
                                     id="validation-outlined-input"
-                                    defaultValue=""
                                     className="my-2 "
+                                    autoComplete="username"
                                     {...register('username')}
                                 />
                                 <ValidationTextField
                                     label="Mật Khẩu"
                                     variant="outlined"
                                     id="validation-outlined-input"
-                                    defaultValue=""
                                     type="password"
+                                    autoComplete="current-password"
                                     className="my-2 "
                                     {...register('password')}
                                 />
@@ -117,7 +131,7 @@ function DangNhap() {
                                             backgroundColor: 'navy',
                                         },
                                     }}
-                                    onClick={loginWithGG}
+                                    onClick={handleLoginWithGG}
                                 >
                                     <Avatar sx={{ width: 24, height: 24, mr: 1 }} alt="Avatar 1" src={gg} />
                                     Đăng nhập với tài khoản Google
@@ -134,7 +148,7 @@ function DangNhap() {
                                             backgroundColor: 'navy',
                                         },
                                     }}
-                                    onClick={loginWithGG}
+                                    onClick={handleLoginWithFB}
                                 >
                                     <Avatar sx={{ width: 24, height: 24, mr: 1 }} alt="Avatar 2" src={fb} />
                                     Đăng nhập với tài khoản Facebook

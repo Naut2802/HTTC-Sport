@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-// import { handleLogoutAPI, refreshTokenAPI } from '~/apis';
+import { handleLogoutAPI, refreshTokenAPI } from '~/apis';
 
 let authorizedAxiosInstance = axios.create();
 
@@ -42,48 +42,48 @@ authorizedAxiosInstance.interceptors.response.use(
         // }
 
         if (status === 410 && !originalRequest._retry) {
-            // if (isRefreshing) {
-            //     try {
-            //         const accessToken = await new Promise((resolve, reject) => {
-            //             refreshSubscribers.push((token) => {
-            //                 originalRequest.headers.Authorization = `Bearer ${token}`;
-            //                 resolve(authorizedAxiosInstance(originalRequest));
-            //             });
-            //         });
-            //         return accessToken;
-            //     } catch (err) {
-            //         return Promise.reject(err);
-            //     }
-            // }
-            // originalRequest._retry = true;
-            // isRefreshing = true;
-            // try {
-            //     const response = await refreshTokenAPI(localStorage.getItem('userId'));
-            //     const { userId, accessToken } = response.data.result;
-            //     localStorage.setItem('accessToken', accessToken);
-            //     localStorage.setItem('userId', userId);
-            //     // Retry original request
-            //     refreshSubscribers.forEach((callback) => callback(accessToken));
-            //     refreshSubscribers = [];
-            //     return authorizedAxiosInstance(originalRequest);
-            // } catch (err) {
-            //     await handleLogoutAPI();
-            //     localStorage.removeItem('accessToken');
-            //     localStorage.removeItem('userId');
-            //     window.location.replace('/login');
-            //     // toast.info('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!!!');
-            //     return Promise.reject(err);
-            // } finally {
-            //     isRefreshing = false;
-            // }
+            if (isRefreshing) {
+                try {
+                    const accessToken = await new Promise((resolve, reject) => {
+                        refreshSubscribers.push((token) => {
+                            originalRequest.headers.Authorization = `Bearer ${token}`;
+                            resolve(authorizedAxiosInstance(originalRequest));
+                        });
+                    });
+                    return accessToken;
+                } catch (err) {
+                    return Promise.reject(err);
+                }
+            }
+            originalRequest._retry = true;
+            isRefreshing = true;
+            try {
+                const response = await refreshTokenAPI(localStorage.getItem('userId'));
+                const { userId, accessToken } = response.data.result;
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('userId', userId);
+                // Retry original request
+                refreshSubscribers.forEach((callback) => callback(accessToken));
+                refreshSubscribers = [];
+                return authorizedAxiosInstance(originalRequest);
+            } catch (err) {
+                await handleLogoutAPI();
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('userId');
+                window.location.replace('/login');
+                // toast.info('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!!!');
+                return Promise.reject(err);
+            } finally {
+                isRefreshing = false;
+            }
         }
 
         if (status === 401) {
             // // await handleLogoutAPI();
             // // window.location.replace('/login');
-            // localStorage.removeItem('accessToken');
-            // localStorage.removeItem('userId');
-            // toast.info('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!!!');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('userId');
+            toast.info('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!!!');
         }
 
         if (status !== 410) {

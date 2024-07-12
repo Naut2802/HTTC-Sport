@@ -1,12 +1,28 @@
 import { Box, Breadcrumbs, Button, Card, CardContent, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { handleGetMyInfoAPI } from '~/apis';
 import logo from '~/components/Images/logo.png';
-
 import MucVip from './MucVip';
 
 function ThongTinUser() {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await handleGetMyInfoAPI();
+                console.log(res);
+                setUser(res.data.result);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchData();
+    }, []);
+
     const ValidationTextField = styled(TextField)({
         width: '100%',
         '& input:valid + fieldset': {
@@ -49,23 +65,13 @@ function ThongTinUser() {
 
                                 <hr />
                                 <div className="d-flex">
-                                    <Typography component="div" className="w-50">
+                                    <Typography component="div" className="w-100">
                                         <ValidationTextField
                                             label="Tài Khoản"
                                             variant="outlined"
                                             id="validation-outlined-input"
-                                            defaultValue=""
+                                            defaultValue={user?.username}
                                             className="my-2 "
-                                        />
-                                    </Typography>
-                                    <Typography component="div" className="w-50 ms-1">
-                                        <TextField
-                                            label="Mật Khẩu"
-                                            variant="outlined"
-                                            id="matkhau"
-                                            defaultValue=""
-                                            className="my-2 w-100"
-                                            type="password"
                                         />
                                     </Typography>
                                 </div>
@@ -75,7 +81,7 @@ function ThongTinUser() {
                                             label="Họ"
                                             variant="outlined"
                                             id="validation-outlined-input"
-                                            defaultValue=""
+                                            defaultValue={user?.lastName}
                                             className="my-2 "
                                         />
                                     </Typography>
@@ -84,17 +90,17 @@ function ThongTinUser() {
                                             label="Tên"
                                             variant="outlined"
                                             id="validation-outlined-input"
-                                            defaultValue=""
+                                            defaultValue={user?.firstName}
                                             className="my-2 "
                                         />
                                     </Typography>
                                 </div>
                                 <Typography component="div" className="w-100">
-                                    <TextField
+                                    <ValidationTextField
                                         label="Email"
                                         variant="outlined"
                                         id="validation-outlined-input"
-                                        defaultValue=""
+                                        defaultValue={user?.email}
                                         className="my-2 w-100"
                                         type="email"
                                     />
@@ -104,7 +110,7 @@ function ThongTinUser() {
                                         label="Số Điện Thoại"
                                         variant="outlined"
                                         id="validation-outlined-input"
-                                        defaultValue=""
+                                        defaultValue={user?.phoneNumber}
                                         className="my-2 "
                                     />
                                 </Typography>

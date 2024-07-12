@@ -72,7 +72,7 @@ public class AuthenticationController {
 		String result = authenticationService.validateEmailToken(token);
 		
 		if (result.contains("expired")) {
-			response.sendRedirect("http://localhost:3000/auth-mail-error");
+			response.sendRedirect("http://localhost:3000/auth-mail-error?token="+token);
 			return ApiResponse.builder()
 					.message(result)
 					.result(token)

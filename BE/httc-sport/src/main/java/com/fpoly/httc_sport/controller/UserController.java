@@ -100,7 +100,7 @@ public class UserController {
 					.build();
 			}
 		
-		response.sendRedirect("http://localhost:3000/forgot-password-verify-success");
+		response.sendRedirect("http://localhost:3000/forgot-password-verify-success?token="+token);
 		return ApiResponse.builder()
 				.message(result)
 				.result(token)

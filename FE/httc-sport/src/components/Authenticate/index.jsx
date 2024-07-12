@@ -1,6 +1,7 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { setToken } from '~/services/localStorageService';
 
 export default function Authenticate() {
@@ -19,6 +20,7 @@ export default function Authenticate() {
 
             fetch(`http://localhost:8082/api/auth/outbound/google/authenticate?code=${authCode}`, {
                 method: 'POST',
+                credentials: 'include',
             })
                 .then((response) => {
                     console.log(response);
@@ -27,17 +29,19 @@ export default function Authenticate() {
                 .then((data) => {
                     console.log(data);
 
-                    setToken(data.result?.token);
+                    setToken(data.result?.accessToken);
+                    localStorage.setItem('userId', data.result?.userId);
                     setIsLoggedin(true);
                 });
         }
     }, []);
 
-    // useEffect(() => {
-    //     if (isLoggedin) {
-    //         navigate('/');
-    //     }
-    // }, [isLoggedin, navigate]);
+    useEffect(() => {
+        if (isLoggedin) {
+            navigate('/');
+            toast.success('Đăng nhập thành công');
+        }
+    }, [isLoggedin, navigate]);
 
     return (
         <>

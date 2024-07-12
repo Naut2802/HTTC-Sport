@@ -15,6 +15,14 @@ export const handleLogoutAPI = async () => {
     return await authorizedAxiosInstance.delete(`${API_ROOT}/api/auth/logout`);
 };
 
+export const handleSignUpAPI = async (data) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/auth/sign-up`, data);
+};
+
 export const handleGetMyInfoAPI = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user/my-info`);
+};
+
+export const handleReSendVerifyMail = async (token) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/auth/sign-up/resend-verification-token?token=${token}`);
 };

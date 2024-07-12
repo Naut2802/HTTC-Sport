@@ -10,7 +10,7 @@ import { handleGetMyInfoAPI, handleLogInAPI } from '~/apis';
 import fb from '~/components/Images/facebook-logo.png';
 import gg from '~/components/Images/google-logo.jpg';
 import logo from '~/components/Images/logo.png';
-import { OAuthConfigGoogle, OAuthConfigFacebook } from '~/utils/constants';
+import { OAuthConfigFacebook, OAuthConfigGoogle } from '~/utils/constants';
 
 function DangNhap() {
     const [rememberAccount, setRememberAccount] = useState(false);
@@ -116,8 +116,8 @@ function DangNhap() {
                                     variant="outlined"
                                     id="validation-outlined-input"
                                     type="password"
-                                    autoComplete="current-password"
                                     className="my-2 "
+                                    autoComplete="current-password"
                                     {...register('password')}
                                 />
                                 <FormControlLabel

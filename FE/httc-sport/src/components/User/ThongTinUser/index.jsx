@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { Box, Breadcrumbs, Button, Card, CardContent, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
@@ -14,7 +15,6 @@ function ThongTinUser() {
         const fetchData = async () => {
             try {
                 const res = await handleGetMyInfoAPI();
-                console.log(res);
                 setUser(res.data.result);
             } catch (error) {
                 console.log(error);
@@ -72,6 +72,9 @@ function ThongTinUser() {
                                             id="validation-outlined-input"
                                             defaultValue={user?.username}
                                             className="my-2 "
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
                                         />
                                     </Typography>
                                 </div>
@@ -120,9 +123,11 @@ function ThongTinUser() {
                                     className="d-flex w-100 justify-content-between align-items-center my-2"
                                 >
                                     <div className="d-flex align-items-center">
-                                        <Button variant="outlined" className="text-capitalize">
-                                            Đổi Mật Khẩu
-                                        </Button>
+                                        <Typography component={Link} to="/doi-mat-khau" variant="">
+                                            <Button variant="outlined" className="text-capitalize">
+                                                Đổi Mật Khẩu
+                                            </Button>
+                                        </Typography>
                                     </div>
                                     <Button variant="outlined" color="success" className="text-capitalize">
                                         Cập Nhật

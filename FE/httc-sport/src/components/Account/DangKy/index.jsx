@@ -1,11 +1,21 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import React from 'react';
-
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import logo from '../../Images/logo.png';
+import { toast } from 'react-toastify';
+import { handleSignUpAPI } from '~/apis';
+import logo from '~/components/Images/logo.png';
 
 function DangKy() {
+    const { register, handleSubmit } = useForm();
+
+    const submitSignUp = async (data) => {
+        const res = await handleSignUpAPI(data);
+        console.log(res);
+        toast.info(res.data.message);
+    };
+
     const ValidationTextField = styled(TextField)({
         width: '100%',
         '& input:valid + fieldset': {
@@ -29,11 +39,12 @@ function DangKy() {
                     <img src={logo} alt="" style={{ width: 120 }} />
                 </div>
                 <div className="row">
-                    <div className="col-4"></div>
-                    <div className="col-4">
+                    <div className="col-sm-1 col-md-2 col-lg-3"></div>
+                    <div className="col-sm-10 col-md-8 col-lg-6">
                         <Box
                             className="card"
                             component="form"
+                            onSubmit={handleSubmit(submitSignUp)}
                             noValidate
                             sx={{
                                 top: '10%',
@@ -47,28 +58,32 @@ function DangKy() {
                                     <ValidationTextField
                                         label="Tài Khoản"
                                         variant="outlined"
-                                        id="validation-outlined-input"
-                                        defaultValue=""
+                                        // id="validation-outlined-input"
                                         className="my-2 "
+                                        autoComplete="username"
+                                        {...register('username')}
                                     />
                                 </Typography>
                                 <Typography component="div" className="w-100">
                                     <ValidationTextField
                                         label="Mật Khẩu"
                                         variant="outlined"
-                                        id="validation-outlined-input"
-                                        defaultValue=""
+                                        // id="validation-outlined-input"
+                                        type="password"
                                         className="my-2 "
+                                        autoComplete="current-password"
+                                        {...register('password')}
                                     />
                                 </Typography>
                                 <Typography component="div" className="w-100">
                                     <TextField
                                         label="Email"
                                         variant="outlined"
-                                        id="validation-outlined-input"
-                                        defaultValue=""
+                                        // id="validation-outlined-input"
                                         className="my-2 w-100"
                                         type="email"
+                                        autoComplete="email"
+                                        {...register('email')}
                                     />
                                 </Typography>
                                 <Typography
@@ -76,20 +91,20 @@ function DangKy() {
                                     className="d-flex w-100 justify-content-between align-items-center my-2"
                                 >
                                     <div className="d-flex align-items-center"></div>
-                                    <Button variant="contained" className="text-capitalize">
+                                    <Button type="submit" size="large" variant="contained" className="text-capitalize">
                                         Đăng Ký
                                     </Button>
                                 </Typography>
                             </Typography>
                             <Typography component="div" className="card-footer text-center">
-                                <Typography component={Link} to="/dang-nhap">
+                                <Typography component={Link} to="/auth-mail-success" variant="subtitle2">
                                     Bạn Đã Có Tài Khoản? Đăng Nhập Ngay!
                                 </Typography>
                             </Typography>
                         </Box>
                     </div>
 
-                    <div className="col-4"></div>
+                    <div className="col-sm-1 col-md-2 col-lg-3"></div>
                 </div>
             </div>
         </>

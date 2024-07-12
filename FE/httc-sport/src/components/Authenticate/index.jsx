@@ -1,8 +1,8 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setToken } from '~/services/localStorageService';
 import { toast } from 'react-toastify';
+import { setToken } from '~/services/localStorageService';
 
 export default function Authenticate() {
     const navigate = useNavigate();

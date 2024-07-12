@@ -3,7 +3,7 @@ import { Avatar, Box, Button, Checkbox, FormControlLabel, TextField, Typography 
 import { styled } from '@mui/material/styles';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { handleGetMyInfoAPI, handleLogInAPI } from '~/apis';
@@ -14,6 +14,7 @@ import { OAuthConfigGoogle } from '~/utils/constants';
 
 function DangNhap() {
     const [rememberAccount, setRememberAccount] = useState(false);
+    const navigate = useNavigate();
     const { register, handleSubmit } = useForm();
 
     const submitLogin = async (data) => {
@@ -28,7 +29,7 @@ function DangNhap() {
         // } else {
         //     navigate('/home');
         // }
-        location.href = '/trang-chu';
+        navigate('/trang-chu');
         toast.success('Đăng nhập thành công');
     };
 

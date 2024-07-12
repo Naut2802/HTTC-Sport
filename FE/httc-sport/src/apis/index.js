@@ -18,3 +18,4 @@ export const handleLogoutAPI = async () => {
 export const handleGetMyInfoAPI = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user/my-info`);
 };
+

@@ -10,6 +10,8 @@ import Authenticate from './components/Authenticate';
 import ChiTietSan from './components/Layout/ChiTietSan';
 import San from './components/Layout/DanhSachSan';
 import Contact from './components/Layout/LienHe';
+import MailAuthError from './components/Layout/MailAuthError';
+import MailAuthSuccess from './components/Layout/MailAuthSuccess';
 import New from './components/Layout/TinTuc';
 import UserHome from './components/Layout/UserHome';
 import ThongTinUser from './components/User/ThongTinUser';
@@ -40,22 +42,25 @@ function App() {
                 <Route path="/tin-tuc" element={<New />} />
                 <Route path="/lien-he" element={<Contact />} />
                 <Route path="/chi-tiet-san" element={<ChiTietSan />} />
-                <Route path="/dang-ky" element={<DangKy />} />
-                <Route path="/quen-mat-khau" element={<QuenMatKhau />} />
-                <Route path="/quen-mat-khau-1" element={<NhapEmail />} />
-                <Route path="/quen-mat-khau-2" element={<NhapOTP />} />
-                <Route path="/quen-mat-khau-3" element={<DoiMatKhau />} />
             </Route>
+            <Route path="/dang-ky" element={<DangKy />} />
+            <Route path="/quen-mat-khau" element={<QuenMatKhau />} />
+            <Route path="/quen-mat-khau-1" element={<NhapEmail />} />
+            <Route path="/quen-mat-khau-2" element={<NhapOTP />} />
+            <Route path="/quen-mat-khau-3" element={<DoiMatKhau />} />
 
             <Route element={<ProtectedRoute />}>
                 <Route element={<Home />}>
                     <Route path="/tai-khoan" element={<ThongTinUser />} />
+                    <Route path="/doi-mat-khau" element={<DoiMatKhau />} />
                 </Route>
             </Route>
 
             <Route element={<UnauthorizedRoute />}>
                 <Route path="/dang-nhap" element={<DangNhap />} />
                 <Route path="/authenticate" element={<Authenticate />} />
+                <Route path="/auth-mail-success" element={<MailAuthSuccess />} />
+                <Route path="/auth-mail-error" element={<MailAuthError />} />
             </Route>
         </Routes>
     );

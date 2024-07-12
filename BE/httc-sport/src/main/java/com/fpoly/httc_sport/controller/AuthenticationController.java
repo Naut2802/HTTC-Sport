@@ -8,9 +8,6 @@ import com.fpoly.httc_sport.dto.request.RefreshRequest;
 import com.fpoly.httc_sport.dto.request.RegisterRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.AuthenticationResponse;
-import com.fpoly.httc_sport.dto.response.ExchangeTokenResponse;
-import com.fpoly.httc_sport.dto.response.UserResponse;
-import com.fpoly.httc_sport.event.RegistrationCompleteEvent;
 import com.fpoly.httc_sport.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +16,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,10 +33,17 @@ public class AuthenticationController {
 				.build();
 	}
 	
-	@PostMapping("outbound/authenticate")
-	ApiResponse<AuthenticationResponse> outboundAuthenticate(@RequestParam("code") String code, HttpServletResponse response) throws NoSuchAlgorithmException {
+	@PostMapping("outbound/google/authenticate")
+	ApiResponse<AuthenticationResponse> googleOutboundAuthenticate(@RequestParam("code") String code, HttpServletResponse response) throws NoSuchAlgorithmException {
 		return ApiResponse.<AuthenticationResponse>builder()
-				.result(authenticationService.outboundAuthenticate(code, response))
+				.result(authenticationService.googleOutboundAuthenticate(code, response))
+				.build();
+	}
+	
+	@PostMapping("outbound/facebook/authenticate")
+	ApiResponse<AuthenticationResponse> facebookOutboundAuthenticate(@RequestParam("code") String code, HttpServletResponse response) throws NoSuchAlgorithmException {
+		return ApiResponse.<AuthenticationResponse>builder()
+				.result(authenticationService.facebookOutboundAuthenticate(code, response))
 				.build();
 	}
 	

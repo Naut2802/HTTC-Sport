@@ -1,9 +1,6 @@
 package com.fpoly.httc_sport.service;
 
-import com.fpoly.httc_sport.dto.request.ExchangeTokenRequest;
-import com.fpoly.httc_sport.dto.request.LoginRequest;
-import com.fpoly.httc_sport.dto.request.RefreshRequest;
-import com.fpoly.httc_sport.dto.request.RegisterRequest;
+import com.fpoly.httc_sport.dto.request.*;
 import com.fpoly.httc_sport.dto.response.AuthenticationResponse;
 import com.fpoly.httc_sport.entity.MailInfo;
 import com.fpoly.httc_sport.entity.RefreshTokenWhiteList;
@@ -18,8 +15,10 @@ import com.fpoly.httc_sport.repository.RefreshTokenRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
 import com.fpoly.httc_sport.repository.VerificationTokenRepository;
-import com.fpoly.httc_sport.repository.httpclient.OutboundExchangeTokenClient;
-import com.fpoly.httc_sport.repository.httpclient.OutboundUserInfoClient;
+import com.fpoly.httc_sport.repository.httpclient.FacebookOutboundExchangeTokenClient;
+import com.fpoly.httc_sport.repository.httpclient.FacebookOutboundUserInfoClient;
+import com.fpoly.httc_sport.repository.httpclient.GoogleOutboundExchangeTokenClient;
+import com.fpoly.httc_sport.repository.httpclient.GoogleOutboundUserInfoClient;
 import com.fpoly.httc_sport.security.jwt.KeyUtils;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
@@ -54,8 +53,10 @@ public class AuthenticationService {
 	RefreshTokenRepository refreshTokenRepository;
 	RoleRepository roleRepository;
 	VerificationTokenRepository verificationTokenRepository;
-	OutboundExchangeTokenClient outboundExchangeTokenClient;
-	OutboundUserInfoClient outboundUserInfoClient;
+	GoogleOutboundExchangeTokenClient googleOutboundExchangeTokenClient;
+	GoogleOutboundUserInfoClient googleOutboundUserInfoClient;
+	FacebookOutboundExchangeTokenClient facebookOutboundExchangeTokenClient;
+	FacebookOutboundUserInfoClient facebookOutboundUserInfoClient;
 	UserMapper userMapper;
 	PasswordEncoder passwordEncoder;
 	ApplicationEventPublisher publisher;
@@ -69,11 +70,19 @@ public class AuthenticationService {
 	
 	@NonFinal
 	@Value("${oauth2.google.client-id}")
-	String CLIENT_ID;
+	String GOOGLE_CLIENT_ID;
 	
 	@NonFinal
 	@Value("${oauth2.google.client-secret}")
-	String CLIENT_SECRET;
+	String GOOGLE_CLIENT_SECRET;
+	
+	@NonFinal
+	@Value("${oauth2.facebook.client-id}")
+	String FACEBOOK_CLIENT_ID;
+	
+	@NonFinal
+	@Value("${oauth2.facebook.client-secret}")
+	String FACEBOOK_CLIENT_SECRET;
 	
 	@NonFinal
 	@Value("${oauth2.google.redirect-uri}")
@@ -173,24 +182,23 @@ public class AuthenticationService {
 				.build();
 	}
 	
-	public AuthenticationResponse outboundAuthenticate(String code, HttpServletResponse response) throws NoSuchAlgorithmException {
-		var tokenExchanged = outboundExchangeTokenClient.exchangeToken(ExchangeTokenRequest.builder()
+	public AuthenticationResponse googleOutboundAuthenticate(String code, HttpServletResponse response) throws NoSuchAlgorithmException {
+		var tokenExchanged = googleOutboundExchangeTokenClient.exchangeToken(GoogleExchangeTokenRequest.builder()
 						.code(code)
-						.clientId(CLIENT_ID)
-						.clientSecret(CLIENT_SECRET)
+						.clientId(GOOGLE_CLIENT_ID)
+						.clientSecret(GOOGLE_CLIENT_SECRET)
 						.redirectUri(REDIRECT_URI)
 						.grantType(GRANT_TYPE)
 				.build());
 		
-		log.info("Token exchanged {}", tokenExchanged);
+		log.info("Google token exchanged {}", tokenExchanged);
 		
-		var userInfo = outboundUserInfoClient.getUserInfo("json", tokenExchanged.getAccessToken());
+		var userInfo = googleOutboundUserInfoClient.getUserInfo("json", tokenExchanged.getAccessToken());
 		
 		var role = roleRepository.findByRoleName("USER").orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 		
-		Random random = new Random();
-		String password = String.valueOf(random.nextInt(100_000, 999_999));
+		String password = generateRandomPassword();
 		
 		var user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(() ->
 				userRepository.save(User.builder()
@@ -200,6 +208,53 @@ public class AuthenticationService {
 								.firstName(userInfo.getName())
 								.lastName(userInfo.getFamilyName())
 								.roles(new HashSet<>(List.of(role)))
+						.build()));
+		
+		publisher.publishEvent(new OutboundCompleteEvent(user, password));
+		
+		KeyPair keyPair = keyUtils.generateKeyPair();
+		var accessToken = jwtService.generateAccessToken(user, keyPair);
+		String jti = accessToken.substring(accessToken.length()-10);
+		var refreshToken = jwtService.generateRefreshToken(user, jti, keyPair);
+		String publicKey = keyUtils.exchangeRSAPublicKeyToString((RSAPublicKey) keyPair.getPublic());
+		
+		saveRefreshToken(user, refreshToken, publicKey);
+		
+		createRefreshTokenCookie(response, refreshToken);
+		
+		return AuthenticationResponse.builder()
+				.accessToken(accessToken)
+				.userId(user.getId())
+				.authenticated(true)
+				.build();
+	}
+	
+	public AuthenticationResponse facebookOutboundAuthenticate(String code, HttpServletResponse response) throws NoSuchAlgorithmException {
+		var tokenExchanged = facebookOutboundExchangeTokenClient.exchangeToken(FacebookExchangeTokenRequest.builder()
+				.clientId(FACEBOOK_CLIENT_ID)
+				.clientSecret(FACEBOOK_CLIENT_SECRET)
+				.redirectUri(REDIRECT_URI)
+				.code(code)
+				.build());
+		
+		log.info("Facebook token exchanged {}", tokenExchanged);
+		
+		String fields = "id,email,first_name,last_name";
+		var userInfo = facebookOutboundUserInfoClient.getUserInfo(fields, tokenExchanged.getAccessToken());
+		
+		var role = roleRepository.findByRoleName("USER").orElseThrow(() ->
+				new AppException(ErrorCode.ROLE_NOT_EXISTED));
+		
+		String password = generateRandomPassword();
+		
+		var user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(() ->
+				userRepository.save(User.builder()
+						.username(userInfo.getEmail())
+						.password(passwordEncoder.encode(password))
+						.email(userInfo.getEmail())
+						.firstName(userInfo.getFirstName())
+						.lastName(userInfo.getLastName())
+						.roles(new HashSet<>(List.of(role)))
 						.build()));
 		
 		publisher.publishEvent(new OutboundCompleteEvent(user, password));
@@ -308,5 +363,10 @@ public class AuthenticationService {
 		verificationTokenRepository.save(verificationToken);
 		
 		return verificationToken;
+	}
+	
+	private String generateRandomPassword() {
+		Random random = new Random();
+		return String.valueOf(random.nextInt(100_000, 999_999));
 	}
 }

@@ -92,9 +92,9 @@ public class AuthenticationService {
 	final String GRANT_TYPE = "authorization_code";
 	
 	public String register(RegisterRequest request, HttpServletRequest httpRequest) {
-		if(userRepository.existsByUsername(request.username()))
+		if(userRepository.existsByUsername(request.getUsername()))
 			throw new AppException(ErrorCode.USER_EXISTED);
-		if(userRepository.existsByEmail(request.email()))
+		if(userRepository.existsByEmail(request.getEmail()))
 			throw new AppException(ErrorCode.USER_EXISTED);
 		
 		var user = userMapper.toUser(request);
@@ -154,13 +154,13 @@ public class AuthenticationService {
 	public AuthenticationResponse authenticate(LoginRequest request, HttpServletResponse response) throws NoSuchAlgorithmException {
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 		var user = userRepository
-				.findByUsername(request.username())
+				.findByUsername(request.getUsername())
 				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
 		if (!user.getIsEnabled())
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		
-		boolean authenticated = passwordEncoder.matches(request.username() + request.password(), user.getPassword());
+		boolean authenticated = passwordEncoder.matches(request.getUsername() + request.getPassword(), user.getPassword());
 		
 		if (!authenticated)
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
@@ -291,7 +291,7 @@ public class AuthenticationService {
 	
 	@Transactional
 	public AuthenticationResponse refreshToken(HttpServletRequest request, HttpServletResponse response, RefreshRequest refreshRequest) throws NoSuchAlgorithmException {
-		User user = userRepository.findById(refreshRequest.userId())
+		User user = userRepository.findById(refreshRequest.getUserId())
 				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
 		var rti = getRefreshTokenFromCookies(request);

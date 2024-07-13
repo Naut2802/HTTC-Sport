@@ -1,6 +1,17 @@
 package com.fpoly.httc_sport.dto.request;
 
-public record ChangePasswordRequest
-		(String currentPassword,
-		 String newPassword,
-		 String confirmationPassword) { }
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+@Builder
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ChangePasswordRequest {
+	String currentPassword;
+	String newPassword;
+	String confirmationPassword;
+}

@@ -28,7 +28,7 @@ public class RoleService {
 	RoleRepository roleRepository;
 	
 	public RoleResponse createRole(RoleRequest request) {
-		if (roleRepository.existsByRoleName(request.roleName()))
+		if (roleRepository.existsByRoleName(request.getRoleName()))
 			throw new AppException(ErrorCode.EXISTED);
 		
 		var role = roleMapper.toRole(request);

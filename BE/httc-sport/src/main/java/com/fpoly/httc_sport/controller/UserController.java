@@ -121,9 +121,11 @@ public class UserController {
 	
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<List<UserResponse>> getUsers() {
+	ApiResponse<List<UserResponse>> getUsers(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<UserResponse>>builder()
-				.result(userService.getUsers())
+				.result(userService.getUsers(page, size))
 				.build();
 	}
 	

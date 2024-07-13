@@ -42,12 +42,13 @@ public class AuthenticationController {
 				.build();
 	}
 	
-	@PostMapping("outbound/facebook/authenticate")
-	ApiResponse<AuthenticationResponse> facebookOutboundAuthenticate(@RequestParam("code") String code, HttpServletResponse response) throws NoSuchAlgorithmException {
-		return ApiResponse.<AuthenticationResponse>builder()
-				.result(authenticationService.facebookOutboundAuthenticate(code, response))
-				.build();
-	}
+	//Login with Facebook
+//	@PostMapping("outbound/facebook/authenticate")
+//	ApiResponse<AuthenticationResponse> facebookOutboundAuthenticate(@RequestParam("code") String code, HttpServletResponse response) throws NoSuchAlgorithmException {
+//		return ApiResponse.<AuthenticationResponse>builder()
+//				.result(authenticationService.facebookOutboundAuthenticate(code, response))
+//				.build();
+//	}
 	
 	@PostMapping("sign-up")
 	ApiResponse<String> signUp(@RequestBody RegisterRequest request, HttpServletRequest httpRequest) {

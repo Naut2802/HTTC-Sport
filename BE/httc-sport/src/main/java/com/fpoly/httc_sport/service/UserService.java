@@ -60,16 +60,16 @@ public class UserService {
 		if (!user.getUsername().equals(name))
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		
-		if (!passwordEncoder.matches(user.getUsername() + request.currentPassword(), user.getPassword()))
+		if (!passwordEncoder.matches(user.getUsername() + request.getCurrentPassword(), user.getPassword()))
 			throw new AppException(ErrorCode.WRONG_PASSWORD);
 		
-		if (!request.newPassword().equals(request.confirmationPassword()))
+		if (!request.getNewPassword().equals(request.getConfirmationPassword()))
 			throw new AppException(ErrorCode.WRONG_CONFIRMATION_PASSWORD);
 		
 		String message = "Thay đổi mật khẩu thất bại, mật khẩu mới không được giống mật khẩu cũ";
 		boolean flag = false;
-		if (!passwordEncoder.matches(user.getUsername() + request.newPassword(), user.getPassword())) {
-			user.setPassword(encodePassword(user.getUsername(), request.newPassword()));
+		if (!passwordEncoder.matches(user.getUsername() + request.getNewPassword(), user.getPassword())) {
+			user.setPassword(encodePassword(user.getUsername(), request.getNewPassword()));
 			userRepository.save(user);
 			message = "Thay đổi mật khẩu thành công";
 			flag = true;
@@ -110,7 +110,7 @@ public class UserService {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
-		List<Role> roles = roleRepository.findAllByRoleNameIn(request.roles());
+		List<Role> roles = roleRepository.findAllByRoleNameIn(request.getRoles());
 		
 		user.setRoles(new HashSet<>(roles));
 		return userMapper.toUserResponse(userRepository.save(user));
@@ -165,13 +165,13 @@ public class UserService {
 				new AppException(ErrorCode.FORGOT_PASSWORD_TOKEN_NOT_FOUND));
 		var user = forgotPasswordToken.getUser();
 		
-		if (!request.newPassword().equals(request.confirmationPassword()))
+		if (!request.getNewPassword().equals(request.getConfirmationPassword()))
 			throw new AppException(ErrorCode.WRONG_CONFIRMATION_PASSWORD);
 		
 		String message = "Reset mật khẩu thất bại, mật khẩu mới không được giống mật khẩu cũ";
 		boolean flag = false;
-		if (!passwordEncoder.matches(user.getUsername() + request.newPassword(), user.getPassword())) {
-			user.setPassword(encodePassword(user.getUsername(), request.newPassword()));
+		if (!passwordEncoder.matches(user.getUsername() + request.getNewPassword(), user.getPassword())) {
+			user.setPassword(encodePassword(user.getUsername(), request.getNewPassword()));
 			userRepository.save(user);
 			forgotPasswordTokenRepository.delete(forgotPasswordToken);
 			message = "Reset mật khẩu thành công";

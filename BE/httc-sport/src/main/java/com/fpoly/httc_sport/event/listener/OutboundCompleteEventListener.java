@@ -20,7 +20,6 @@ import java.util.UUID;
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OutboundCompleteEventListener implements ApplicationListener<OutboundCompleteEvent> {
-	AuthenticationService authenticationService;
 	MailerService mailerService;
 	
 	@Override

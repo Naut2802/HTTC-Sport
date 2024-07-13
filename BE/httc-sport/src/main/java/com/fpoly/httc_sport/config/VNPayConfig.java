@@ -1,4 +1,4 @@
-package com.fpoly.config;
+package com.fpoly.httc_sport.config;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;

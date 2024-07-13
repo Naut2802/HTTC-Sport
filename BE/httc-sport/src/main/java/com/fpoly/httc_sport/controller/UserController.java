@@ -3,10 +3,7 @@ package com.fpoly.httc_sport.controller;
 import java.io.IOException;
 import java.util.List;
 
-import com.fpoly.httc_sport.dto.request.AuthorizeUserRequest;
-import com.fpoly.httc_sport.dto.request.ChangePasswordRequest;
-import com.fpoly.httc_sport.dto.request.ResetPasswordRequest;
-import com.fpoly.httc_sport.dto.request.UserUpdateRequest;
+import com.fpoly.httc_sport.dto.request.*;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.ChangePasswordResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
@@ -17,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -51,7 +49,15 @@ public class UserController {
 				.build();
 	}
 	
+	@PatchMapping("{userId}")
+	ApiResponse<UserResponse> updateProfileUser(@PathVariable String userId, @RequestBody UserUpdateProfileRequest request) {
+		return ApiResponse.<UserResponse>builder()
+				.result(userService.updateProfileUser(userId, request))
+				.build();
+	}
+	
 	@PutMapping("{userId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.updateUser(userId, request))
@@ -59,6 +65,7 @@ public class UserController {
 	}
 	
 	@PutMapping("authorize/{userId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<UserResponse> authorizeUser(@PathVariable String userId, @RequestBody AuthorizeUserRequest request) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.authorizeUser(userId, request))
@@ -66,6 +73,7 @@ public class UserController {
 	}
 	
 	@DeleteMapping("{userId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<String> deleteUser(@PathVariable String userId) {
 		userService.deleteUser(userId);
 		return ApiResponse.<String>builder()
@@ -74,6 +82,7 @@ public class UserController {
 	}
 	
 	@GetMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<UserResponse>> getUsers() {
 		return ApiResponse.<List<UserResponse>>builder()
 				.result(userService.getUsers())

@@ -1,6 +1,7 @@
 package com.fpoly.httc_sport.mapper;
 
 import com.fpoly.httc_sport.dto.request.RegisterRequest;
+import com.fpoly.httc_sport.dto.request.UserUpdateProfileRequest;
 import com.fpoly.httc_sport.dto.request.UserUpdateRequest;
 import com.fpoly.httc_sport.dto.response.UserResponse;
 import com.fpoly.httc_sport.entity.User;
@@ -20,6 +21,14 @@ public interface UserMapper {
 	@Mapping(target = "listHoaDon", ignore = true)
 	@Mapping(target = "vip", ignore = true)
 	void updateUser(@MappingTarget User user, UserUpdateRequest request);
+	
+	@Mapping(target = "email", ignore = true)
+	@Mapping(target = "roles", ignore = true)
+	@Mapping(target = "listThongTinDatSan", ignore = true)
+	@Mapping(target = "listDanhGia", ignore = true)
+	@Mapping(target = "listHoaDon", ignore = true)
+	@Mapping(target = "vip", ignore = true)
+	void updateProfileUser(@MappingTarget User user, UserUpdateProfileRequest request);
 	
 	@Mapping(target = "roles", ignore = true)
 	@Mapping(target = "listThongTinDatSan", ignore = true)

@@ -6,7 +6,8 @@ import DoiMatKhau from './components/Account/DoiMatKhau';
 import NhapEmail from './components/Account/NhapEmail';
 import NhapOTP from './components/Account/NhapOTP';
 import QuenMatKhau from './components/Account/QuenMK';
-import Authenticate from './components/Authenticate';
+import AuthenticateFB from './components/AuthenticateFB';
+import AuthenticateGG from './components/AuthenticateGG';
 import ChiTietSan from './components/Layout/ChiTietSan';
 import San from './components/Layout/DanhSachSan';
 import Contact from './components/Layout/LienHe';
@@ -58,7 +59,8 @@ function App() {
 
             <Route element={<UnauthorizedRoute />}>
                 <Route path="/dang-nhap" element={<DangNhap />} />
-                <Route path="/authenticate" element={<Authenticate />} />
+                <Route path="/authenticate/google" element={<AuthenticateGG />} />
+                <Route path="/authenticate/facebook" element={<AuthenticateFB />} />
                 <Route path="/auth-mail-success" element={<MailAuthSuccess />} />
                 <Route path="/auth-mail-error" element={<MailAuthError />} />
             </Route>

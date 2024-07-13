@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import slugify from 'slugify'; // Import slugify nè
 
@@ -31,6 +31,7 @@ const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao D�
 function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const navigate = useNavigate();
 
     var checkUser = null;
     const checkUserInStorage = localStorage.getItem('accessToken');
@@ -43,7 +44,7 @@ function Header() {
         toast.info('Bạn đã đăng xuất!');
         localStorage.removeItem('accessToken');
         localStorage.removeItem('userId');
-        location.href = '/trang-chu';
+        navigate('/trang-chu');
     };
 
     const handleOpenNavMenu = (event) => {

@@ -3,10 +3,10 @@ import { Avatar, Box, Button, Checkbox, FormControlLabel, TextField, Typography 
 import { styled } from '@mui/material/styles';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { handleGetMyInfoAPI, handleLogInAPI } from '~/apis';
+import { handleLogInAPI } from '~/apis';
 import fb from '~/components/Images/facebook-logo.png';
 import gg from '~/components/Images/google-logo.jpg';
 import logo from '~/components/Images/logo.png';
@@ -15,20 +15,19 @@ import { OAuthConfigFacebook, OAuthConfigGoogle } from '~/utils/constants';
 function DangNhap() {
     const [rememberAccount, setRememberAccount] = useState(false);
     const { register, handleSubmit } = useForm();
+    const navigate = useNavigate();
 
     const submitLogin = async (data) => {
         const res = await handleLogInAPI(data);
         localStorage.setItem('accessToken', res.data.result.accessToken);
         localStorage.setItem('userId', res.data.result.userId);
+        const checkRole = res.data.result.roles[0].roleName;
+        localStorage.setItem('role', checkRole);
+        if (checkRole === 'ADMIN') {
+        } else {
+            navigate('/trang-chu');
+        }
 
-        // const res2 = await handleGetMyInfoAPI();
-        // const roleInfo = res2.data.result.roles[0].roleName;
-        // if (roleInfo === 'ADMIN') {
-        //     navigate('/page-admin');
-        // } else {
-        //     navigate('/home');
-        // }
-        location.href = '/trang-chu';
         toast.success('Đăng nhập thành công');
     };
 

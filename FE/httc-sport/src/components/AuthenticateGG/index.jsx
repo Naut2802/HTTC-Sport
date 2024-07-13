@@ -2,9 +2,10 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { handleLogInWithGGAPI } from '~/apis';
 import { setToken } from '~/services/localStorageService';
 
-export default function Authenticate() {
+export default function AuthenticateGG() {
     const navigate = useNavigate();
     const [isLoggedin, setIsLoggedin] = useState(false);
 
@@ -18,28 +19,25 @@ export default function Authenticate() {
             const authCode = isMatch[1];
             console.log(authCode);
 
-            fetch(`http://localhost:8082/api/auth/outbound/google/authenticate?code=${authCode}`, {
-                method: 'POST',
-                credentials: 'include',
-            })
-                .then((response) => {
-                    console.log(response);
-                    return response.json();
-                })
-                .then((data) => {
-                    console.log(data);
-
-                    setToken(data.result?.accessToken);
-                    localStorage.setItem('userId', data.result?.userId);
+            async function fetchData() {
+                try {
+                    const res = await handleLogInWithGGAPI(authCode);
+                    console.log(res.data);
+                    setToken(res.data.result?.accessToken);
+                    localStorage.setItem('userId', res.data.result?.userId);
                     setIsLoggedin(true);
-                });
+                } catch (error) {
+                    console.error('Error during fetchData:', error);
+                }
+            }
+            fetchData();
         }
     }, []);
 
     useEffect(() => {
         if (isLoggedin) {
             navigate('/');
-            toast.success('Đăng nhập thành công');
+            toast.success('Đăng nhập thành công với Google');
         }
     }, [isLoggedin, navigate]);
 

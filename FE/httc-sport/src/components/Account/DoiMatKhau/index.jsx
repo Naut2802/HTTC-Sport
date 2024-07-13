@@ -1,10 +1,27 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import React from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { handleChangePasswordUser, handleLogoutAPI } from '~/apis';
 
-import { Link } from 'react-router-dom';
-import logo from '../../Images/logo.png';
+import logo from '~/components/Images/logo.png';
 
 function DoiMatKhau() {
+    const { register, handleSubmit } = useForm();
+    const navigate = useNavigate();
+
+    const submitChangePassword = async (data) => {
+        const userId = localStorage.getItem('userId');
+        const res = await handleChangePasswordUser(userId, data);
+        console.log(res);
+        toast.success('Bạn đã thay đổi mật khẩu thành công. Vui lòng đăng nhập lại!');
+        await handleLogoutAPI();
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userId');
+        navigate('/trang-chu');
+    };
+
     return (
         <>
             <div className="my-3 container">
@@ -12,11 +29,12 @@ function DoiMatKhau() {
                     <img src={logo} alt="" style={{ width: 120 }} />
                 </div>
                 <div className="row">
-                    <div className="col-4"></div>
-                    <div className="col-4">
+                    <div className="col-sm-1 col-md-2 col-lg-3"></div>
+                    <div className="col-sm-10 col-md-8 col-lg-6">
                         <Box
                             className="card"
                             component="form"
+                            onSubmit={handleSubmit(submitChangePassword)}
                             noValidate
                             sx={{
                                 top: '10%',
@@ -26,42 +44,52 @@ function DoiMatKhau() {
                                 Đổi Mật Khẩu
                             </Typography>
                             <Typography component="div" className="card-body text-center">
-                                <Typography component="span" variant="h10">
-                                    Nhập mật khẩu mới và xác nhận lại mật khẩu.
-                                </Typography>
                                 <Typography component="div" className="w-100">
+                                    <TextField
+                                        label="Nhập Mật Khẩu Cũ"
+                                        variant="outlined"
+                                        className="my-2 w-100"
+                                        type="password"
+                                        autoComplete="currentPassword"
+                                        {...register('currentPassword')}
+                                    />
                                     <TextField
                                         label="Nhập Mật Khẩu Mới"
                                         variant="outlined"
-                                        id="doi-mk"
-                                        defaultValue=""
                                         className="my-2 w-100"
                                         type="password"
+                                        autoComplete="newPassword"
+                                        {...register('newPassword')}
                                     />
                                     <TextField
                                         label="Xác Nhận Mật Khẩu"
                                         variant="outlined"
-                                        id="xac-nhan-mk"
-                                        defaultValue=""
                                         className="my-2 w-100"
                                         type="password"
+                                        autoComplete="confirmationPassword"
+                                        {...register('confirmationPassword')}
                                     />
                                 </Typography>
                             </Typography>
-                            <Typography
-                                component="div"
-                                className="d-flex w-100 justify-content-between align-items-center my-2 card-footer"
-                            >
-                                <div className="d-flex align-items-center"></div>
-                                <Typography component={Link} to="/dang-nhap">
-                                    <Button variant="outlined" color="success" className="text-capitalize">
-                                        Xác Nhận
-                                    </Button>
-                                </Typography>
+                            <Typography component="div" className="card-footer d-flex justify-content-end">
+                                <Button
+                                    sx={{
+                                        '&:hover': {
+                                            color: 'white',
+                                            backgroundColor: 'green',
+                                        },
+                                    }}
+                                    type="submit"
+                                    color="success"
+                                    variant="outlined"
+                                    className="text-capitalize"
+                                >
+                                    Xác Nhận
+                                </Button>
                             </Typography>
                         </Box>
                     </div>
-                    <div className="col-4"></div>
+                    <div className="col-sm-1 col-md-2 col-lg-3"></div>
                 </div>
             </div>
         </>

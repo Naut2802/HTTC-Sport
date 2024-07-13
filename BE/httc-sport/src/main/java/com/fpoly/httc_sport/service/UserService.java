@@ -1,9 +1,6 @@
 package com.fpoly.httc_sport.service;
 
-import com.fpoly.httc_sport.dto.request.AuthorizeUserRequest;
-import com.fpoly.httc_sport.dto.request.ChangePasswordRequest;
-import com.fpoly.httc_sport.dto.request.ResetPasswordRequest;
-import com.fpoly.httc_sport.dto.request.UserUpdateRequest;
+import com.fpoly.httc_sport.dto.request.*;
 import com.fpoly.httc_sport.dto.response.ChangePasswordResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
 import com.fpoly.httc_sport.entity.ForgotPasswordToken;
@@ -91,7 +88,7 @@ public class UserService {
 		return userMapper.toUserResponse(user);
 	}
 	
-	public UserResponse updateUser(String userId, UserUpdateRequest request) {
+	public UserResponse updateProfileUser(String userId, UserUpdateProfileRequest request) {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
@@ -100,12 +97,18 @@ public class UserService {
 		if (!user.getUsername().equals(name))
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		
-		userMapper.updateUser(user, request);
-		user.setPassword(encodePassword(user.getUsername(), user.getPassword()));
+		userMapper.updateProfileUser(user, request);
 		return userMapper.toUserResponse(userRepository.save(user));
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	public UserResponse updateUser(String userId, UserUpdateRequest request) {
+		var user = userRepository.findById(userId).orElseThrow(()
+				-> new AppException(ErrorCode.USER_NOT_EXISTED));
+		
+		userMapper.updateUser(user, request);
+		return userMapper.toUserResponse(userRepository.save(user));
+	}
+	
 	public UserResponse authorizeUser(String userId, AuthorizeUserRequest request) {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -116,18 +119,15 @@ public class UserService {
 		return userMapper.toUserResponse(userRepository.save(user));
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
 	public UserResponse getUser(String userId) {
 		return userMapper.toUserResponse(userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED)));
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
 	public List<UserResponse> getUsers() {
 		return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteUser(String userId) {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -194,7 +194,7 @@ public class UserService {
 		forgotPasswordTokenRepository.save(forgotPasswordToken);
 	}
 	
-	public String generateUrl(HttpServletRequest request) {
+	private String generateUrl(HttpServletRequest request) {
 		return "http://"+request.getServerName()+":"+request.getServerPort()+"/api/v1/user/forgot-password";
 	}
 	

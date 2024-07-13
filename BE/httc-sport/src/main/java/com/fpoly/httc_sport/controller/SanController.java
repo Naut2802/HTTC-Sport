@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.fpoly.config.VNPayConfig;
+import com.fpoly.httc_sport.config.VNPayConfig;
 import com.fpoly.httc_sport.entity.DanhGia;
 import com.fpoly.httc_sport.entity.San;
 import com.fpoly.httc_sport.entity.ThoiGianHoatDong;

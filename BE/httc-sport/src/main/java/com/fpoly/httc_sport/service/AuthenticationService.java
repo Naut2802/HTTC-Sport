@@ -77,16 +77,16 @@ public class AuthenticationService {
 	String GOOGLE_CLIENT_SECRET;
 	
 	@NonFinal
-	@Value("${oauth2.facebook.client-id}")
-	String FACEBOOK_CLIENT_ID;
-	
-	@NonFinal
-	@Value("${oauth2.facebook.client-secret}")
-	String FACEBOOK_CLIENT_SECRET;
-	
-	@NonFinal
 	@Value("${oauth2.google.redirect-uri}")
 	String REDIRECT_URI;
+	
+//	@NonFinal
+//	@Value("${oauth2.facebook.client-id}")
+//	String FACEBOOK_CLIENT_ID;
+//
+//	@NonFinal
+//	@Value("${oauth2.facebook.client-secret}")
+//	String FACEBOOK_CLIENT_SECRET;
 	
 	@NonFinal
 	final String GRANT_TYPE = "authorization_code";
@@ -235,59 +235,60 @@ public class AuthenticationService {
 				.build();
 	}
 	
-	public AuthenticationResponse facebookOutboundAuthenticate(String code, HttpServletResponse response) throws NoSuchAlgorithmException {
-		var tokenExchanged = facebookOutboundExchangeTokenClient.exchangeToken(FacebookExchangeTokenRequest.builder()
-				.clientId(FACEBOOK_CLIENT_ID)
-				.clientSecret(FACEBOOK_CLIENT_SECRET)
-				.redirectUri(REDIRECT_URI)
-				.code(code)
-				.build());
-		
-		log.info("Facebook token exchanged {}", tokenExchanged);
-		
-		String fields = "id,email,first_name,last_name";
-		var userInfo = facebookOutboundUserInfoClient.getUserInfo(fields, tokenExchanged.getAccessToken());
-		
-		var role = roleRepository.findByRoleName("USER").orElseThrow(() ->
-				new AppException(ErrorCode.ROLE_NOT_EXISTED));
-		
-		String password = generateRandomPassword();
-		User user = null;
-		
-		if (!userRepository.existsByEmail(userInfo.getEmail())) {
-			user = userRepository.save(User.builder()
-					.username(userInfo.getEmail())
-					.password(passwordEncoder.encode(userInfo.getEmail()+password))
-					.email(userInfo.getEmail())
-					.firstName(userInfo.getFirstName())
-					.lastName(userInfo.getLastName())
-					.isEnabled(true)
-					.roles(new HashSet<>(List.of(role)))
-					.build());
-			publisher.publishEvent(new OutboundCompleteEvent(user, password));
-		} else
-			user = userRepository.findByEmail(userInfo.getEmail()).get();
-		
-		
-		if (!user.getIsEnabled())
-			user.setIsEnabled(true);
-		
-		KeyPair keyPair = keyUtils.generateKeyPair();
-		var accessToken = jwtService.generateAccessToken(user, keyPair);
-		String jti = accessToken.substring(accessToken.length()-10);
-		var refreshToken = jwtService.generateRefreshToken(user, jti, keyPair);
-		String publicKey = keyUtils.exchangeRSAPublicKeyToString((RSAPublicKey) keyPair.getPublic());
-		
-		saveRefreshToken(user, refreshToken, publicKey);
-		
-		createRefreshTokenCookie(response, jti);
-		
-		return AuthenticationResponse.builder()
-				.accessToken(accessToken)
-				.userId(user.getId())
-				.authenticated(true)
-				.build();
-	}
+	//Login with Facebook
+//	public AuthenticationResponse facebookOutboundAuthenticate(String code, HttpServletResponse response) throws NoSuchAlgorithmException {
+//		var tokenExchanged = facebookOutboundExchangeTokenClient.exchangeToken(FacebookExchangeTokenRequest.builder()
+//				.clientId(FACEBOOK_CLIENT_ID)
+//				.clientSecret(FACEBOOK_CLIENT_SECRET)
+//				.redirectUri(REDIRECT_URI)
+//				.code(code)
+//				.build());
+//
+//		log.info("Facebook token exchanged {}", tokenExchanged);
+//
+//		String fields = "id,email,first_name,last_name";
+//		var userInfo = facebookOutboundUserInfoClient.getUserInfo(fields, tokenExchanged.getAccessToken());
+//
+//		var role = roleRepository.findByRoleName("USER").orElseThrow(() ->
+//				new AppException(ErrorCode.ROLE_NOT_EXISTED));
+//
+//		String password = generateRandomPassword();
+//		User user = null;
+//
+//		if (!userRepository.existsByEmail(userInfo.getEmail())) {
+//			user = userRepository.save(User.builder()
+//					.username(userInfo.getEmail())
+//					.password(passwordEncoder.encode(userInfo.getEmail()+password))
+//					.email(userInfo.getEmail())
+//					.firstName(userInfo.getFirstName())
+//					.lastName(userInfo.getLastName())
+//					.isEnabled(true)
+//					.roles(new HashSet<>(List.of(role)))
+//					.build());
+//			publisher.publishEvent(new OutboundCompleteEvent(user, password));
+//		} else
+//			user = userRepository.findByEmail(userInfo.getEmail()).get();
+//
+//
+//		if (!user.getIsEnabled())
+//			user.setIsEnabled(true);
+//
+//		KeyPair keyPair = keyUtils.generateKeyPair();
+//		var accessToken = jwtService.generateAccessToken(user, keyPair);
+//		String jti = accessToken.substring(accessToken.length()-10);
+//		var refreshToken = jwtService.generateRefreshToken(user, jti, keyPair);
+//		String publicKey = keyUtils.exchangeRSAPublicKeyToString((RSAPublicKey) keyPair.getPublic());
+//
+//		saveRefreshToken(user, refreshToken, publicKey);
+//
+//		createRefreshTokenCookie(response, jti);
+//
+//		return AuthenticationResponse.builder()
+//				.accessToken(accessToken)
+//				.userId(user.getId())
+//				.authenticated(true)
+//				.build();
+//	}
 	
 	@Transactional
 	public AuthenticationResponse refreshToken(HttpServletRequest request, HttpServletResponse response, RefreshRequest refreshRequest) throws NoSuchAlgorithmException {

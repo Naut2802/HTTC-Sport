@@ -15,9 +15,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Role {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
-	@Column(unique = true)
 	String roleName;
 	String description;
 }

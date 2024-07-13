@@ -10,6 +10,7 @@ import com.fpoly.httc_sport.event.OutboundCompleteEvent;
 import com.fpoly.httc_sport.event.RegistrationCompleteEvent;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
+import com.fpoly.httc_sport.mapper.RoleMapper;
 import com.fpoly.httc_sport.mapper.UserMapper;
 import com.fpoly.httc_sport.repository.RefreshTokenRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
@@ -58,6 +59,7 @@ public class AuthenticationService {
 	FacebookOutboundExchangeTokenClient facebookOutboundExchangeTokenClient;
 	FacebookOutboundUserInfoClient facebookOutboundUserInfoClient;
 	UserMapper userMapper;
+	RoleMapper roleMapper;
 	PasswordEncoder passwordEncoder;
 	ApplicationEventPublisher publisher;
 	JwtService jwtService;
@@ -179,6 +181,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
+				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	

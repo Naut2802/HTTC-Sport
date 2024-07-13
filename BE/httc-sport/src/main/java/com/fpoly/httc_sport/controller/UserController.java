@@ -25,20 +25,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 	UserService userService;
 	
-	@PatchMapping("change-password/{id}")
-	ApiResponse<ChangePasswordResponse> changePassword(@PathVariable String id, @RequestBody ChangePasswordRequest request) {
-		ChangePasswordResponse response = userService.changePassword(id, request);
+	@PatchMapping("change-password/{userId}")
+	ApiResponse<ChangePasswordResponse> changePassword(@PathVariable String userId, @RequestBody ChangePasswordRequest request) {
+		ChangePasswordResponse response = userService.changePassword(userId, request);
 		
 		return ApiResponse.<ChangePasswordResponse>builder()
 				.message(response.getMessage())
 				.result(response)
-				.build();
-	}
-	
-	@GetMapping("{userId}")
-	ApiResponse<UserResponse> getUser(@PathVariable String userId) {
-		return ApiResponse.<UserResponse>builder()
-				.result(userService.getUser(userId))
 				.build();
 	}
 	
@@ -53,6 +46,51 @@ public class UserController {
 	ApiResponse<UserResponse> updateProfileUser(@PathVariable String userId, @RequestBody UserUpdateProfileRequest request) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.updateProfileUser(userId, request))
+				.build();
+	}
+	
+	@GetMapping("forgot-password")
+	ApiResponse<?> checkEmail(@RequestParam("email") String email, HttpServletRequest request) {
+		String response = userService.sendForgotPasswordEmail(email, request);
+		
+		return ApiResponse.builder()
+				.message(response)
+				.build();
+	}
+	
+	@GetMapping("forgot-password/verify-token")
+	ApiResponse<?> validateToken(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
+		String result = userService.validateForgotPasswordToken(token);
+		
+		if (result.contains("expired")) {
+			response.sendRedirect("http://localhost:3000/forgot-password-verify-error");
+			return ApiResponse.builder()
+					.message(result)
+					.build();
+		}
+		
+		response.sendRedirect("http://localhost:3000/forgot-password-verify-success?token="+token);
+		return ApiResponse.builder()
+				.message(result)
+				.result(token)
+				.build();
+	}
+	
+	@PostMapping("forgot-password/reset-password")
+	ApiResponse<ChangePasswordResponse> resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordRequest request) {
+		ChangePasswordResponse response = userService.resetPassword(token, request);
+		
+		return ApiResponse.<ChangePasswordResponse>builder()
+				.message(response.getMessage())
+				.result(response)
+				.build();
+	}
+	
+	@GetMapping("{userId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<UserResponse> getUser(@PathVariable String userId) {
+		return ApiResponse.<UserResponse>builder()
+				.result(userService.getUser(userId))
 				.build();
 	}
 	
@@ -86,43 +124,6 @@ public class UserController {
 	ApiResponse<List<UserResponse>> getUsers() {
 		return ApiResponse.<List<UserResponse>>builder()
 				.result(userService.getUsers())
-				.build();
-	}
-	
-	@GetMapping("forgot-password")
-	ApiResponse<?> checkEmail(@RequestParam("email") String email, HttpServletRequest request) {
-		String response = userService.sendForgotPasswordEmail(email, request);
-		
-		return ApiResponse.builder()
-				.message(response)
-				.build();
-	}
-	
-	@GetMapping("forgot-password/verify-token")
-	ApiResponse<?> validateToken(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
-		String result = userService.validateForgotPasswordToken(token);
-		
-		if (result.contains("expired")) {
-			response.sendRedirect("http://localhost:3000/forgot-password-verify-error");
-			return ApiResponse.builder()
-					.message(result)
-					.build();
-			}
-		
-		response.sendRedirect("http://localhost:3000/forgot-password-verify-success?token="+token);
-		return ApiResponse.builder()
-				.message(result)
-				.result(token)
-				.build();
-	}
-	
-	@PostMapping("forgot-password/reset-password")
-	ApiResponse<ChangePasswordResponse> resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordRequest request) {
-		ChangePasswordResponse response = userService.resetPassword(token, request);
-		
-		return ApiResponse.<ChangePasswordResponse>builder()
-				.message(response.getMessage())
-				.result(response)
 				.build();
 	}
 	

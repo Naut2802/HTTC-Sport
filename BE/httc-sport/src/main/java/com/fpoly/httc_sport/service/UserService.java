@@ -22,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -124,8 +126,9 @@ public class UserService {
 				-> new AppException(ErrorCode.USER_NOT_EXISTED)));
 	}
 	
-	public List<UserResponse> getUsers() {
-		return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
+	public List<UserResponse> getUsers(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return userRepository.findAll(pageable).stream().map(userMapper::toUserResponse).toList();
 	}
 	
 	public void deleteUser(String userId) {

@@ -3,6 +3,8 @@ package com.fpoly.httc_sport.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,4 +14,5 @@ public class AuthenticationResponse {
 	String userId;
 	String accessToken;
 	boolean authenticated;
+	Set<RoleResponse> roles;
 }

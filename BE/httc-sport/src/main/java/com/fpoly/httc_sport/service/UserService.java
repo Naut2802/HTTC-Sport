@@ -33,10 +33,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -103,6 +100,61 @@ public class UserService {
 		return userMapper.toUserResponse(userRepository.save(user));
 	}
 	
+	public String sendForgotPasswordEmail(String email, HttpServletRequest request) {
+		var user = userRepository.findByEmail(email).orElseThrow(() ->
+				new AppException(ErrorCode.USER_NOT_EXISTED));
+		
+		Optional<ForgotPasswordToken> token = forgotPasswordTokenRepository.findByUser(user);
+		
+		token.ifPresent(forgotPasswordTokenRepository::delete);
+		
+		if (!user.getIsEnabled())
+			throw new AppException(ErrorCode.USER_NOT_EXISTED);
+		
+		String url = generateUrl(request);
+		
+		publisher.publishEvent(new ForgotPasswordEvent(user, url));
+		
+		return "Đã gửi yêu cầu reset mật khẩu thông qua email đăng ký, vui lòng kiểm tra email";
+	}
+	
+	public String validateForgotPasswordToken(String token) {
+		var forgotPasswordToken = forgotPasswordTokenRepository.findByToken(token).orElseThrow(() ->
+				new AppException(ErrorCode.FORGOT_PASSWORD_TOKEN_NOT_FOUND));
+		
+		if (forgotPasswordToken.getExpiryTime().before(Date.from(Instant.now()))) {
+			forgotPasswordTokenRepository.delete(forgotPasswordToken);
+			return "Invalid, token expired";
+		}
+		
+		return "Link xác thực hợp lệ";
+	}
+	
+	public ChangePasswordResponse resetPassword(String token, ResetPasswordRequest request) {
+		var forgotPasswordToken = forgotPasswordTokenRepository.findByToken(token).orElseThrow(() ->
+				new AppException(ErrorCode.FORGOT_PASSWORD_TOKEN_NOT_FOUND));
+		var user = forgotPasswordToken.getUser();
+		
+		if (!request.getNewPassword().equals(request.getConfirmationPassword()))
+			throw new AppException(ErrorCode.WRONG_CONFIRMATION_PASSWORD);
+		
+		String message = "Reset mật khẩu thất bại, mật khẩu mới không được giống mật khẩu cũ";
+		boolean flag = false;
+		if (!passwordEncoder.matches(user.getUsername() + request.getNewPassword(), user.getPassword())) {
+			user.setPassword(encodePassword(user.getUsername(), request.getNewPassword()));
+			userRepository.save(user);
+			forgotPasswordTokenRepository.delete(forgotPasswordToken);
+			message = "Reset mật khẩu thành công";
+			flag = true;
+		}
+		
+		return ChangePasswordResponse.builder()
+				.username(user.getUsername())
+				.message(message)
+				.isChanged(flag)
+				.build();
+	}
+	
 	public UserResponse updateUser(String userId, UserUpdateRequest request) {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -137,55 +189,6 @@ public class UserService {
 		
 		user.setIsEnabled(false);
 		userRepository.save(user);
-	}
-	
-	public String sendForgotPasswordEmail(String email, HttpServletRequest request) {
-		var user = userRepository.findByEmail(email).orElseThrow(() ->
-				new AppException(ErrorCode.USER_NOT_EXISTED));
-		
-		if (!user.getIsEnabled())
-			throw new AppException(ErrorCode.USER_NOT_EXISTED);
-		
-		String url = generateUrl(request);
-		
-		publisher.publishEvent(new ForgotPasswordEvent(user, url));
-		
-		return "Đã gửi yêu cầu reset mật khẩu thông qua email đăng ký, vui lòng kiểm tra email";
-	}
-	
-	public String validateForgotPasswordToken(String token) {
-		var forgotPasswordToken = forgotPasswordTokenRepository.findByToken(token).orElseThrow(() ->
-				new AppException(ErrorCode.FORGOT_PASSWORD_TOKEN_NOT_FOUND));
-		
-		if (forgotPasswordToken.getExpiryTime().before(Date.from(Instant.now())))
-			return "Invalid, token expired";
-		
-		return "Link xác thực hợp lệ";
-	}
-	
-	public ChangePasswordResponse resetPassword(String token, ResetPasswordRequest request) {
-		var forgotPasswordToken = forgotPasswordTokenRepository.findByToken(token).orElseThrow(() ->
-				new AppException(ErrorCode.FORGOT_PASSWORD_TOKEN_NOT_FOUND));
-		var user = forgotPasswordToken.getUser();
-		
-		if (!request.getNewPassword().equals(request.getConfirmationPassword()))
-			throw new AppException(ErrorCode.WRONG_CONFIRMATION_PASSWORD);
-		
-		String message = "Reset mật khẩu thất bại, mật khẩu mới không được giống mật khẩu cũ";
-		boolean flag = false;
-		if (!passwordEncoder.matches(user.getUsername() + request.getNewPassword(), user.getPassword())) {
-			user.setPassword(encodePassword(user.getUsername(), request.getNewPassword()));
-			userRepository.save(user);
-			forgotPasswordTokenRepository.delete(forgotPasswordToken);
-			message = "Reset mật khẩu thành công";
-			flag = true;
-		}
-		
-		return ChangePasswordResponse.builder()
-				.username(user.getUsername())
-				.message(message)
-				.isChanged(flag)
-				.build();
 	}
 	
 	public void saveForgotPasswordToken(User user, String token) {

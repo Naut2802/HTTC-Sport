@@ -3,13 +3,16 @@ package com.fpoly.httc_sport.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthResponse {
+public class CloudinaryResponse {
 	String userId;
 	String accessToken;
 	boolean authenticated;
+	Set<RoleResponse> roles;
 }

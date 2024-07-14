@@ -1,5 +1,6 @@
 package com.fpoly.httc_sport.entity;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -9,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.*;
@@ -22,30 +22,24 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ThongTinDatSan {
+public class Bill implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
-	@Temporal(TemporalType.TIME)
-	LocalTime thoiGianNhanSan;
-	@Temporal(TemporalType.TIME)
-	LocalTime thoiGianKetThuc;
-	Boolean trangThai;
 	@Temporal(TemporalType.DATE)
-	LocalDate ngayDat;
-	Double tongTien;
-	Double tienCoc;
-	String ghiChu;
+	LocalDate createdAt;
+	Double total;
+	@Temporal(TemporalType.TIME)
+	LocalTime startTime;
+	@Temporal(TemporalType.TIME)
+	LocalTime endTime;
+	Boolean isRate;
 	
-	@ManyToOne
-	@JoinColumn(name = "maSan")
-	San san;
-	
-	@ManyToOne
-	@JoinColumn(name = "username")
+	@ManyToOne @JoinColumn(name = "pitch_id")
+	Pitch pitch;
+	@ManyToOne @JoinColumn(name = "user_id")
 	User user;
+	
 	String email;
 	String phoneNumber;
-	String firstName;
-	String lastName;
 }

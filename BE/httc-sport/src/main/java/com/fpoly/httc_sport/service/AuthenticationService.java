@@ -155,16 +155,13 @@ public class AuthenticationService {
 	
 	public AuthenticationResponse authenticate(LoginRequest request, HttpServletResponse response) throws NoSuchAlgorithmException {
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-		var user = userRepository
-				.findByUsername(request.getUsername())
+		var user = userRepository.findByUsername(request.getUsername())
 				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
 		if (!user.getIsEnabled())
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		
-		boolean authenticated = passwordEncoder.matches(request.getUsername() + request.getPassword(), user.getPassword());
-		
-		if (!authenticated)
+		if (!passwordEncoder.matches(request.getUsername() + request.getPassword(), user.getPassword()))
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		
 		KeyPair keyPair = keyUtils.generateKeyPair();
@@ -202,12 +199,13 @@ public class AuthenticationService {
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 		
 		String password = generateRandomPassword();
+		Optional<User> _user = userRepository.findByEmail(userInfo.getEmail());
 		User user = null;
 		
-		if (!userRepository.existsByEmail(userInfo.getEmail())) {
+		if (_user.isEmpty()) {
 			user = userRepository.save(User.builder()
 					.username(userInfo.getEmail())
-					.password(passwordEncoder.encode(userInfo.getEmail()+password))
+					.password(passwordEncoder.encode(userInfo.getEmail() + password))
 					.email(userInfo.getEmail())
 					.firstName(userInfo.getName())
 					.lastName(userInfo.getFamilyName())
@@ -216,7 +214,7 @@ public class AuthenticationService {
 					.build());
 			publisher.publishEvent(new OutboundCompleteEvent(user, password));
 		} else
-			user = userRepository.findByEmail(userInfo.getEmail()).get();
+			user = _user.get();
 		
 		if (!user.getIsEnabled())
 			user.setIsEnabled(true);

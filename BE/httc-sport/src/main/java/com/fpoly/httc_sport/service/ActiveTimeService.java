@@ -3,24 +3,24 @@ package com.fpoly.httc_sport.service;
 import java.time.LocalTime;
 import java.util.List;
 
-import com.fpoly.httc_sport.repository.ThoiGianHoatDongRepository;
+import com.fpoly.httc_sport.repository.ActiveTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fpoly.httc_sport.entity.ThoiGianHoatDong;
+import com.fpoly.httc_sport.entity.ActiveTime;
 
 import jakarta.servlet.ServletContext;
 
 @Service
-public class ThoiGianHoatDongService {
+public class ActiveTimeService {
 	@Autowired
-	ThoiGianHoatDongRepository thoiGianHoatDongRepo;
+	ActiveTimeRepository activeTimeRepository;
 	@Autowired
 	ServletContext application;
 	
-	public ThoiGianHoatDong getByTime(LocalTime time) {
-		return thoiGianHoatDongRepo.findByThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqual(time, time).orElse(null);
-	}
+//	public ActiveTime getByTime(LocalTime time) {
+//		return thoiGianHoatDongRepo.findByThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqual(time, time).orElse(null);
+//	}
 	
 //	@Scheduled(fixedDelay = 1000, initialDelay = 1000)
 //	public void checkTime() {
@@ -28,7 +28,7 @@ public class ThoiGianHoatDongService {
 //		application.setAttribute("tghd", tghd == null ? new ThoiGianHoatDong(4, null, null, 1f, null) : tghd);
 //	}
 	
-	public List<ThoiGianHoatDong> getAll(){
-		return thoiGianHoatDongRepo.findAll();
-	}
+//	public List<ActiveTime> getAll(){
+//		return thoiGianHoatDongRepo.findAll();
+//	}
 }

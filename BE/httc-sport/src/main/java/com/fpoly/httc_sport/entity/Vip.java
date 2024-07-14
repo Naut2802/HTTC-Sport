@@ -15,14 +15,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Vip {
 	@Id
-	Integer bacVip;
-	Double mucBatDau;
-	Double mucKetThuc;
-	Float giamGia;
-	public Vip(Integer bacVip) {
-		super();
-		this.bacVip = bacVip;
-	}
-	
-	
+	Integer level;
+	Double min;
+	Double max;
+	Float discountRate;
 }

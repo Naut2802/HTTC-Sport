@@ -6,7 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,21 +16,14 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "hinh_anh")
 public class Image {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
-	String tenAnh;
+	String publicId;
+	String url;
 	
 	@ManyToOne
-	@JoinColumn(name = "maSan")
-	San san;
-
-	public Image(String tenAnh, San san) {
-		super();
-		this.tenAnh = tenAnh;
-		this.san = san;
-	}
-	
+	@JoinColumn(name = "pitch_id")
+	Pitch pitch;
 }

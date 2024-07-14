@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Report implements Serializable {
 	@Id
-	San san;
-	Double tongTien;
-	Integer thang;
+	Pitch pitch;
+	Double total;
+	Integer month;
 }

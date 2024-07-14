@@ -1,13 +1,11 @@
 package com.fpoly.httc_sport.entity;
 
-import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,11 +16,11 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoaiSan {
+public class PitchType {
 	@Id
-	Integer maLoai;
-	String tenLoai;
+	Integer typeId;
+	String typeName;
 	
-	@OneToMany(mappedBy = "loaiSan", fetch = FetchType.EAGER)
-	Set<San> listSan;
+	@OneToMany(mappedBy = "pitchType", fetch = FetchType.EAGER)
+	Set<Pitch> listPitch;
 }

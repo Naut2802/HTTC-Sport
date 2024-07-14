@@ -6,7 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,16 +16,16 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DanhGia {
+public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
-	Integer mocSao;
-	String nhanXet;
+	Integer rate;
+	String description;
 	
-	@ManyToOne @JoinColumn(name = "maSan")
-	San san;
+	@ManyToOne @JoinColumn(name = "pitchId")
+	Pitch pitch;
 	
-	@ManyToOne @JoinColumn(name = "username")
+	@ManyToOne @JoinColumn(name = "user_id")
 	User user;
 }

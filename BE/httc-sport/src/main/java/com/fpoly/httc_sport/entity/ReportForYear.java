@@ -16,6 +16,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReportForYear implements Serializable{
 	@Id
-	Double tongTien;
-	Integer nam;
+	Double total;
+	Integer year;
 }

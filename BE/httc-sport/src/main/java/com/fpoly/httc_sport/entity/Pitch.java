@@ -1,7 +1,6 @@
 package com.fpoly.httc_sport.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
@@ -12,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -23,29 +21,29 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class San implements Serializable {
+public class Pitch implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer maSan;
-	String tenSan;
-	Double giaSan;
-	String diaChi;
-	Boolean trangThaiSan;
-	String trangThaiHoatDong; 
-	String moTa;
+	Integer id;
+	String pitchName;
+	Double price;
+	String address;
+	Boolean isEnabled;
+	String activeStatus;
+	String description;
 
 	@ManyToOne
-	@JoinColumn(name = "maLoai")
-	LoaiSan loaiSan;
+	@JoinColumn(name = "type_id")
+	PitchType pitchType;
 	
-	@OneToMany(mappedBy = "san", fetch = FetchType.EAGER)
-	Set<Image> listHinhAnh;
+	@OneToMany(mappedBy = "pitch", fetch = FetchType.EAGER)
+	Set<Image> listImage;
 	
-	@OneToMany(mappedBy = "san", fetch = FetchType.EAGER)
-	Set<DanhGia> listDanhGia;
+	@OneToMany(mappedBy = "pitch", fetch = FetchType.EAGER)
+	Set<Comment> listComment;
 
-	@OneToMany(mappedBy = "san", fetch = FetchType.EAGER)
-	Set<HoaDon> listHoaDon;
+	@OneToMany(mappedBy = "pitch", fetch = FetchType.EAGER)
+	Set<Bill> listBill;
 
 //	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //	@JoinTable(name = "san_tghd", joinColumns = @JoinColumn(name = "maSan"), inverseJoinColumns = @JoinColumn(name = "ca"))

@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import slugify from 'slugify'; // Import slugify nè
 
@@ -28,9 +28,10 @@ import avt from '~/components/Images/avt.jpg';
 const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mảng trang trên navbar nè
 const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch']; //Mảng dòng của cái avatar click ra nè
 
-function Header() {
+export default function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const navigate = useNavigate();
 
     var checkUser = null;
     const checkUserInStorage = localStorage.getItem('accessToken');
@@ -42,8 +43,10 @@ function Header() {
         await handleLogoutAPI();
         toast.info('Bạn đã đăng xuất!');
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
         localStorage.removeItem('userId');
-        location.href = '/trang-chu';
+        navigate('/trang-chu');
     };
 
     const handleOpenNavMenu = (event) => {
@@ -208,7 +211,7 @@ function Header() {
                     </Box>
 
                     {!checkUser ? (
-                        <Typography component={Link} to="/dang-nhap" variant="">
+                        <Typography component={Link} to="/login" variant="">
                             <Button sx={{ ml: 1, color: 'teal' }} startIcon={<LoginIcon />} size="small">
                                 Đăng nhập
                             </Button>
@@ -271,5 +274,3 @@ function Header() {
         </AppBar>
     );
 }
-
-export default Header;

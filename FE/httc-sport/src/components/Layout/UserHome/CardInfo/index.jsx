@@ -5,7 +5,7 @@ import lienhe from '~/components/Images/lienhe.jpg';
 import sanbong from '~/components/Images/sanbong.jpg';
 import tintuc from '~/components/Images/tintuc.jpg';
 
-function CardInfo() {
+export default function CardInfo() {
     return (
         <>
             <div className="row">
@@ -14,12 +14,7 @@ function CardInfo() {
                     <Card className="card" sx={{ maxWidth: 'auto', marginLeft: 2, marginRight: 2 }}>
                         <CardMedia component="img" className="img-fluid" image={sanbong} alt="Image title" />
                         <div className="card-img-overlay">
-                            <Typography
-                                variant="h5"
-                                component={Link}
-                                to="a"
-                                sx={{ textDecoration: 'none', color: 'black' }}
-                            >
+                            <Typography variant="h5" component={Link} to="a" sx={{ textDecoration: 'none', color: 'black' }}>
                                 <h1>Sân Bóng</h1>
                             </Typography>
                             <Button size="small" color="inherit" variant="contained">
@@ -38,12 +33,12 @@ function CardInfo() {
                             <Typography
                                 variant="h5"
                                 component={Link}
-                                to="a"
+                                to="/tin-tuc"
                                 sx={{ textDecoration: 'none', color: 'white' }}
                             >
                                 <h1>Tin Tức</h1>
                             </Typography>
-                            <Button size="small" color="inherit" variant="contained">
+                            <Button component={Link} to="/tin-tuc" size="small" color="inherit" variant="contained">
                                 Chi Tiết
                             </Button>
                         </div>
@@ -53,12 +48,7 @@ function CardInfo() {
                     <Card className="card" sx={{ maxWidth: 'auto', marginLeft: 2, marginRight: 2 }}>
                         <CardMedia component="img" className="img-fluid" image={lienhe} alt="Image title" />
                         <div className="card-img-overlay">
-                            <Typography
-                                variant="h5"
-                                component={Link}
-                                to="a"
-                                sx={{ textDecoration: 'none', color: 'white' }}
-                            >
+                            <Typography variant="h5" component={Link} to="a" sx={{ textDecoration: 'none', color: 'white' }}>
                                 <h1>Liên Hệ</h1>
                             </Typography>
                             <Button size="small" color="inherit" variant="contained">
@@ -71,5 +61,3 @@ function CardInfo() {
         </>
     );
 }
-
-export default CardInfo;

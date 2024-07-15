@@ -15,8 +15,10 @@ export default function ResetPassword() {
         const token = localStorage.getItem('token');
         const res = await handleResetPasswordUser(token, data);
         console.log(res);
-        toast.success('Bạn đã thay đổi mật khẩu thành công. Vui lòng đăng nhập lại!');
-        navigate('/trang-chu');
+        if (res.data?.result.changed) {
+            toast.success('Bạn đã thay đổi mật khẩu thành công. Vui lòng đăng nhập lại!');
+            navigate('/login');
+        } else toast.error(res.data?.message);
     };
 
     return (

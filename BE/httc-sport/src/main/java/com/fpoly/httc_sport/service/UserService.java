@@ -167,7 +167,7 @@ public class UserService {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
-		List<Role> roles = roleRepository.findAllByRoleNameIn(request.getRoles());
+		List<Role> roles = roleRepository.findAllById(request.getRoles());
 		
 		user.setRoles(new HashSet<>(roles));
 		return userMapper.toUserResponse(userRepository.save(user));

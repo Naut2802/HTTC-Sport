@@ -15,13 +15,15 @@ export default function ChangePassword() {
         const userId = localStorage.getItem('userId');
         const res = await handleChangePasswordUser(userId, data);
         console.log(res);
-        toast.success('Bạn đã thay đổi mật khẩu thành công. Vui lòng đăng nhập lại!');
-        await handleLogoutAPI();
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        navigate('/trang-chu');
+        if (res.data?.result.changed) {
+            toast.success('Bạn đã thay đổi mật khẩu thành công. Vui lòng đăng nhập lại!');
+            await handleLogoutAPI();
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            navigate('/login');
+        } else toast.error(res.data?.message);
     };
 
     return (

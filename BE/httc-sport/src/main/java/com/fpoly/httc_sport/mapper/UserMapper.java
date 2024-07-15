@@ -16,24 +16,24 @@ public interface UserMapper {
 	UserResponse toUserResponse(User user);
 	
 	@Mapping(target = "roles", ignore = true)
-	@Mapping(target = "listThongTinDatSan", ignore = true)
-	@Mapping(target = "listDanhGia", ignore = true)
-	@Mapping(target = "listHoaDon", ignore = true)
+	@Mapping(target = "listRentInfo", ignore = true)
+	@Mapping(target = "listComment", ignore = true)
+	@Mapping(target = "listBill", ignore = true)
 	@Mapping(target = "vip", ignore = true)
 	void updateUser(@MappingTarget User user, UserUpdateRequest request);
 	
 	@Mapping(target = "email", ignore = true)
 	@Mapping(target = "roles", ignore = true)
-	@Mapping(target = "listThongTinDatSan", ignore = true)
-	@Mapping(target = "listDanhGia", ignore = true)
-	@Mapping(target = "listHoaDon", ignore = true)
+	@Mapping(target = "listRentInfo", ignore = true)
+	@Mapping(target = "listComment", ignore = true)
+	@Mapping(target = "listBill", ignore = true)
 	@Mapping(target = "vip", ignore = true)
 	void updateProfileUser(@MappingTarget User user, UserUpdateProfileRequest request);
 	
 	@Mapping(target = "roles", ignore = true)
-	@Mapping(target = "listThongTinDatSan", ignore = true)
-	@Mapping(target = "listDanhGia", ignore = true)
-	@Mapping(target = "listHoaDon", ignore = true)
+	@Mapping(target = "listRentInfo", ignore = true)
+	@Mapping(target = "listComment", ignore = true)
+	@Mapping(target = "listBill", ignore = true)
 	@Mapping(target = "vip", ignore = true)
 	void changePassword(@MappingTarget User user, UserUpdateRequest request);
 }

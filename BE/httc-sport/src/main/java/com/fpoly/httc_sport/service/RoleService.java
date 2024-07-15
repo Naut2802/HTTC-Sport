@@ -21,14 +21,13 @@ import java.util.Set;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-@PreAuthorize("hasRole('ADMIN')")
 public class RoleService {
 	RoleMapper roleMapper;
 	//	PermissionRepository permissionRepository;
 	RoleRepository roleRepository;
 	
 	public RoleResponse createRole(RoleRequest request) {
-		if (roleRepository.existsByRoleName(request.getRoleName()))
+		if (roleRepository.existsById(request.getRoleName()))
 			throw new AppException(ErrorCode.EXISTED);
 		
 		var role = roleMapper.toRole(request);
@@ -40,7 +39,7 @@ public class RoleService {
 		return roleMapper.toRoleResponse(role);
 	}
 	
-	public RoleResponse updateRole(long id, RoleRequest request) {
+	public RoleResponse updateRole(String id, RoleRequest request) {
 		var role = roleRepository.findById(id).orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 
@@ -51,7 +50,7 @@ public class RoleService {
 		return roleMapper.toRoleResponse(roleRepository.save(role));
 	}
 	
-	public void deleteRole(long id) {
+	public void deleteRole(String id) {
 		if (!roleRepository.existsById(id))
 			throw new AppException(ErrorCode.ROLE_NOT_EXISTED);
 		

@@ -104,7 +104,7 @@ public class AuthenticationService {
 		user.setPassword(encodePassword(user.getUsername(), user.getPassword()));
 		user.setIsEnabled(false);
 		
-		var role = roleRepository.findByRoleName("USER").orElseThrow(() ->
+		var role = roleRepository.findById("USER").orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 		
 		user.setRoles(new HashSet<>(List.of(role)));
@@ -195,7 +195,7 @@ public class AuthenticationService {
 		
 		var userInfo = googleOutboundUserInfoClient.getUserInfo("json", tokenExchanged.getAccessToken());
 		
-		var role = roleRepository.findByRoleName("USER").orElseThrow(() ->
+		var role = roleRepository.findById("USER").orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 		
 		String password = generateRandomPassword();

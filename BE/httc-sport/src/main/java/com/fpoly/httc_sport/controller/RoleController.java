@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
+@PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
 	RoleService roleService;
 	
@@ -28,14 +30,14 @@ public class RoleController {
 	}
 	
 	@PutMapping("/{id}")
-	public ApiResponse<RoleResponse> updateRole(@PathVariable long id, @RequestBody RoleRequest request) {
+	public ApiResponse<RoleResponse> updateRole(@PathVariable String id, @RequestBody RoleRequest request) {
 		return ApiResponse.<RoleResponse>builder()
 				.result(roleService.updateRole(id, request))
 				.build();
 	}
 	
 	@DeleteMapping("/{id}")
-	public ApiResponse<String> deleteRole(@PathVariable long id) {
+	public ApiResponse<String> deleteRole(@PathVariable String id) {
 		roleService.deleteRole(id);
 		return ApiResponse.<String>builder()
 				.result("Role has been deleted.")

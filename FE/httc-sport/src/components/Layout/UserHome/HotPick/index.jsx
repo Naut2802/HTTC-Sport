@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import sanQN_1 from '~/components/Images/sanquynhnhu/anh_san_1_1.png';
 
-function HotPick() {
+export default function HotPick() {
     return (
         <div className="text-start d-flex row">
             <Card
@@ -219,5 +219,3 @@ function HotPick() {
         </div>
     );
 }
-
-export default HotPick;

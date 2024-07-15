@@ -3,7 +3,7 @@ import carosel_2 from '~/components/Images/carosel-2.jpg';
 import carosel_3 from '~/components/Images/carosel-3.jpg';
 import carosel_4 from '~/components/Images/carosel-4.jpg';
 
-function Banner() {
+export default function Banner() {
     return (
         <div id="carouselExampleAutoplaying" className="carousel slide" data-bs-ride="carousel">
             <div className="carousel-inner rounded-4">
@@ -41,5 +41,3 @@ function Banner() {
         </div>
     );
 }
-
-export default Banner;

@@ -28,7 +28,7 @@ import avt from '~/components/Images/avt.jpg';
 const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mảng trang trên navbar nè
 const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch']; //Mảng dòng của cái avatar click ra nè
 
-function Header() {
+export default function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const navigate = useNavigate();
@@ -43,6 +43,8 @@ function Header() {
         await handleLogoutAPI();
         toast.info('Bạn đã đăng xuất!');
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
         localStorage.removeItem('userId');
         navigate('/trang-chu');
     };
@@ -209,7 +211,7 @@ function Header() {
                     </Box>
 
                     {!checkUser ? (
-                        <Typography component={Link} to="/dang-nhap" variant="">
+                        <Typography component={Link} to="/login" variant="">
                             <Button sx={{ ml: 1, color: 'teal' }} startIcon={<LoginIcon />} size="small">
                                 Đăng nhập
                             </Button>
@@ -272,5 +274,3 @@ function Header() {
         </AppBar>
     );
 }
-
-export default Header;

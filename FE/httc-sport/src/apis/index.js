@@ -46,3 +46,11 @@ export const handleChangeInfoUser = async (userId, data) => {
 export const handleChangePasswordUser = async (userId, data) => {
     return await authorizedAxiosInstance.patch(`${API_ROOT}/api/v1/user/change-password/${userId}`, data);
 };
+
+export const handleCheckMailForgotPassword = async (email) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user/forgot-password?email=${email}`);
+};
+
+export const handleResetPasswordUser = async (token, data) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/user/forgot-password/reset-password?token=${token}`, data);
+};

@@ -2,10 +2,10 @@ import * as React from 'react';
 
 import logo from '~/components/Images/logo.png';
 import Banner from './Banner';
-import HotPick from './HotPick';
 import CardInfo from './CardInfo';
+import HotPick from './HotPick';
 
-function UserHome() {
+export default function UserHome() {
     return (
         <div className="my-3 container">
             <div className="d-flex justify-content-center">
@@ -19,9 +19,7 @@ function UserHome() {
             </div>
             <HotPick />
             <hr />
-            <CardInfo/>
+            <CardInfo />
         </div>
     );
 }
-
-export default UserHome;

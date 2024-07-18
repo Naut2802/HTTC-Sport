@@ -1,38 +1,38 @@
 package com.fpoly.httc_sport.controller;
 
+import com.fpoly.httc_sport.dto.request.PitchRequest;
+import com.fpoly.httc_sport.dto.response.ApiResponse;
+import com.fpoly.httc_sport.dto.response.PitchResponse;
+import com.fpoly.httc_sport.service.PitchService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/pitch")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PitchController {
-//	@Autowired
-//	ServletContext application;
-//	@Autowired
-//	HttpServletRequest request;
-//	@Autowired
-//	HttpServletResponse response;
-//	@Autowired
-//	HttpSession session;
-//	@Autowired
-//	SanService sanService;
-//	@Autowired
-//	ThongTinDatSanService thongtinService;
-//	@Autowired
-//	DanhGiaService danhGiaService;
-//	@Autowired
-//	ThoiGianHoatDongService thoiGianHoatDongService;
-//	@Autowired
-//	HoaDonService hoaDonService;
-//	@Autowired
-//	ToastUtil toastUtil;
-//	@Autowired
-//	MailerService mailer;
-//
+	PitchService pitchService;
+	
+	@PostMapping
+	ApiResponse<PitchResponse> createPitch(@Valid @RequestBody PitchRequest request) {
+		return ApiResponse.<PitchResponse>builder().build();
+	}
+	
+	@PutMapping
+	ApiResponse<PitchResponse> updatePitch() {
+		return ApiResponse.<PitchResponse>builder().build();
+	}
+	
+	@GetMapping
+	ApiResponse<List<PitchResponse>> getPitches() {
+		return ApiResponse.<List<PitchResponse>>builder().build();
+	}
 //	@GetMapping("{id}")
 //	public String index(@PathVariable("id") Integer id, Model model) {
 //		San san = sanService.getSan(id);

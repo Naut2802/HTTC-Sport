@@ -9,5 +9,5 @@ import com.fpoly.httc_sport.entity.Pitch;
 public interface PitchRepository extends JpaRepository<Pitch, Integer> {
 	List<Pitch> findAllByIsEnabledTrue();
 	List<Pitch> findByPitchNameContainingAndIsEnabledTrue(String pitchName);
-	List<Pitch> findByPitchTypeTypeIdEqualsAndIsEnabledTrue(Integer typeId);
+	List<Pitch> findByTypeEqualsAndIsEnabledTrue(String type);
 }

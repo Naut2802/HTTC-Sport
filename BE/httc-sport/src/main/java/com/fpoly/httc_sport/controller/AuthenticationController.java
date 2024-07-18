@@ -13,6 +13,7 @@ import com.fpoly.httc_sport.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,7 +30,7 @@ public class AuthenticationController {
 	AuthenticationService authenticationService;
 	
 	@PostMapping("sign-in")
-	ApiResponse<AuthenticationResponse> signIn(@RequestBody LoginRequest request, HttpServletResponse response) throws NoSuchAlgorithmException {
+	ApiResponse<AuthenticationResponse> signIn(@Valid @RequestBody LoginRequest request, HttpServletResponse response) throws NoSuchAlgorithmException {
 		return ApiResponse.<AuthenticationResponse>builder()
 				.result(authenticationService.authenticate(request, response))
 				.build();
@@ -51,7 +52,7 @@ public class AuthenticationController {
 //	}
 	
 	@PostMapping("sign-up")
-	ApiResponse<String> signUp(@RequestBody RegisterRequest request, HttpServletRequest httpRequest) {
+	ApiResponse<String> signUp(@Valid @RequestBody RegisterRequest request, HttpServletRequest httpRequest) {
 		String response = authenticationService.register(request, httpRequest);
 		
 		return ApiResponse.<String>builder()

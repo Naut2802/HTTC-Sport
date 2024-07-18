@@ -82,7 +82,6 @@ public class SecurityConfig {
 						.addLogoutHandler(logoutHandler)
 						.logoutSuccessHandler(((request, response, authentication) -> SecurityContextHolder.clearContext())))
 				.addFilterBefore(new JwtFilter(jwtUtils, keyService), UsernamePasswordAuthenticationFilter.class)
-				.exceptionHandling(ex -> ex.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
 				.httpBasic(AbstractHttpConfigurer::disable);;
 		
 		return httpSecurity.build();

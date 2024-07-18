@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,8 +21,8 @@ import java.util.List;
 public class PitchController {
 	PitchService pitchService;
 	
-	@PostMapping
-	ApiResponse<PitchResponse> createPitch(@Valid @RequestBody PitchRequest request) throws IOException {
+	@PostMapping()
+	ApiResponse<PitchResponse> createPitch(@Valid @ModelAttribute PitchRequest request) throws IOException {
 		return ApiResponse.<PitchResponse>builder()
 				.result(pitchService.createPitch(request))
 				.build();

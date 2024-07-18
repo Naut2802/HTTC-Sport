@@ -47,7 +47,10 @@ public class PitchService {
 		pitch.setImages(new HashSet<>(imageService.save(request.getImages()).stream().map(imageMapper::toImage).toList()));
 		pitch.setAddress(pitchMapper.toAddress(request));
 		
-		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
+		var response = pitchMapper.toPitchResponse(pitchRepository.save(pitch));
+		response.setImage(pitch.getImages().stream().findFirst().map(imageMapper::toImageResponse).get());
+		
+		return response;
 	}
 //	public List<Pitch> getAllSanActive() {
 //		return pitchRepository.findAllByIsEnabledTrue();

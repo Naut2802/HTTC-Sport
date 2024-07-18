@@ -18,7 +18,7 @@ public class RegisterRequest{
 	@Size(min = 4, message = "USERNAME_INVALID")
 	String username;
 	@NotNull(message = "PASSWORD_NULL")
-	@Size(min = 6, message = "PASSWORD_INVALID")
+	@Size(min = 5, message = "PASSWORD_INVALID")
 	String password;
 	@NotNull(message = "EMAIL_NULL")
 	@Email(message = "EMAIL_INVALID")

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,12 +21,14 @@ public class PitchController {
 	PitchService pitchService;
 	
 	@PostMapping
-	ApiResponse<PitchResponse> createPitch(@Valid @RequestBody PitchRequest request) {
-		return ApiResponse.<PitchResponse>builder().build();
+	ApiResponse<PitchResponse> createPitch(@Valid @RequestBody PitchRequest request) throws IOException {
+		return ApiResponse.<PitchResponse>builder()
+				.result(pitchService.createPitch(request))
+				.build();
 	}
 	
-	@PutMapping
-	ApiResponse<PitchResponse> updatePitch() {
+	@PutMapping("{id}")
+	ApiResponse<PitchResponse> updatePitch(@PathVariable int id) {
 		return ApiResponse.<PitchResponse>builder().build();
 	}
 	

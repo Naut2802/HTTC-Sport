@@ -24,7 +24,8 @@ public class PitchResponse {
 	String city;
 	String description;
 	Boolean isEnabled;
-	String activeStatus;
-	int typeId;
+	String type;
+	int total;
+	int remaining;
 	ImageResponse image;
 }

@@ -21,8 +21,9 @@ public class PitchDetailsResponse {
 	String city;
 	String description;
 	Boolean isEnabled;
-	String activeStatus;
-	int typeId;
+	String type;
+	int total;
+	int remaining;
 	Set<ImageResponse> images;
 	Set<CommentResponse> comments;
 }

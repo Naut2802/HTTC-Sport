@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.fpoly.httc_sport.dto.request.ImageRequest;
 import com.fpoly.httc_sport.dto.response.ImageResponse;
+import com.fpoly.httc_sport.entity.Image;
+import com.fpoly.httc_sport.entity.Pitch;
 import com.fpoly.httc_sport.mapper.ImageMapper;
 import com.fpoly.httc_sport.repository.ImageRepository;
 import lombok.AccessLevel;
@@ -22,6 +24,7 @@ public class ImageService {
 	ImageRepository imageRepository;
 	ImageMapper imageMapper;
 	CloudinaryService cloudinaryService;
+	
 	public List<ImageResponse> save(List<MultipartFile> images) throws IOException {
 		List<ImageResponse> responses = new ArrayList<>();
 		images.forEach(image -> {
@@ -35,6 +38,26 @@ public class ImageService {
 				responses.add(imageResponse);
 				
 				imageRepository.save(imageMapper.toImage(imageResponse));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return responses;
+	}
+	
+	public List<Image> saveWithPitch(List<MultipartFile> images, Pitch pitch) throws IOException {
+		List<Image> responses = new ArrayList<>();
+		images.forEach(image -> {
+			try {
+				var uploadResult = cloudinaryService.uploadFile(image);
+				Image imageResponse = Image.builder()
+						.publicId(uploadResult.get("public_id").toString())
+						.url(uploadResult.get("url").toString())
+						.pitch(pitch)
+						.build();
+				
+				responses.add(imageResponse);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

@@ -1,66 +1,63 @@
 package com.fpoly.httc_sport.controller;
 
+import com.fpoly.httc_sport.dto.request.PitchRequest;
+import com.fpoly.httc_sport.dto.response.ApiResponse;
+import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
+import com.fpoly.httc_sport.dto.response.PitchResponse;
+import com.fpoly.httc_sport.service.PitchService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/pitch")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PitchController {
-//	@Autowired
-//	ServletContext application;
-//	@Autowired
-//	HttpServletRequest request;
-//	@Autowired
-//	HttpServletResponse response;
-//	@Autowired
-//	HttpSession session;
-//	@Autowired
-//	SanService sanService;
-//	@Autowired
-//	ThongTinDatSanService thongtinService;
-//	@Autowired
-//	DanhGiaService danhGiaService;
-//	@Autowired
-//	ThoiGianHoatDongService thoiGianHoatDongService;
-//	@Autowired
-//	HoaDonService hoaDonService;
-//	@Autowired
-//	ToastUtil toastUtil;
-//	@Autowired
-//	MailerService mailer;
-//
-//	@GetMapping("{id}")
-//	public String index(@PathVariable("id") Integer id, Model model) {
-//		San san = sanService.getSan(id);
-//		List<ThoiGianHoatDong> khungGio = thoiGianHoatDongService.getAll();
-//		List<DanhGia> danhGia = (List<DanhGia>) danhGiaService.findById(san.getMaSan());
-//		if (san != null) {
-//			Float sao = 0f;
-//			for (DanhGia dg : san.getListDanhGia()) {
-//				sao += dg.getMocSao();
-//			}
-//			sao = sao / san.getListDanhGia().size();
-//
-//			model.addAttribute("danhGia_", danhGia);
-//			model.addAttribute("san", san);
-//			model.addAttribute("danhGia", sao.isNaN() ? 0 : sao);
-//			session.setAttribute("rq", "san/chitietsan.html");
-//			model.addAttribute("khungGio", khungGio);
-//			return "index";
-//		}
-//		return "redirect:/home";
-//	}
-//
-//	@GetMapping("danh-sach-san")
-//	public String index() {
-//		session.setAttribute("rq", "/san/dsSan.html");
-//		return "index";
-//	}
-//
+	PitchService pitchService;
+	
+	@PostMapping
+	ApiResponse<PitchResponse> createPitch(@Valid @ModelAttribute PitchRequest request) throws IOException {
+		return ApiResponse.<PitchResponse>builder()
+				.result(pitchService.createPitch(request))
+				.build();
+	}
+	
+	@PutMapping("{id}")
+	ApiResponse<PitchResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws IOException {
+		return ApiResponse.<PitchResponse>builder()
+				.result(pitchService.updatePitch(id, request))
+				.build();
+	}
+	
+	@DeleteMapping("{id}")
+	ApiResponse<PitchResponse> deletePitch(@PathVariable int id) {
+		pitchService.deletePitch(id);
+		return ApiResponse.<PitchResponse>builder()
+				.message("Xóa sân thành công")
+				.build();
+	}
+	
+	@GetMapping("{id}")
+	ApiResponse<PitchDetailsResponse> getPitch(@PathVariable int id) {
+		return ApiResponse.<PitchDetailsResponse>builder()
+				.result(pitchService.getPitch(id))
+				.build();
+	}
+	
+	@GetMapping
+	ApiResponse<List<PitchResponse>> getPitches() {
+		return ApiResponse.<List<PitchResponse>>builder()
+				.result(pitchService.getPitches())
+				.build();
+	}
+	
 //	@GetMapping("dat-san/{id}")
 //	public String datSan(@PathVariable("id") Integer id, Model model) {
 //		San san = sanService.getSan(id);

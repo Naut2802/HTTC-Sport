@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import java.util.Set;
 
 @Builder
+@Data
 @Getter
 @Setter
 @NoArgsConstructor

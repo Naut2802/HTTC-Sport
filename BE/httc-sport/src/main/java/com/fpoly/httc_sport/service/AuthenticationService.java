@@ -97,7 +97,7 @@ public class AuthenticationService {
 		if(userRepository.existsByUsername(request.getUsername()))
 			throw new AppException(ErrorCode.USER_EXISTED);
 		if(userRepository.existsByEmail(request.getEmail()))
-			throw new AppException(ErrorCode.USER_EXISTED);
+			throw new AppException(ErrorCode.EMAIL_EXISTED);
 		
 		var user = userMapper.toUser(request);
 		
@@ -233,6 +233,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
+				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	
@@ -323,6 +324,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
+				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	

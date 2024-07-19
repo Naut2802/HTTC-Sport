@@ -1,11 +1,28 @@
 package com.fpoly.httc_sport.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.fpoly.httc_sport.dto.request.PitchRequest;
+import com.fpoly.httc_sport.dto.response.ImageResponse;
+import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
+import com.fpoly.httc_sport.dto.response.PitchResponse;
+import com.fpoly.httc_sport.entity.Address;
+import com.fpoly.httc_sport.entity.Image;
+import com.fpoly.httc_sport.exception.AppException;
+import com.fpoly.httc_sport.exception.ErrorCode;
+import com.fpoly.httc_sport.mapper.ImageMapper;
+import com.fpoly.httc_sport.mapper.PitchMapper;
+import com.fpoly.httc_sport.repository.AddressRepository;
 import com.fpoly.httc_sport.repository.PitchRepository;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,36 +30,75 @@ import com.fpoly.httc_sport.entity.Comment;
 import com.fpoly.httc_sport.entity.Pitch;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PitchService {
-//	@Autowired
-//	private PitchRepository pitchRepository;
-//
-//	public List<Pitch> getAllSan() {
-//		return (List<Pitch>) pitchRepository.findAll();
-//	}
-//
-//	public List<Pitch> getAllSanActive() {
-//		return pitchRepository.findAllByIsEnabledTrue();
-//	}
-//
-//	public Pitch getSan(Integer id) {
-//		return pitchRepository.findById(id).orElse(null);
-//	}
-//
-//	public void save(Pitch pitch) {
-//		pitchRepository.save(pitch);
-//	}
-//
-//	public Boolean deleteSan(Integer id) {
-//		Pitch pitch = pitchRepository.findById(id).orElse(null);
-//
-//		if(pitch != null) {
-//			pitch.setIsEnabled(false);
-//			pitchRepository.save(pitch);
-//			return true;
-//		}
-//		return false;
-//	}
+	PitchRepository pitchRepository;
+	AddressRepository addressRepository;
+	PitchMapper pitchMapper;
+	ImageMapper imageMapper;
+	ImageService imageService;
+	
+	public PitchResponse createPitch(PitchRequest request) throws IOException {
+		if (addressRepository.existsByStreetAndDistrict(request.getStreet(), request.getDistrict()))
+			throw new AppException(ErrorCode.PITCH_EXISTED);
+		
+		var pitch = pitchMapper.toPitch(request);
+		pitch.setRemaining(request.getTotal());
+		pitch.setImages(new HashSet<>(imageService.saveWithPitch(request.getImages(), pitch)));
+		pitch.setAddress(pitchMapper.toAddress(request));
+		
+		var response = pitchMapper.toPitchResponse(pitchRepository.save(pitch));
+		response.setImage(pitch.getImages().stream().findFirst().map(imageMapper::toImageResponse).get());
+		
+		return response;
+	}
+	
+	public PitchResponse updatePitch(int id, PitchRequest request) throws IOException {
+		var pitch = pitchRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
+		
+		pitchMapper.updatePitch(pitch, request);
+		
+		if (!request.getImages().isEmpty()) {
+			List<Image> images = List.copyOf(pitch.getImages());
+			
+			var imageResponse = imageService.saveWithPitch(request.getImages(), pitch);
+			imageResponse.addAll(images);
+			
+			pitch.setImages(new HashSet<>(images));
+		}
+		
+		var response = pitchMapper.toPitchResponse(pitchRepository.save(pitch));
+		response.setImage(pitch.getImages().stream().findFirst().map(imageMapper::toImageResponse).get());
+		
+		return response;
+	}
+	
+	public void deletePitch(int id) {
+		var pitch = pitchRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
+		
+		if (pitch.getIsEnabled())
+			return;
+		
+		pitch.setIsEnabled(false);
+		
+		pitchRepository.save(pitch);
+	}
+	
+	public PitchDetailsResponse getPitch(int id) {
+		var pitch = pitchRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
+		
+		return pitchMapper.toPitchDetailsResponse(pitch);
+	}
+	
+	public List<PitchResponse> getPitches() {
+		return pitchRepository.findAllByIsEnabledTrue().stream().map(pitchMapper::toPitchResponse).toList();
+	}
+	
 //	public List<Pitch> findbyKeyWords(String tenSan) {
 //		return pitchRepository.findByTenSanContainingAndTrangThaiSanTrue(tenSan);
 //	}

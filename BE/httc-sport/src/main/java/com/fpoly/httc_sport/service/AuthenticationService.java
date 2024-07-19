@@ -233,6 +233,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
+				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	
@@ -323,6 +324,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
+				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	

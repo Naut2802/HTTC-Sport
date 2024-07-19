@@ -16,7 +16,6 @@ import java.util.Objects;
 @Slf4j
 public class GlobalExceptionHandler {
 	private static final String MIN_ATTRIBUTE = "min";
-	private static final String VALUE_ATTRIBUTE = "value";
 	private static final String MAX_ATTRIBUTE = "max";
 	
 	@ExceptionHandler(value = Exception.class)

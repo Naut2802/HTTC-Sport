@@ -31,16 +31,16 @@ public class Pitch implements Serializable {
 	int total;
 	int remaining;
 
-	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	Address address;
 	
 	@OneToMany(mappedBy = "pitch", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	Set<Image> images;
 	
-	@OneToMany(mappedBy = "pitch", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "pitch", fetch = FetchType.EAGER)
 	Set<Comment> comments;
 
-	@OneToMany(mappedBy = "pitch", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "pitch")
 	Set<Bill> bills;
 
 //	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

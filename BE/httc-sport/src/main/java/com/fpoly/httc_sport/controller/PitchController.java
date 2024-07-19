@@ -21,7 +21,7 @@ import java.util.List;
 public class PitchController {
 	PitchService pitchService;
 	
-	@PostMapping()
+	@PostMapping
 	ApiResponse<PitchResponse> createPitch(@Valid @ModelAttribute PitchRequest request) throws IOException {
 		return ApiResponse.<PitchResponse>builder()
 				.result(pitchService.createPitch(request))
@@ -29,8 +29,18 @@ public class PitchController {
 	}
 	
 	@PutMapping("{id}")
-	ApiResponse<PitchResponse> updatePitch(@PathVariable int id) {
-		return ApiResponse.<PitchResponse>builder().build();
+	ApiResponse<PitchResponse> updatePitch(@PathVariable int id, PitchRequest request) throws IOException {
+		return ApiResponse.<PitchResponse>builder()
+				.result(pitchService.updatePitch(id, request))
+				.build();
+	}
+	
+	@DeleteMapping("{id}")
+	ApiResponse<PitchResponse> deletePitch(@PathVariable int id) {
+		pitchService.deletePitch(id);
+		return ApiResponse.<PitchResponse>builder()
+				.message("Xóa sân thành công")
+				.build();
 	}
 	
 	@GetMapping

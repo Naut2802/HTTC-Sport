@@ -11,6 +11,7 @@ import com.fpoly.httc_sport.dto.request.PitchRequest;
 import com.fpoly.httc_sport.dto.response.ImageResponse;
 import com.fpoly.httc_sport.dto.response.PitchResponse;
 import com.fpoly.httc_sport.entity.Address;
+import com.fpoly.httc_sport.entity.Image;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.mapper.ImageMapper;
@@ -40,17 +41,50 @@ public class PitchService {
 	
 	public PitchResponse createPitch(PitchRequest request) throws IOException {
 		if (addressRepository.existsByStreetAndDistrict(request.getStreet(), request.getDistrict()))
-			throw new AppException(ErrorCode.UNAUTHENTICATED);
+			throw new AppException(ErrorCode.PITCH_EXISTED);
 		
 		var pitch = pitchMapper.toPitch(request);
 		pitch.setRemaining(request.getTotal());
-		pitch.setImages(new HashSet<>(imageService.save(request.getImages()).stream().map(imageMapper::toImage).toList()));
+		pitch.setImages(new HashSet<>(imageService.saveWithPitch(request.getImages(), pitch)));
 		pitch.setAddress(pitchMapper.toAddress(request));
 		
 		var response = pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 		response.setImage(pitch.getImages().stream().findFirst().map(imageMapper::toImageResponse).get());
 		
 		return response;
+	}
+	
+	public PitchResponse updatePitch(int id, PitchRequest request) throws IOException {
+		var pitch = pitchRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
+		
+		pitchMapper.updatePitch(pitch, request);
+		
+		if (!request.getImages().isEmpty()) {
+			List<Image> images = List.copyOf(pitch.getImages());
+			
+			var imageResponse = imageService.saveWithPitch(request.getImages(), pitch);
+			images.addAll(imageResponse);
+			
+			pitch.setImages(new HashSet<>(images));
+		}
+		
+		var response = pitchMapper.toPitchResponse(pitchRepository.save(pitch));
+		response.setImage(pitch.getImages().stream().findFirst().map(imageMapper::toImageResponse).get());
+		
+		return response;
+	}
+	
+	public void deletePitch(int id) {
+		var pitch = pitchRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
+		
+		if (pitch.getIsEnabled())
+			return;
+		
+		pitch.setIsEnabled(false);
+		
+		pitchRepository.save(pitch);
 	}
 //	public List<Pitch> getAllSanActive() {
 //		return pitchRepository.findAllByIsEnabledTrue();

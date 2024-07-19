@@ -38,6 +38,7 @@ public enum ErrorCode {
 	PITCH_TOTAL_NULL(1024, "Tổng sân không được để trống", HttpStatus.BAD_REQUEST),
 	PITCH_MIN_PRICE(1025, "Giá sân yêu cầu tối thiểu {min} VNĐ", HttpStatus.BAD_REQUEST),
 	PITCH_EXISTED(1026, "Đã có sân ở địa chỉ này", HttpStatus.BAD_REQUEST),
+	PITCH_NOT_EXISTED(1027, "Sân không tồn tại", HttpStatus.NOT_FOUND),
 	
 	
 	NOT_EXISTED(1096, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),

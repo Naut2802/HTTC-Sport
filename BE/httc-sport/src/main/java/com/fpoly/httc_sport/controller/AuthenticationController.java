@@ -88,7 +88,7 @@ public class AuthenticationController {
 	}
 	
 	@PutMapping("refresh-token")
-	ApiResponse<AuthenticationResponse> refreshToken(HttpServletRequest request, HttpServletResponse response, @RequestBody RefreshRequest userId) throws ParseException, JOSEException, NoSuchAlgorithmException {
+	ApiResponse<AuthenticationResponse> refreshToken(HttpServletRequest request, HttpServletResponse response, @Valid @RequestBody RefreshRequest userId) throws ParseException, JOSEException, NoSuchAlgorithmException {
 		return ApiResponse.<AuthenticationResponse>builder()
 				.result(authenticationService.refreshToken(request, response, userId))
 				.build();

@@ -15,6 +15,8 @@ public enum ErrorCode {
 	INVALID_KEY(1001, "Thông tin không được để trống", HttpStatus.BAD_REQUEST),
 	USERNAME_NULL(1002, "Tên tài khoản không được để trống", HttpStatus.BAD_REQUEST),
 	PASSWORD_NULL(1003, "Mật khẩu không được để trống", HttpStatus.BAD_REQUEST),
+	NEW_PASSWORD_NULL(1003, "Mật khẩu mới không được để trống", HttpStatus.BAD_REQUEST),
+	CONFIRMATION_PASSWORD_NULL(1003, "Mật khẩu xác nhận không được để trống", HttpStatus.BAD_REQUEST),
 	EMAIL_NULL(1004, "Email không được để trống", HttpStatus.BAD_REQUEST),
 	EMAIL_INVALID(1005, "Email không đúng định dạng", HttpStatus.BAD_REQUEST),
 	USERNAME_INVALID(1006, "Tên đăng nhập yêu cầu tối thiểu {min} ký tự", HttpStatus.BAD_REQUEST),
@@ -36,9 +38,10 @@ public enum ErrorCode {
 	PITCH_TYPE_NULL(1022, "Loại sân không được trống", HttpStatus.BAD_REQUEST),
 	PITCH_TYPE_NAME_NULL(1023, "Loại sân không được trống", HttpStatus.BAD_REQUEST),
 	PITCH_TOTAL_NULL(1024, "Tổng sân không được để trống", HttpStatus.BAD_REQUEST),
-	PITCH_MIN_PRICE(1025, "Giá sân yêu cầu tối thiểu {min} VNĐ", HttpStatus.BAD_REQUEST),
-	PITCH_EXISTED(1026, "Đã có sân ở địa chỉ này", HttpStatus.BAD_REQUEST),
-	PITCH_NOT_EXISTED(1027, "Sân không tồn tại", HttpStatus.NOT_FOUND),
+	PITCH_PRICE_NULL(1025, "Giá sân yêu cầu tối thiểu 30000 VNĐ", HttpStatus.BAD_REQUEST),
+	PITCH_MIN_PRICE(1026, "Giá sân yêu cầu tối thiểu 300000 VNĐ", HttpStatus.BAD_REQUEST),
+	PITCH_EXISTED(1027, "Đã có sân ở địa chỉ này", HttpStatus.BAD_REQUEST),
+	PITCH_NOT_EXISTED(1028, "Sân không tồn tại", HttpStatus.NOT_FOUND),
 	
 	
 	NOT_EXISTED(1096, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),

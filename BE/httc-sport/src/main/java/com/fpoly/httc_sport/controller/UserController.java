@@ -10,6 +10,7 @@ import com.fpoly.httc_sport.dto.response.UserResponse;
 import com.fpoly.httc_sport.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,7 +25,7 @@ public class UserController {
 	UserService userService;
 	
 	@PatchMapping("change-password/{userId}")
-	ApiResponse<ChangePasswordResponse> changePassword(@PathVariable String userId, @RequestBody ChangePasswordRequest request) {
+	ApiResponse<ChangePasswordResponse> changePassword(@PathVariable String userId, @Valid @RequestBody ChangePasswordRequest request) {
 		ChangePasswordResponse response = userService.changePassword(userId, request);
 		
 		return ApiResponse.<ChangePasswordResponse>builder()
@@ -75,7 +76,7 @@ public class UserController {
 	}
 	
 	@PostMapping("forgot-password/reset-password")
-	ApiResponse<ChangePasswordResponse> resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordRequest request) {
+	ApiResponse<ChangePasswordResponse> resetPassword(@RequestParam("token") String token, @Valid @RequestBody ResetPasswordRequest request) {
 		ChangePasswordResponse response = userService.resetPassword(token, request);
 		
 		return ApiResponse.<ChangePasswordResponse>builder()
@@ -94,7 +95,7 @@ public class UserController {
 	
 	@PutMapping("{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
+	ApiResponse<UserResponse> updateUser(@PathVariable String userId, @Valid @RequestBody UserUpdateRequest request) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.updateUser(userId, request))
 				.build();
@@ -102,7 +103,7 @@ public class UserController {
 	
 	@PutMapping("authorize/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<UserResponse> authorizeUser(@PathVariable String userId, @RequestBody AuthorizeUserRequest request) {
+	ApiResponse<UserResponse> authorizeUser(@PathVariable String userId, @Valid @RequestBody AuthorizeUserRequest request) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.authorizeUser(userId, request))
 				.build();

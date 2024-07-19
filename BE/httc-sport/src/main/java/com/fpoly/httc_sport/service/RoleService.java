@@ -1,6 +1,7 @@
 package com.fpoly.httc_sport.service;
 
 import com.fpoly.httc_sport.dto.request.RoleRequest;
+import com.fpoly.httc_sport.dto.request.RoleUpdateRequest;
 import com.fpoly.httc_sport.dto.response.RoleResponse;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
@@ -39,7 +40,7 @@ public class RoleService {
 		return roleMapper.toRoleResponse(role);
 	}
 	
-	public RoleResponse updateRole(String id, RoleRequest request) {
+	public RoleResponse updateRole(String id, RoleUpdateRequest request) {
 		var role = roleRepository.findById(id).orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 

@@ -11,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RefreshRequest{
-	@NotNull(message = "USERID_NULL")
-	String userId;
+public class RoleUpdateRequest {
+	String description;
 }

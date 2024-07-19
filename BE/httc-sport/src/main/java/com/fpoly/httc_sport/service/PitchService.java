@@ -95,28 +95,10 @@ public class PitchService {
 		return pitchMapper.toPitchDetailsResponse(pitch);
 	}
 	
-	public List<PitchResponse> getAllSanActive() {
+	public List<PitchResponse> getPitches() {
 		return pitchRepository.findAllByIsEnabledTrue().stream().map(pitchMapper::toPitchResponse).toList();
 	}
-//
-//	public Pitch getSan(Integer id) {
-//		return pitchRepository.findById(id).orElse(null);
-//	}
-//
-//	public void save(Pitch pitch) {
-//		pitchRepository.save(pitch);
-//	}
-//
-//	public Boolean deleteSan(Integer id) {
-//		Pitch pitch = pitchRepository.findById(id).orElse(null);
-//
-//		if(pitch != null) {
-//			pitch.setIsEnabled(false);
-//			pitchRepository.save(pitch);
-//			return true;
-//		}
-//		return false;
-//	}
+	
 //	public List<Pitch> findbyKeyWords(String tenSan) {
 //		return pitchRepository.findByTenSanContainingAndTrangThaiSanTrue(tenSan);
 //	}

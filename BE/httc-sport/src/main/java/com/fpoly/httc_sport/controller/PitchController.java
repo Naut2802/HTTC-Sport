@@ -30,7 +30,7 @@ public class PitchController {
 	}
 	
 	@PutMapping("{id}")
-	ApiResponse<PitchResponse> updatePitch(@PathVariable int id, PitchRequest request) throws IOException {
+	ApiResponse<PitchResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws IOException {
 		return ApiResponse.<PitchResponse>builder()
 				.result(pitchService.updatePitch(id, request))
 				.build();
@@ -54,37 +54,10 @@ public class PitchController {
 	@GetMapping
 	ApiResponse<List<PitchResponse>> getPitches() {
 		return ApiResponse.<List<PitchResponse>>builder()
-				.result(pitchService.getAllSanActive())
+				.result(pitchService.getPitches())
 				.build();
 	}
-//	@GetMapping("{id}")
-//	public String index(@PathVariable("id") Integer id, Model model) {
-//		San san = sanService.getSan(id);
-//		List<ThoiGianHoatDong> khungGio = thoiGianHoatDongService.getAll();
-//		List<DanhGia> danhGia = (List<DanhGia>) danhGiaService.findById(san.getMaSan());
-//		if (san != null) {
-//			Float sao = 0f;
-//			for (DanhGia dg : san.getListDanhGia()) {
-//				sao += dg.getMocSao();
-//			}
-//			sao = sao / san.getListDanhGia().size();
-//
-//			model.addAttribute("danhGia_", danhGia);
-//			model.addAttribute("san", san);
-//			model.addAttribute("danhGia", sao.isNaN() ? 0 : sao);
-//			session.setAttribute("rq", "san/chitietsan.html");
-//			model.addAttribute("khungGio", khungGio);
-//			return "index";
-//		}
-//		return "redirect:/home";
-//	}
-//
-//	@GetMapping("danh-sach-san")
-//	public String index() {
-//		session.setAttribute("rq", "/san/dsSan.html");
-//		return "index";
-//	}
-//
+	
 //	@GetMapping("dat-san/{id}")
 //	public String datSan(@PathVariable("id") Integer id, Model model) {
 //		San san = sanService.getSan(id);

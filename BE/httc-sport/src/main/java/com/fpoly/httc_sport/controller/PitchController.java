@@ -2,6 +2,7 @@ package com.fpoly.httc_sport.controller;
 
 import com.fpoly.httc_sport.dto.request.PitchRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
+import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
 import com.fpoly.httc_sport.dto.response.PitchResponse;
 import com.fpoly.httc_sport.service.PitchService;
 import jakarta.validation.Valid;
@@ -43,9 +44,18 @@ public class PitchController {
 				.build();
 	}
 	
+	@GetMapping("{id}")
+	ApiResponse<PitchDetailsResponse> getPitch(@PathVariable int id) {
+		return ApiResponse.<PitchDetailsResponse>builder()
+				.result(pitchService.getPitch(id))
+				.build();
+	}
+	
 	@GetMapping
 	ApiResponse<List<PitchResponse>> getPitches() {
-		return ApiResponse.<List<PitchResponse>>builder().build();
+		return ApiResponse.<List<PitchResponse>>builder()
+				.result(pitchService.getAllSanActive())
+				.build();
 	}
 //	@GetMapping("{id}")
 //	public String index(@PathVariable("id") Integer id, Model model) {

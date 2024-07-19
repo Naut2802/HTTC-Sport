@@ -23,7 +23,7 @@ public class Pitch implements Serializable {
 	@Column(nullable = false)
 	Double price;
 	@Builder.Default
-	Boolean isEnabled = false;
+	Boolean isEnabled = true;
 	String description;
 	@Column(nullable = false)
 	String type;

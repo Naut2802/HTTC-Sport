@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.fpoly.httc_sport.dto.request.PitchRequest;
 import com.fpoly.httc_sport.dto.response.ImageResponse;
+import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
 import com.fpoly.httc_sport.dto.response.PitchResponse;
 import com.fpoly.httc_sport.entity.Address;
 import com.fpoly.httc_sport.entity.Image;
@@ -64,7 +65,7 @@ public class PitchService {
 			List<Image> images = List.copyOf(pitch.getImages());
 			
 			var imageResponse = imageService.saveWithPitch(request.getImages(), pitch);
-			images.addAll(imageResponse);
+			imageResponse.addAll(images);
 			
 			pitch.setImages(new HashSet<>(images));
 		}
@@ -86,9 +87,17 @@ public class PitchService {
 		
 		pitchRepository.save(pitch);
 	}
-//	public List<Pitch> getAllSanActive() {
-//		return pitchRepository.findAllByIsEnabledTrue();
-//	}
+	
+	public PitchDetailsResponse getPitch(int id) {
+		var pitch = pitchRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
+		
+		return pitchMapper.toPitchDetailsResponse(pitch);
+	}
+	
+	public List<PitchResponse> getAllSanActive() {
+		return pitchRepository.findAllByIsEnabledTrue().stream().map(pitchMapper::toPitchResponse).toList();
+	}
 //
 //	public Pitch getSan(Integer id) {
 //		return pitchRepository.findById(id).orElse(null);

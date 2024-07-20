@@ -54,3 +54,18 @@ export const handleCheckMailForgotPassword = async (email) => {
 export const handleResetPasswordUser = async (token, data) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/user/forgot-password/reset-password?token=${token}`, data);
 };
+
+export const handleCreatePitch = async (data) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/pitch`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });;
+};
+
+export const handleProvinces = async () => {
+    return await authorizedAxiosInstance.get
+    ('https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json',{
+        reponseType: 'application/json'
+    });
+};

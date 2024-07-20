@@ -1,5 +1,6 @@
 import authorizedAxiosInstance from '~/utils/authorizedAxios';
 import { API_ROOT } from '~/utils/constants';
+import axios from 'axios'
 
 export const refreshTokenAPI = async (userId) => {
     return await authorizedAxiosInstance.put(`${API_ROOT}/api/auth/refresh-token`, {
@@ -64,8 +65,8 @@ export const handleCreatePitch = async (data) => {
 };
 
 export const handleProvinces = async () => {
-    return await authorizedAxiosInstance.get
+    return await axios.get
     ('https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json',{
-        reponseType: 'application/json'
+        reponseType: '/json'
     });
 };

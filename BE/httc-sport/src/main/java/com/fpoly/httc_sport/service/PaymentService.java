@@ -87,8 +87,8 @@ public class PaymentService {
 		
 		PayOSRequest request = PayOSRequest.builder()
 				.orderCode(rentInfo.getId())
-				.returnUrl("http://localhost:8082/returnUrl")
-				.cancelUrl("http://localhost:8082/cancelUrl")
+				.returnUrl("http://localhost:3000/payment/rent/success")
+				.cancelUrl("http://localhost:3000/payment/rent/error")
 				.buyerEmail(rentInfo.getEmail())
 				.buyerName(rentInfo.getLastName() + " " + rentInfo.getFirstName())
 				.description("THANH TOAN DAT SAN " + rentInfo.getPitch().getId())

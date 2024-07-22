@@ -45,11 +45,29 @@ public class RentInfoService {
 		
 		LocalTime startTime = request.getStartTime().plusMinutes(1);
 		LocalTime endTime = request.getStartTime().plusMinutes(request.getRentTime());
+		LocalDate dateNow = LocalDate.now();
+		LocalTime timeNow = LocalTime.now();
+		LocalTime startStopTime = LocalTime.of(23, 0);
+		LocalTime endStopTime = LocalTime.of(6, 0);
 		
 		if (rentInfoRepository.existsByPitchIdEqualsAndEmailEqualsAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
 				pitch.getId(), request.getEmail(),
 				request.getRentedAt(), startTime, endTime))
 			throw new AppException(ErrorCode.RENT_INFO_EXISTED);
+		
+		if (request.getRentedAt().getYear() < dateNow.getYear()) {
+			return RentInfoResponse.builder().message("Đặt sân thất bại, năm đặt không hợp lệ").build();
+		} else if (request.getRentedAt().getYear() == dateNow.getYear()) {
+			if (request.getRentedAt().getDayOfYear() < dateNow.getDayOfYear())
+				return RentInfoResponse.builder().message("Đặt sân thất bại, ngày đặt không hợp lệ").build();;
+			
+			if (request.getRentedAt().getDayOfYear() == dateNow.getDayOfYear())
+				if (timeNow.isAfter(startTime))
+					return RentInfoResponse.builder().message("Đặt sân thất bại, thời gian đặt không hợp lệ").build();
+		}
+		
+		if (startTime.isAfter(startStopTime) || startTime.isBefore(endStopTime))
+			return RentInfoResponse.builder().message("Đặt sân thất bại, sân bóng không hoạt động trong khoảng thời gian này").build();
 		
 		if (rentInfoRepository
 				.existsByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
@@ -62,9 +80,9 @@ public class RentInfoService {
 						endTime.minusSeconds(1),
 						endTime.minusSeconds(1))
 			) {
-			return null;
+			return RentInfoResponse.builder().message("Đặt sân thất bại, ngày đặt hoặc thời gian đặt bị trùng").build();
 		} else if (rentInfoRepository.existsByRentedAtEqualsAndEndTimeBetween(request.getRentedAt(), startTime, endTime))
-			return null;
+			return RentInfoResponse.builder().message("Đặt sân thất bại, ngày đặt hoặc thời gian đặt bị trùng").build();
 		
 		var user = userRepository.findByEmail(request.getEmail()).orElse(null);
 		
@@ -75,7 +93,13 @@ public class RentInfoService {
 		rentInfo.setEndTime(endTime);
 		rentInfo.setTotal((int) (((float) request.getRentTime() / 60) * (pitch.getPrice() * paymentMethod.getPriceRate())));
 		
-		return rentInfoMapper.toRentInfoResponse(rentInfoRepository.save(rentInfo));
+		rentInfo = rentInfoRepository.save(rentInfo);
+		
+		return RentInfoResponse.builder()
+				.id(rentInfo.getId())
+				.total(rentInfo.getTotal())
+				.message("Đặt sân thành công")
+				.build();
 	}
 	
 //	@Autowired

@@ -10,7 +10,4 @@ import org.mapstruct.Mapping;
 public interface RentInfoMapper {
 	@Mapping(target = "paymentMethod", ignore = true)
 	RentInfo toRentInfo(RentRequest request);
-	
-	@Mapping(source = "pitch.id", target = "pitchId")
-	RentInfoResponse toRentInfoResponse(RentInfo rentInfo);
 }

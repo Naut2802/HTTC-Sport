@@ -15,16 +15,6 @@ import java.time.LocalTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RentInfoResponse {
 	int id;
-	int pitchId;
-	String email;
-	String phoneNumber;
-	String firstName;
-	String lastName;
-	LocalDate rentedAt;
-	LocalTime startTime;
-	LocalTime endTime;
-	String note;
 	int total;
-	int deposit;
-	boolean isDone;
+	String message;
 }

@@ -42,8 +42,4 @@ public class Pitch implements Serializable {
 
 	@OneToMany(mappedBy = "pitch")
 	Set<Bill> bills;
-
-//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//	@JoinTable(name = "san_tghd", joinColumns = @JoinColumn(name = "maSan"), inverseJoinColumns = @JoinColumn(name = "ca"))
-//	List<ThoiGianHoatDong> listThoiGianHoatDong;
 }

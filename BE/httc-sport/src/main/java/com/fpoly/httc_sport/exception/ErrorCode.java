@@ -42,6 +42,15 @@ public enum ErrorCode {
 	PITCH_MIN_PRICE(1026, "Giá sân yêu cầu tối thiểu 300000 VNĐ", HttpStatus.BAD_REQUEST),
 	PITCH_EXISTED(1027, "Đã có sân ở địa chỉ này", HttpStatus.BAD_REQUEST),
 	PITCH_NOT_EXISTED(1028, "Sân không tồn tại", HttpStatus.NOT_FOUND),
+	RENT_INFO_EMAIL_NULL(1029, "Vui lòng nhập Email", HttpStatus.BAD_REQUEST),
+	RENT_INFO_PHONE_NUMBER_NULL(1029, "Vui lòng nhập số điện thoại", HttpStatus.BAD_REQUEST),
+	RENT_INFO_FIRST_NAME_NULL(1030, "Vui lòng nhập tên", HttpStatus.BAD_REQUEST),
+	RENT_INFO_RENT_DATE_NULL(1031, "Vui lòng chọn ngày đặt sân", HttpStatus.BAD_REQUEST),
+	RENT_INFO_START_TIME_NULL(1032, "Vui lòng chọn thời gian đặt sân", HttpStatus.BAD_REQUEST),
+	RENT_INFO_RENT_TIME_NULL(1033, "Vui lòng chọn thời gian muốn đặt", HttpStatus.BAD_REQUEST),
+	RENT_INFO_EXISTED(1034, "Sân đã được đặt", HttpStatus.BAD_REQUEST),
+	RENT_INFO_NOT_EXISTED(1035, "Không tìm thấy thông tin đặt sân", HttpStatus.NOT_FOUND),
+	PAYMENT_METHOD_NOT_EXISTED(1036, "Phương thức thanh toán không hợp lệ", HttpStatus.NOT_FOUND),
 	
 	
 	NOT_EXISTED(1096, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),

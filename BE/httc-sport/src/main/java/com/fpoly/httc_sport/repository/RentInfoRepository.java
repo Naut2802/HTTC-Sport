@@ -10,9 +10,9 @@ import com.fpoly.httc_sport.entity.RentInfo;
 
 public interface RentInfoRepository extends JpaRepository<RentInfo, Long> {
 	List<RentInfo> findByPitchId(Integer pitchId);
-
+	List<RentInfo> findByUserId(String userId);
+	Boolean existsByPitchIdEqualsAndEmailEqualsAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(Integer pitchId, String email, LocalDate date, LocalTime time, LocalTime time2);
 	Boolean existsByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(LocalDate date, LocalTime time, LocalTime time2);
 	Boolean existsByRentedAtEqualsAndStartTimeBetween(LocalDate date, LocalTime time, LocalTime time2);
 	Boolean existsByRentedAtEqualsAndEndTimeBetween(LocalDate date, LocalTime time, LocalTime time2);
-	List<RentInfo> findByUserUsername(String username);
 }

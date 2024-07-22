@@ -4,7 +4,10 @@ import com.fpoly.httc_sport.dto.request.PayOSRequest;
 import com.fpoly.httc_sport.dto.request.VietQrRequest;
 import com.fpoly.httc_sport.dto.response.PayOSResponse;
 import com.fpoly.httc_sport.dto.response.VietQrResponse;
+import com.fpoly.httc_sport.exception.AppException;
+import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.repository.PaymentMethodRepository;
+import com.fpoly.httc_sport.repository.RentInfoRepository;
 import com.fpoly.httc_sport.repository.httpclient.PayOSClient;
 import com.fpoly.httc_sport.repository.httpclient.VietQrClient;
 import lombok.AccessLevel;
@@ -31,6 +34,7 @@ import java.util.TreeMap;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PaymentService {
+	RentInfoRepository rentInfoRepository;
 	VietQrClient vietQrClient;
 	PayOSClient payOSClient;
 	
@@ -76,16 +80,20 @@ public class PaymentService {
 		return vietQrClient.generateQrCode(request, VIET_QR_CLIENT_ID);
 	}
 	
-	public PayOSResponse generatePayOS() throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+	public String createRentPaymentLink(int rentInfoId, float deposit) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+		var rentInfo = rentInfoRepository.findById(rentInfoId).orElseThrow(
+				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
+		);
+		
 		PayOSRequest request = PayOSRequest.builder()
-				.orderCode(12344)
+				.orderCode(rentInfo.getId())
 				.returnUrl("http://localhost:8082/returnUrl")
 				.cancelUrl("http://localhost:8082/cancelUrl")
-				.buyerEmail("maousama333@gmail.com")
-				.buyerName("Do Van A")
-				.description("TEST PAYOS")
-				.buyerPhone("091234567")
-				.amount(2000)
+				.buyerEmail(rentInfo.getEmail())
+				.buyerName(rentInfo.getLastName() + " " + rentInfo.getFirstName())
+				.description("THANH TOAN DAT SAN " + rentInfo.getPitch().getId())
+				.buyerPhone(rentInfo.getPhoneNumber())
+				.amount((int) (rentInfo.getTotal() * deposit))
 				.build();
 		
 		Map<String, String> params = new TreeMap<>();
@@ -95,21 +103,19 @@ public class PaymentService {
 		params.put("orderCode", String.valueOf(request.getOrderCode()));
 		params.put("returnUrl", request.getReturnUrl());
 		
-		Map<String, String> sortedParams = new TreeMap<>(params);
-		StringBuilder dataBuilder = new StringBuilder();
-		for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
-			if (dataBuilder.length() > 0) {
-				dataBuilder.append("&");
-			}
-			dataBuilder.append(entry.getKey()).append("=").append(entry.getValue());
-		}
+		String data = generateData(params);
+		String signature = generateSignature(PAYOS_CHECKSUM_KEY, data);
 		
-		String data = dataBuilder.toString();
+		request.setSignature(signature);
 		
-		System.out.println(data);
+		var response = payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
 		
+		return response.getData().getCheckoutUrl();
+	}
+	
+	private String generateSignature(String checksum_key, String data) throws NoSuchAlgorithmException, InvalidKeyException {
 		Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-		SecretKeySpec secretKeySpec = new SecretKeySpec(PAYOS_CHECKSUM_KEY.getBytes(), "HmacSHA256");
+		SecretKeySpec secretKeySpec = new SecretKeySpec(checksum_key.getBytes(), "HmacSHA256");
 		sha256_HMAC.init(secretKeySpec);
 		byte[] hash = sha256_HMAC.doFinal(data.getBytes());
 		
@@ -121,11 +127,20 @@ public class PaymentService {
 			}
 			hexString.append(hex);
 		}
-		String signature = hexString.toString();
-		System.out.println(signature);
 		
-		request.setSignature(signature);
+		return hexString.toString();
+	}
+	
+	private String generateData(Map<String, String> params) {
+		Map<String, String> sortedParams = new TreeMap<>(params);
+		StringBuilder dataBuilder = new StringBuilder();
+		for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
+			if (dataBuilder.length() > 0) {
+				dataBuilder.append("&");
+			}
+			dataBuilder.append(entry.getKey()).append("=").append(entry.getValue());
+		}
 		
-		return payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
+		return dataBuilder.toString();
 	}
 }

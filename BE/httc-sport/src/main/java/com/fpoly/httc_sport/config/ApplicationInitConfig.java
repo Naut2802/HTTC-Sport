@@ -69,7 +69,7 @@ public class ApplicationInitConfig {
 				log.warn("Admin user has been created with default information: \"admin\". Please change it!");
 			}
 			
-			paymentMethodMap.put("VNPay", 1.1f);
+			paymentMethodMap.put("QR", 1.05f);
 			paymentMethodMap.put("Wallet", 1f);
 			
 			paymentMethodMap.forEach((key, value) -> {

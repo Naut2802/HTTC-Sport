@@ -8,9 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -24,16 +22,18 @@ import java.security.NoSuchAlgorithmException;
 public class PaymentController {
 	PaymentService paymentService;
 	
-	@PostMapping
-	ApiResponse<VietQrResponse> generateQr() {
-		return ApiResponse.<VietQrResponse>builder()
-				.result(paymentService.generateQr())
-				.build();
-	}
-	@PostMapping("pay-os")
-	ApiResponse<PayOSResponse> generatePayOS() throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
-		return ApiResponse.<PayOSResponse>builder()
-				.result(paymentService.generatePayOS())
+//	@PostMapping
+//	ApiResponse<VietQrResponse> generateQr() {
+//		return ApiResponse.<VietQrResponse>builder()
+//				.result(paymentService.generateQr())
+//				.build();
+//	}
+	
+	@PostMapping("rent/{id}")
+	ApiResponse<?> createRentPaymentLink(@PathVariable int id, @RequestParam("deposit") float deposit)
+			throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+		return ApiResponse.builder()
+				.result(paymentService.createRentPaymentLink(id, deposit))
 				.build();
 	}
 }

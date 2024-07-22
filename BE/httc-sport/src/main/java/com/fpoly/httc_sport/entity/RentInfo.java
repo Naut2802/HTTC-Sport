@@ -24,7 +24,7 @@ import lombok.experimental.FieldDefaults;
 public class RentInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	Integer id;
 	String email;
 	String phoneNumber;
 	String firstName;
@@ -35,8 +35,8 @@ public class RentInfo {
 	LocalTime startTime;
 	@Temporal(TemporalType.TIME)
 	LocalTime endTime;
-	Double total;
-	Double deposit;
+	Integer total;
+	Integer deposit;
 	String note;
 	@Builder.Default
 	Boolean isDone = false;

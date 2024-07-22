@@ -14,6 +14,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RentInfoResponse {
+	int id;
 	int pitchId;
 	String email;
 	String phoneNumber;
@@ -23,7 +24,7 @@ public class RentInfoResponse {
 	LocalTime startTime;
 	LocalTime endTime;
 	String note;
-	Double total;
-	Double deposit;
+	int total;
+	int deposit;
 	boolean isDone;
 }

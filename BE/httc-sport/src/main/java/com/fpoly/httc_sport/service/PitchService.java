@@ -37,7 +37,6 @@ public class PitchService {
 	PitchRepository pitchRepository;
 	AddressRepository addressRepository;
 	PitchMapper pitchMapper;
-	ImageMapper imageMapper;
 	ImageService imageService;
 	
 	public PitchResponse createPitch(PitchRequest request) throws IOException {

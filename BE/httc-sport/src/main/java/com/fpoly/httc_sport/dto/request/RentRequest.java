@@ -28,7 +28,7 @@ public class RentRequest {
 	String firstName;
 	String lastName;
 	@NotNull(message = "RENT_INFO_RENT_DATE_NULL")
-	LocalDate rentDate;
+	LocalDate rentedAt;
 	@NotNull(message = "RENT_INFO_START_TIME_NULL")
 	LocalTime startTime;
 	@NotNull(message = "RENT_INFO_RENT_TIME_NULL")

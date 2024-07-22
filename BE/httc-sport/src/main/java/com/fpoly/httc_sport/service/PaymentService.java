@@ -80,7 +80,7 @@ public class PaymentService {
 		return vietQrClient.generateQrCode(request, VIET_QR_CLIENT_ID);
 	}
 	
-	public String createRentPaymentLink(int rentInfoId, float deposit) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+	public String createRentPaymentLink(int rentInfoId, float deposit) throws NoSuchAlgorithmException, InvalidKeyException {
 		var rentInfo = rentInfoRepository.findById(rentInfoId).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
@@ -135,7 +135,7 @@ public class PaymentService {
 		Map<String, String> sortedParams = new TreeMap<>(params);
 		StringBuilder dataBuilder = new StringBuilder();
 		for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
-			if (dataBuilder.length() > 0) {
+			if (!dataBuilder.isEmpty()) {
 				dataBuilder.append("&");
 			}
 			dataBuilder.append(entry.getKey()).append("=").append(entry.getValue());

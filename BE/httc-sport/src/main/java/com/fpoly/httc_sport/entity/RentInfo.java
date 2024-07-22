@@ -36,7 +36,8 @@ public class RentInfo {
 	@Temporal(TemporalType.TIME)
 	LocalTime endTime;
 	Integer total;
-	Integer deposit;
+	@Builder.Default
+	Integer deposit = 0;
 	String note;
 	@Builder.Default
 	Boolean isDone = false;

@@ -31,7 +31,7 @@ public class PaymentController {
 	
 	@PostMapping("rent/{id}")
 	ApiResponse<?> createRentPaymentLink(@PathVariable int id, @RequestParam("deposit") float deposit)
-			throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+			throws NoSuchAlgorithmException, InvalidKeyException {
 		return ApiResponse.builder()
 				.result(paymentService.createRentPaymentLink(id, deposit))
 				.build();

@@ -43,19 +43,37 @@ public class RentInfoService {
 				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
 		);
 		
+		LocalTime startTime = request.getStartTime().plusMinutes(1);
+		LocalTime endTime = request.getStartTime().plusMinutes(request.getRentTime());
+		
 		if (rentInfoRepository.existsByPitchIdEqualsAndEmailEqualsAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
 				pitch.getId(), request.getEmail(),
-				request.getRentedAt(), request.getStartTime(),
-				request.getStartTime().plusMinutes(request.getRentTime())))
+				request.getRentedAt(), startTime, endTime))
 			throw new AppException(ErrorCode.RENT_INFO_EXISTED);
+		
+		if (rentInfoRepository
+				.existsByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+						request.getRentedAt(),
+						startTime.plusSeconds(1),
+						startTime.plusSeconds(1)) ||
+			rentInfoRepository
+				.existsByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+						request.getRentedAt(),
+						endTime.minusSeconds(1),
+						endTime.minusSeconds(1))
+			) {
+			return null;
+		} else if (rentInfoRepository.existsByRentedAtEqualsAndEndTimeBetween(request.getRentedAt(), startTime, endTime))
+			return null;
 		
 		var user = userRepository.findByEmail(request.getEmail()).orElse(null);
 		
 		var rentInfo = rentInfoMapper.toRentInfo(request);
 		rentInfo.setPitch(pitch);
 		rentInfo.setUser(user);
-		rentInfo.setEndTime(request.getStartTime().plusMinutes(request.getRentTime()));
-		rentInfo.setTotal((int) (pitch.getPrice() * paymentMethod.getPriceRate()));
+		rentInfo.setStartTime(startTime);
+		rentInfo.setEndTime(endTime);
+		rentInfo.setTotal((int) (((float) request.getRentTime() / 60) * (pitch.getPrice() * paymentMethod.getPriceRate())));
 		
 		return rentInfoMapper.toRentInfoResponse(rentInfoRepository.save(rentInfo));
 	}

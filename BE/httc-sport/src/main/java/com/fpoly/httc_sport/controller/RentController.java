@@ -1,7 +1,8 @@
 package com.fpoly.httc_sport.controller;
 
-import com.fpoly.httc_sport.dto.request.PitchRequest;
+import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
+import com.fpoly.httc_sport.dto.response.RentInfoResponse;
 import com.fpoly.httc_sport.service.RentInfoService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -19,8 +20,12 @@ public class RentController {
 	RentInfoService rentInfoService;
 	
 	@PostMapping
-	ApiResponse<?> rentPitch(@Valid @ModelAttribute PitchRequest request) throws IOException {
-		return ApiResponse.builder()
+	ApiResponse<RentInfoResponse> rentPitch(@Valid @ModelAttribute RentRequest request) throws IOException {
+		var response = rentInfoService.rentPitch(request);
+		
+		return ApiResponse.<RentInfoResponse>builder()
+				.message(response == null ? "Ngày đá hoặc thời gian đặt sân bị trùng" : "")
+				.result(response)
 				.build();
 	}
 	

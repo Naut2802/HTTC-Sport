@@ -49,10 +49,7 @@ public class PitchService {
 		pitch.setImages(new HashSet<>(imageService.saveWithPitch(request.getImages(), pitch)));
 		pitch.setAddress(pitchMapper.toAddress(request));
 		
-		var response = pitchMapper.toPitchResponse(pitchRepository.save(pitch));
-		response.setImage(pitch.getImages().stream().findFirst().map(imageMapper::toImageResponse).get());
-		
-		return response;
+		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}
 	
 	public PitchResponse updatePitch(int id, PitchRequest request) throws IOException {
@@ -70,10 +67,7 @@ public class PitchService {
 			pitch.setImages(new HashSet<>(images));
 		}
 		
-		var response = pitchMapper.toPitchResponse(pitchRepository.save(pitch));
-		response.setImage(pitch.getImages().stream().findFirst().map(imageMapper::toImageResponse).get());
-		
-		return response;
+		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}
 	
 	public void deletePitch(int id) {

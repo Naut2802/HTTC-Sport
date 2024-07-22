@@ -13,7 +13,7 @@ const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(),
     transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -43,6 +43,8 @@ const AppBar = styled(MuiAppBar, {
             duration: theme.transitions.duration.enteringScreen,
         }),
     }),
+    // Đảm bảo kích thước không vượt quá
+    maxWidth: '100%',
 }));
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -68,7 +70,6 @@ export default function NavbarAdmin() {
 
     return (
         <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
             <AppBar position="fixed" open={open} className="bg-dark ">
                 <Toolbar>
                     <IconButton
@@ -107,11 +108,9 @@ export default function NavbarAdmin() {
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
                 </DrawerHeader>
-                <Divider />
                 <AccordionAdmin />
-                <Divider />
             </Drawer>
-            <Main open={open}>
+            <Main open={open} sx={{ display: 'flex' }}>
                 <DrawerHeader />
             </Main>
         </Box>

@@ -1,38 +1,45 @@
+import React, { useEffect, useState } from 'react';
 import { Button, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import * as React from 'react';
-
 import CreateIcon from '@mui/icons-material/Create';
+import { handleGetPitch } from '~/apis';
+import { toast } from 'react-toastify';
 
-export default function TableListField() {
+export default function TableListField({ onRowClick }) {
+    const [pitch, setPitch] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const re = await handleGetPitch();
+                console.log(re.data.result);
+                const dataWithId = re.data.result.map((item, index) => ({
+                    ...item,
+                    id: item.id || index,
+                    address: `${item.street || ''}, ${item.ward || ''}, ${item.district || ''}, ${item.city || ''}`,
+                }));
+                setPitch(dataWithId);
+            } catch (error) {
+                console.error(error);
+                toast.error('Failed to fetch data');
+            }
+        };
+        fetchData();
+    }, []);
+
     const columns = [
-        { field: 'id', headerName: 'Mã Sân', width: 100 },
-        { field: 'loaiSan', headerName: 'Loại Sân', width: 100 },
-        { field: 'tenSan', headerName: 'Tên Sân', width: 250 },
+        { field: 'pitchName', headerName: 'Tên Sân', width: 150 },
+        { field: 'price', headerName: 'Giá', width: 80 },
+        { field: 'description', headerName: 'Mô Tả', width: 250 },
+        { field: 'address', headerName: 'Địa Chỉ', width: 670 },
         {
-            field: 'gia',
-            headerName: 'Giá',
-            width: 160,
-        },
-        {
-            field: 'mota',
-            headerName: 'Mô Tả',
-            width: 350,
-        },
-        {
-            field: 'trangThai',
-            headerName: 'Trạng Thái',
-            sortable: false,
-            width: 160,
-        },
-        {
-            field: 'orther',
+            field: 'other',
             headerName: 'Khác',
             sortable: false,
-            width: 160,
-            renderCell: () => (
+            width: 100,
+            renderCell: (params) => (
                 <Tooltip title="Chỉnh Sửa" variant="solid">
-                    <Button sx={{ color: 'green' }}>
+                    <Button onClick={() => onRowClick(params.row)} sx={{ color: 'green' }}>
                         <CreateIcon />
                     </Button>
                 </Tooltip>
@@ -40,36 +47,15 @@ export default function TableListField() {
         },
     ];
 
-    const rows = [
-        {
-            id: '1',
-            loaiSan: '5',
-            tenSan: 'Sân Min Hòn',
-            gia: '490.000',
-            moTa: '',
-            trangThai: 'Hoạt Động',
-        },
-        {
-            id: '2',
-            loaiSan: '7',
-            tenSan: 'Sân Min Hòn',
-            gia: '490.000',
-            moTa: '',
-            trangThai: 'Không Hoạt Động',
-        },
-        {
-            id: '3',
-            loaiSan: '5',
-            tenSan: 'Sân Min Hòn',
-            gia: '490.000',
-            moTa: '',
-            trangThai: 'Hoạt Động',
-        },
-    ];
-
     return (
         <div style={{ width: '100%' }}>
-            <DataGrid key={rows.id} rows={rows} columns={columns} pageSizeOptions={[5, 10, 20, 50, 100]} />
+            <DataGrid
+                rows={pitch}
+                columns={columns}
+                pageSize={10}
+                rowsPerPageOptions={[5, 10, 20, 50, 100]}
+                getRowId={(row) => row.id}
+            />
         </div>
     );
 }

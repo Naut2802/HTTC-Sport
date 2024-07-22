@@ -56,6 +56,14 @@ export const handleResetPasswordUser = async (token, data) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/user/forgot-password/reset-password?token=${token}`, data);
 };
 
+export const handleGetPitch = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch`);
+};
+
+export const handleChangePitchInfo = async (pitchId, data) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${pitchId}`, data);
+};
+
 export const handleCreatePitch = async (data) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/pitch`, data, {
         headers: {

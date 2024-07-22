@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
     Box,
     Button,
@@ -13,15 +14,30 @@ import {
     Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { handleCreatePitch, handleProvinces } from '~/apis';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { useEffect, useState } from 'react';
+import { handleCreatePitch, handleProvinces } from '~/apis';
 
-export default function FormAddField() {
-    const { register, handleSubmit, control } = useForm();
+const ValidationTextField = styled(TextField)({
+    width: '100%',
+    '& input:valid + fieldset': {
+        borderColor: '#E0E3E7',
+        borderWidth: 1,
+    },
+    '& input:invalid + fieldset': {
+        borderColor: 'red',
+        borderWidth: 1,
+    },
+    '& input:valid:focus + fieldset': {
+        borderLeftWidth: 4,
+        padding: '4px !important',
+    },
+});
 
-    const [dataCity, setDataCity] = useState({});
+export default function FormAddField({ selectedPitch }) {
+    const { register, handleSubmit, control, setValue } = useForm();
+
+    const [dataCity, setDataCity] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
 
@@ -29,14 +45,9 @@ export default function FormAddField() {
         const fetchData = async () => {
             try {
                 const response = await handleProvinces();
-                const cityData = response.data[49];
-
-                if (cityData || Array.isArray(cityData)) {
-                    setDataCity(cityData);
-                    console.log(cityData);
-                } else {
-                    setDataCity([cityData]);
-                }
+                const hcmCity = response.data[49]; // Lấy thành phố Hồ Chí Minh từ vị trí thứ 49
+                setDataCity(hcmCity ? [hcmCity] : []);
+                console.log(response.data);
             } catch (error) {
                 console.error('Error fetching data: ', error);
                 setDataCity([]);
@@ -48,33 +59,42 @@ export default function FormAddField() {
 
     const handleCityChange = (event) => {
         const cityId = event.target.value;
-        console.log('Selected City Id:', cityId);
-        console.log('Available City:', dataCity);
-
-        // const selectedCity = dataCity.find(item => item.Name === cityId);
-        // console.log('Selected City:', selectedCity);
-
-        if (cityId) {
-            setDistricts(dataCity.Districts || []);
-        } else {
-            setDistricts([]);
-        }
+        const selectedCity = dataCity.find((city) => city.Name === cityId);
+        setDistricts(selectedCity ? selectedCity.Districts : []);
+        setWards([]);
     };
 
     const handleDistrictChange = (event) => {
         const districtId = event.target.value;
-        console.log('Selected District Id:', districtId);
-        console.log('Available Districts:', districts);
-
-        const selectedDistrict = districts.find((item) => item.Name === districtId);
-        console.log('Selected District:', selectedDistrict);
-
-        if (selectedDistrict) {
-            setWards(selectedDistrict.Wards || []);
-        } else {
-            setWards([]);
-        }
+        const selectedDistrict = districts.find((district) => district.Name === districtId);
+        setWards(selectedDistrict ? selectedDistrict.Wards : []);
     };
+
+    useEffect(() => {
+        if (selectedPitch) {
+            setValue('pitchName', selectedPitch.pitchName || '');
+            setValue('price', selectedPitch.price || '');
+            setValue('street', selectedPitch.street || '');
+            setValue('city', selectedPitch.city || '');
+            setValue('district', selectedPitch.district || '');
+            setValue('ward', selectedPitch.ward || '');
+            setValue('description', selectedPitch.description || '');
+            setValue('type', selectedPitch.type || '');
+            setValue('total', selectedPitch.total || '');
+            setValue('images', selectedPitch.images || '');
+
+            // Update wards and districts based on city and district values
+            const city = selectedPitch.city;
+            const district = selectedPitch.district;
+
+            if (city) {
+                handleCityChange({ target: { value: city } });
+            }
+            if (district) {
+                handleDistrictChange({ target: { value: district } });
+            }
+        }
+    }, [selectedPitch, setValue]);
 
     const submitAddPitch = async (data) => {
         const formData = new FormData();
@@ -88,9 +108,11 @@ export default function FormAddField() {
         formData.append('type', data.type);
         formData.append('total', data.total);
 
-        Array.from(data.images).forEach((image) => {
-            formData.append('images', image);
-        });
+        if (data.images) {
+            Array.from(data.images).forEach((image) => {
+                formData.append('images', image);
+            });
+        }
 
         try {
             const res = await handleCreatePitch(formData);
@@ -100,22 +122,6 @@ export default function FormAddField() {
             console.error('Failed to add pitch:', error);
         }
     };
-
-    const ValidationTextField = styled(TextField)({
-        width: '100%',
-        '& input:valid + fieldset': {
-            borderColor: '#E0E3E7',
-            borderWidth: 1,
-        },
-        '& input:invalid + fieldset': {
-            borderColor: 'red',
-            borderWidth: 1,
-        },
-        '& input:valid:focus + fieldset': {
-            borderLeftWidth: 4,
-            padding: '4px !important',
-        },
-    });
 
     return (
         <div className="row my-2">
@@ -182,7 +188,7 @@ export default function FormAddField() {
                                     <Controller
                                         name="street"
                                         control={control}
-                                        defaultValue={dataCity.Name}
+                                        defaultValue=""
                                         render={({ field }) => (
                                             <ValidationTextField
                                                 {...field}
@@ -211,13 +217,11 @@ export default function FormAddField() {
                                                         field.onChange(event);
                                                     }}
                                                 >
-                                                    {dataCity ? (
-                                                        <MenuItem key={dataCity.Id} value={dataCity.Name}>
-                                                            {dataCity.Name}
+                                                    {dataCity.map((city) => (
+                                                        <MenuItem key={city.Name} value={city.Name}>
+                                                            {city.Name}
                                                         </MenuItem>
-                                                    ) : (
-                                                        <MenuItem disabled>No city available</MenuItem>
-                                                    )}
+                                                    ))}
                                                 </Select>
                                             </FormControl>
                                         )}
@@ -240,15 +244,14 @@ export default function FormAddField() {
                                                     label="Quận"
                                                     onChange={(event) => {
                                                         handleDistrictChange(event);
-                                                        field.onChange(event); // Đảm bảo `react-hook-form` nhận diện sự thay đổi
+                                                        field.onChange(event);
                                                     }}
                                                 >
-                                                    {Array.isArray(districts) &&
-                                                        districts.map((item) => (
-                                                            <MenuItem key={item.Id} value={item.Name}>
-                                                                {item.Name}
-                                                            </MenuItem>
-                                                        ))}
+                                                    {districts.map((item) => (
+                                                        <MenuItem key={item.Name} value={item.Name}>
+                                                            {item.Name}
+                                                        </MenuItem>
+                                                    ))}
                                                 </Select>
                                             </FormControl>
                                         )}
@@ -263,9 +266,9 @@ export default function FormAddField() {
                                             <FormControl fullWidth>
                                                 <InputLabel id="ward-select-label">Phường</InputLabel>
                                                 <Select {...field} labelId="ward-select-label" id="ward-select" label="Phường">
-                                                    {Array.isArray(wards) && wards.length > 0 ? (
+                                                    {wards.length > 0 ? (
                                                         wards.map((ward) => (
-                                                            <MenuItem key={ward.Id} value={ward.Name}>
+                                                            <MenuItem key={ward.Name} value={ward.Name}>
                                                                 {ward.Name}
                                                             </MenuItem>
                                                         ))
@@ -287,7 +290,6 @@ export default function FormAddField() {
                                     <RadioGroup {...field} aria-labelledby="demo-radio-buttons-group-label">
                                         <Typography component="div" className="d-flex">
                                             <FormControlLabel value="Sân 5" control={<Radio />} label="Sân 5" />
-                                            <FormControlLabel value="Sân 7" control={<Radio />} label="Sân 7" />
                                         </Typography>
                                     </RadioGroup>
                                 )}

@@ -47,13 +47,13 @@ export default function ListFieldAdmin() {
         {
             field: 'diaChi',
             headerName: 'Địa Chỉ',
-            width: 383,
+            width: 400,
         },
         {
             field: 'trangThai',
             headerName: 'Trạng Thái',
             sortable: false,
-            width: 90,
+            width: 150,
         },
         {
             field: 'khac',
@@ -118,7 +118,7 @@ export default function ListFieldAdmin() {
                     Danh Sách Sân
                 </Typography>
             </Breadcrumbs>
-            <div style={{ width: '90%' }}>
+            <div style={{ width: '100%' }}>
                 <DataGrid
                     key={rows.id}
                     rows={rows}

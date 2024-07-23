@@ -16,7 +16,8 @@ import {
 import { styled } from '@mui/material/styles';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { handleCreatePitch, handleProvinces } from '~/apis';
+import { handleCreatePitch, handleProvinces, handleUpdatePitch } from '~/apis';
+import { useNavigate } from 'react-router-dom';
 
 const ValidationTextField = styled(TextField)({
     width: '100%',
@@ -35,6 +36,7 @@ const ValidationTextField = styled(TextField)({
 });
 
 export default function FormAddField({ selectedPitch }) {
+    const navigate = useNavigate();
     const { register, handleSubmit, control, setValue } = useForm();
 
     const [dataCity, setDataCity] = useState([]);
@@ -47,7 +49,7 @@ export default function FormAddField({ selectedPitch }) {
                 const response = await handleProvinces();
                 const hcmCity = response.data[49]; // Lấy thành phố Hồ Chí Minh từ vị trí thứ 49
                 setDataCity(hcmCity ? [hcmCity] : []);
-                console.log(response.data);
+                // console.log(response.data);
             } catch (error) {
                 console.error('Error fetching data: ', error);
                 setDataCity([]);
@@ -57,31 +59,18 @@ export default function FormAddField({ selectedPitch }) {
         fetchData();
     }, []);
 
-    const handleCityChange = (event) => {
-        const cityId = event.target.value;
-        const selectedCity = dataCity.find((city) => city.Name === cityId);
-        setDistricts(selectedCity ? selectedCity.Districts : []);
-        setWards([]);
-    };
-
-    const handleDistrictChange = (event) => {
-        const districtId = event.target.value;
-        const selectedDistrict = districts.find((district) => district.Name === districtId);
-        setWards(selectedDistrict ? selectedDistrict.Wards : []);
-    };
-
     useEffect(() => {
         if (selectedPitch) {
-            setValue('pitchName', selectedPitch.pitchName || '');
-            setValue('price', selectedPitch.price || '');
-            setValue('street', selectedPitch.street || '');
-            setValue('city', selectedPitch.city || '');
-            setValue('district', selectedPitch.district || '');
-            setValue('ward', selectedPitch.ward || '');
-            setValue('description', selectedPitch.description || '');
-            setValue('type', selectedPitch.type || '');
-            setValue('total', selectedPitch.total || '');
-            setValue('images', selectedPitch.images || '');
+            setValue('pitchName', selectedPitch.pitchName);
+            setValue('price', selectedPitch.price);
+            setValue('street', selectedPitch.street);
+            setValue('city', selectedPitch.city);
+            setValue('district', selectedPitch.district);
+            setValue('ward', selectedPitch.ward);
+            setValue('description', selectedPitch.description);
+            setValue('type', selectedPitch.type);
+            setValue('total', selectedPitch.total);
+            setValue('images', selectedPitch.images);
 
             // Update wards and districts based on city and district values
             const city = selectedPitch.city;
@@ -95,6 +84,19 @@ export default function FormAddField({ selectedPitch }) {
             }
         }
     }, [selectedPitch, setValue]);
+
+    const handleCityChange = (event) => {
+        const cityId = event.target.value;
+        const selectedCity = dataCity.find((city) => city.Name === cityId);
+        setDistricts(selectedCity ? selectedCity.Districts : []);
+        setWards([]);
+    };
+
+    const handleDistrictChange = (event) => {
+        const districtId = event.target.value;
+        const selectedDistrict = districts.find((district) => district.Name === districtId);
+        setWards(selectedDistrict ? selectedDistrict.Wards : []);
+    };
 
     const submitAddPitch = async (data) => {
         const formData = new FormData();
@@ -123,6 +125,30 @@ export default function FormAddField({ selectedPitch }) {
         }
     };
 
+    const submitUpdatePitch = async (data) => {
+        console.log('Data update submitted:', data);
+        try {
+            const pithId = selectedPitch.id;
+            const res = await handleUpdatePitch(pithId + 1, data);
+            toast.success(res.data.message);
+            toast.success('Bạn vừa cập nhật sân thành công!');
+            window.location.reload();
+            console.log('Pitch updated successfully');
+        } catch (error) {
+            console.error('Failed to update pitch:', error.response ? error.response.data : error.message);
+            toast.error(`Failed to update pitch: ${error.response ? error.response.data.message : error.message}`);
+        }
+    };
+
+    const onSubmit = async (data) => {
+        console.log('Data to be submitted:', data);
+        if (selectedPitch) {
+            await submitUpdatePitch(data);
+        } else {
+            await submitAddPitch(data);
+        }
+    };
+
     return (
         <div className="row my-2">
             <div className="col-6">
@@ -131,12 +157,12 @@ export default function FormAddField({ selectedPitch }) {
                         Hình Ảnh Sân
                     </Typography>
                     <Typography className="card-body text-center fs-3" variant="h6" component="div">
-                        <img src="" alt="" />
+                        <img {...register('images')} alt="" />
                     </Typography>
                 </Box>
             </div>
             <div className="col-6">
-                <Box className="card" component="form" noValidate onSubmit={handleSubmit(submitAddPitch)}>
+                <Box className="card" component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
                     <Typography className="card-header text-center fs-3" variant="h6" component="div">
                         Thông Tin Sân
                     </Typography>
@@ -310,7 +336,7 @@ export default function FormAddField({ selectedPitch }) {
                         <Button variant="outlined" color="success" className="text-capitalize mx-2" type="submit">
                             Thêm Sân
                         </Button>
-                        <Button variant="outlined" color="secondary" className="text-capitalize mx-2">
+                        <Button variant="outlined" color="secondary" className="text-capitalize mx-2" type="submit">
                             Cập Nhật
                         </Button>
                         <Button variant="outlined" color="inherit" className="text-capitalize mx-2">

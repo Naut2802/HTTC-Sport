@@ -66,9 +66,7 @@ function ThongKe() {
             <div className="col-8 border rounded-2 my-4 d-flex justify-content-center mt-2 ">
                 <div className="w-75 bg-white mx-2">
                     <Bar options={options} data={data} />
-                    <div className="float-end fs-5 m-2">
-                        Doanh Thu: 123123123123<i class="bi bi-currency-dollar"> </i>
-                    </div>
+                    <div className="float-end fs-5 m-2">Doanh Thu: 123123123123</div>
                 </div>
             </div>
         </div>

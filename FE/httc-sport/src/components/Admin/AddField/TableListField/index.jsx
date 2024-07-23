@@ -12,7 +12,6 @@ export default function TableListField({ onRowClick }) {
         const fetchData = async () => {
             try {
                 const re = await handleGetPitch();
-                console.log(re.data.result);
                 const dataWithId = re.data.result.map((item, index) => ({
                     ...item,
                     id: item.id || index,

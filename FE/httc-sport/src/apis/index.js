@@ -64,6 +64,15 @@ export const handleChangePitchInfo = async (pitchId, data) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${pitchId}`, data);
 };
 
+export const handleUpdatePitch = async (pitchId, data) => {
+    return await authorizedAxiosInstance.put(`${API_ROOT}/api/v1/pitch/${pitchId}`, data,{
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+};
+
+
 export const handleCreatePitch = async (data) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/pitch`, data, {
         headers: {

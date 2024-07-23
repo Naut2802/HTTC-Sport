@@ -19,7 +19,8 @@ import java.util.List;
 public class PitchRequest {
 	@NotNull(message = "PITCH_NAME_NULL")
 	String pitchName;
-	@DecimalMin(value = "30000", message = "PITCH_MIN_PRICE")
+	@NotNull(message = "PITCH_PRICE_NULL")
+//	@DecimalMin(value = "300000", message = "PITCH_MIN_PRICE")
 	Double price;
 	@NotNull(message = "PITCH_ADDRESS_NULL")
 	String street;

@@ -1,9 +1,11 @@
 package com.fpoly.httc_sport.controller;
 
 import com.fpoly.httc_sport.dto.request.RoleRequest;
+import com.fpoly.httc_sport.dto.request.RoleUpdateRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.RoleResponse;
 import com.fpoly.httc_sport.service.RoleService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,14 +25,14 @@ public class RoleController {
 	RoleService roleService;
 	
 	@PostMapping
-	public ApiResponse<RoleResponse> createRole(@RequestBody RoleRequest request) {
+	public ApiResponse<RoleResponse> createRole(@Valid @RequestBody RoleRequest request) {
 		return ApiResponse.<RoleResponse>builder()
 				.result(roleService.createRole(request))
 				.build();
 	}
 	
 	@PutMapping("/{id}")
-	public ApiResponse<RoleResponse> updateRole(@PathVariable String id, @RequestBody RoleRequest request) {
+	public ApiResponse<RoleResponse> updateRole(@PathVariable String id, @RequestBody RoleUpdateRequest request) {
 		return ApiResponse.<RoleResponse>builder()
 				.result(roleService.updateRole(id, request))
 				.build();

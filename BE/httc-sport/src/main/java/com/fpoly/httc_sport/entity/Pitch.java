@@ -21,7 +21,7 @@ public class Pitch implements Serializable {
 	@Column(nullable = false)
 	String pitchName;
 	@Column(nullable = false)
-	Double price;
+	Integer price;
 	@Builder.Default
 	Boolean isEnabled = true;
 	String description;
@@ -42,8 +42,4 @@ public class Pitch implements Serializable {
 
 	@OneToMany(mappedBy = "pitch")
 	Set<Bill> bills;
-
-//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//	@JoinTable(name = "san_tghd", joinColumns = @JoinColumn(name = "maSan"), inverseJoinColumns = @JoinColumn(name = "ca"))
-//	List<ThoiGianHoatDong> listThoiGianHoatDong;
 }

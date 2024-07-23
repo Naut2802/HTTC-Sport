@@ -26,20 +26,28 @@ public class Bill implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
+	String email;
+	String phoneNumber;
+	String firstName;
+	String lastName;
 	@Temporal(TemporalType.DATE)
 	LocalDate createdAt;
-	Double total;
+	@Temporal(TemporalType.DATE)
+	LocalDate rentedAt;
 	@Temporal(TemporalType.TIME)
 	LocalTime startTime;
 	@Temporal(TemporalType.TIME)
 	LocalTime endTime;
-	Boolean isRate;
+	Double total;
+	@Builder.Default
+	Boolean isRate = false;
 	
 	@ManyToOne @JoinColumn(name = "pitch_id")
 	Pitch pitch;
 	@ManyToOne @JoinColumn(name = "user_id")
 	User user;
 	
-	String email;
-	String phoneNumber;
+	@ManyToOne
+	@JoinColumn(name = "payment_method")
+	PaymentMethod paymentMethod;
 }

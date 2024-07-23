@@ -27,5 +27,5 @@ public class PitchResponse {
 	String type;
 	int total;
 	int remaining;
-	ImageResponse image;
+	Set<ImageResponse> images;
 }

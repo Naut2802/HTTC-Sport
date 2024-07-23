@@ -24,17 +24,25 @@ import lombok.experimental.FieldDefaults;
 public class RentInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	Integer id;
+	String email;
+	String phoneNumber;
+	String firstName;
+	String lastName;
+	@Temporal(TemporalType.DATE)
+	LocalDate rentedAt;
 	@Temporal(TemporalType.TIME)
 	LocalTime startTime;
 	@Temporal(TemporalType.TIME)
 	LocalTime endTime;
-	Boolean isDone;
-	@Temporal(TemporalType.DATE)
-	LocalDate rentedAt;
-	Double total;
-	Double deposit;
+	Integer total;
+	@Builder.Default
+	Integer deposit = 0;
 	String note;
+	@Builder.Default
+	Boolean isDone = false;
+	@Builder.Default
+	Boolean paymentStatus = false;
 	
 	@ManyToOne
 	@JoinColumn(name = "pitch_id")
@@ -43,8 +51,8 @@ public class RentInfo {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	User user;
-	String email;
-	String phoneNumber;
-	String firstName;
-	String lastName;
+	
+	@ManyToOne
+	@JoinColumn(name = "payment_method")
+	PaymentMethod paymentMethod;
 }

@@ -1,6 +1,7 @@
 package com.fpoly.httc_sport.controller;
 
 import com.fpoly.httc_sport.dto.response.ApiResponse;
+import com.fpoly.httc_sport.dto.response.PayOSResponse;
 import com.fpoly.httc_sport.service.PaymentService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,9 @@ public class PaymentController {
 	PaymentService paymentService;
 	
 	@PostMapping("rent-pitch/{id}")
-	ApiResponse<?> createRentPaymentLink(@PathVariable int id, @RequestParam("deposit") float deposit)
+	ApiResponse<PayOSResponse> createRentPaymentLink(@PathVariable int id, @RequestParam("deposit") float deposit)
 			throws NoSuchAlgorithmException, InvalidKeyException {
-		return ApiResponse.builder()
+		return ApiResponse.<PayOSResponse>builder()
 				.result(paymentService.createRentPaymentLink(id, deposit))
 				.build();
 	}

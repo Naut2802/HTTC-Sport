@@ -2,15 +2,10 @@ package com.fpoly.httc_sport.entity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Random;
+import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -23,7 +18,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RentInfo {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
 	String email;
 	String phoneNumber;
@@ -55,4 +49,12 @@ public class RentInfo {
 	@ManyToOne
 	@JoinColumn(name = "payment_method")
 	PaymentMethod paymentMethod;
+	
+	@PrePersist
+	void generateId() {
+		String uuid = UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 6);
+		this.id = Integer.parseInt(uuid);
+	}
+	
+	
 }

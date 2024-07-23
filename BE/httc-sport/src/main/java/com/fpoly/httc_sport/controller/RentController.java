@@ -2,6 +2,7 @@ package com.fpoly.httc_sport.controller;
 
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
+import com.fpoly.httc_sport.dto.response.PayOSPaymentResponse;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
 import com.fpoly.httc_sport.service.RentInfoService;
 import jakarta.validation.Valid;
@@ -20,7 +21,7 @@ public class RentController {
 	RentInfoService rentInfoService;
 	
 	@PostMapping
-	ApiResponse<RentInfoResponse> rentPitch(@Valid @ModelAttribute RentRequest request) throws IOException {
+	ApiResponse<RentInfoResponse> rentPitch(@Valid @RequestBody RentRequest request) throws IOException {
 		return ApiResponse.<RentInfoResponse>builder()
 				.result(rentInfoService.rentPitch(request))
 				.build();
@@ -38,9 +39,11 @@ public class RentController {
 				.build();
 	}
 	
-	@PostMapping("confirm-rent/{id}")
-	ApiResponse<?> confirmRent(@PathVariable int id, @RequestBody Object confirmationInfo) {
-		return ApiResponse.builder().build();
+	@PostMapping("confirm-rent")
+	ApiResponse<RentInfoResponse> confirmRent(@RequestParam("code") String code, @RequestParam("id") String id, @RequestParam("status") String status) {
+		return ApiResponse.<RentInfoResponse>builder()
+				.result(rentInfoService.confirmRent(code, id, status))
+				.build();
 	}
 	
 //	@GetMapping("dat-san/thanh-toan/xac-nhan-thanh-toan/{method}")

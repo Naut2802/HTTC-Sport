@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import com.fpoly.httc_sport.dto.request.RentRequest;
+import com.fpoly.httc_sport.dto.response.PayOSPaymentResponse;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
@@ -33,6 +34,8 @@ public class RentInfoService {
 	UserRepository userRepository;
 	PaymentMethodRepository paymentMethodRepository;
 	RentInfoMapper rentInfoMapper;
+	
+	PaymentService paymentService;
 	
 	public RentInfoResponse rentPitch(RentRequest request) {
 		var pitch = pitchRepository.findById(request.getPitchId()).orElseThrow(
@@ -92,6 +95,7 @@ public class RentInfoService {
 		rentInfo.setStartTime(startTime);
 		rentInfo.setEndTime(endTime);
 		rentInfo.setTotal((int) (((float) request.getRentTime() / 60) * (pitch.getPrice() * paymentMethod.getPriceRate())));
+		rentInfo.setPaymentMethod(paymentMethod);
 		
 		rentInfo = rentInfoRepository.save(rentInfo);
 		
@@ -99,6 +103,28 @@ public class RentInfoService {
 				.id(rentInfo.getId())
 				.total(rentInfo.getTotal())
 				.message("Đặt sân thành công")
+				.build();
+	}
+	
+	public RentInfoResponse confirmRent(String code, String id, String status) {
+		if (code.equals("01") || !status.equals("PAID"))
+			return RentInfoResponse.builder().message("Thanh toán đặt cọc thất bại").build();
+		
+		var paymentInfo = paymentService.getPaymentInfo(id);
+		
+		var rentInfo = rentInfoRepository.findById(paymentInfo.getData().getOrderCode()).orElseThrow(
+				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
+		);
+		
+		rentInfo.setDeposit(paymentInfo.getData().getAmountPaid());
+		rentInfo.setPaymentStatus(true);
+		
+		rentInfoRepository.save(rentInfo);
+		
+		return RentInfoResponse.builder()
+				.id(rentInfo.getId())
+				.total(rentInfo.getTotal())
+				.message("Thanh toán đặt cọc thành công")
 				.build();
 	}
 	

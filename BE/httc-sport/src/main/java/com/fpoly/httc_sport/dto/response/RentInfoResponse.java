@@ -16,5 +16,7 @@ import java.time.LocalTime;
 public class RentInfoResponse {
 	int id;
 	int total;
+	@Builder.Default
+	int deposit = 0;
 	String message;
 }

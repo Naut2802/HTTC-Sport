@@ -1,15 +1,11 @@
 package com.fpoly.httc_sport.service;
 
 import com.fpoly.httc_sport.dto.request.PayOSRequest;
-import com.fpoly.httc_sport.dto.request.VietQrRequest;
-import com.fpoly.httc_sport.dto.response.PayOSResponse;
-import com.fpoly.httc_sport.dto.response.VietQrResponse;
+import com.fpoly.httc_sport.dto.response.PayOSPaymentResponse;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
-import com.fpoly.httc_sport.repository.PaymentMethodRepository;
 import com.fpoly.httc_sport.repository.RentInfoRepository;
 import com.fpoly.httc_sport.repository.httpclient.PayOSClient;
-import com.fpoly.httc_sport.repository.httpclient.VietQrClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,12 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -35,24 +27,7 @@ import java.util.TreeMap;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PaymentService {
 	RentInfoRepository rentInfoRepository;
-	VietQrClient vietQrClient;
 	PayOSClient payOSClient;
-	
-	@NonFinal
-	@Value("${vietqr.client-id}")
-	String VIET_QR_CLIENT_ID;
-	
-	@NonFinal
-	@Value("${bank.account.no}")
-	String ACCOUNT_NO;
-	
-	@NonFinal
-	@Value("${bank.account.name}")
-	String ACCOUNT_NAME;
-	
-	@NonFinal
-	@Value("${bank.bin}")
-	String ACQID;
 	
 	@NonFinal
 	@Value("${payos.client-id}")
@@ -65,20 +40,6 @@ public class PaymentService {
 	@NonFinal
 	@Value("${payos.checksum-key}")
 	String PAYOS_CHECKSUM_KEY;
-	
-	public VietQrResponse generateQr() {
-		VietQrRequest request = VietQrRequest.builder()
-				.accountNo(ACCOUNT_NO)
-				.accountName(ACCOUNT_NAME)
-				.acqId(ACQID)
-				.addInfo("TEST GENERATE QR CODE")
-				.amount(15000)
-				.format("text")
-				.template("compact2")
-				.build();
-		
-		return vietQrClient.generateQrCode(request, VIET_QR_CLIENT_ID);
-	}
 	
 	public String createRentPaymentLink(int rentInfoId, float deposit) throws NoSuchAlgorithmException, InvalidKeyException {
 		var rentInfo = rentInfoRepository.findById(rentInfoId).orElseThrow(
@@ -111,6 +72,10 @@ public class PaymentService {
 		var response = payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
 		
 		return response.getData().getCheckoutUrl();
+	}
+	
+	public PayOSPaymentResponse getPaymentInfo(String id) {
+		return payOSClient.getPaymentInfo(id, PAYOS_CLIENT_ID, PAYOS_API_KEY);
 	}
 	
 	private String generateSignature(String checksum_key, String data) throws NoSuchAlgorithmException, InvalidKeyException {

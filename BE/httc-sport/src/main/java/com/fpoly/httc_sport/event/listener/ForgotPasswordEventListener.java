@@ -31,17 +31,12 @@ public class ForgotPasswordEventListener implements ApplicationListener<ForgotPa
 		String url = event.getUrl()+"/verify-token?token="+token;
 		
 		MailInfo mailInfo = MailInfo.builder()
-				.from("maousama333@gmail.com")
 				.to(user.getEmail())
 				.subject("Email reset mật khẩu")
 				.body(mailerService.generateForgotPasswordBody(url))
 				.build();
 		
-		try {
-			mailerService.send(mailInfo);
-			log.info(url);
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		}
+		mailerService.queue(mailInfo);
+		log.info(url);
 	}
 }

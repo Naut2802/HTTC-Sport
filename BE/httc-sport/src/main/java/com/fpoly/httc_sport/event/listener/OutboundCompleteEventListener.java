@@ -27,16 +27,11 @@ public class OutboundCompleteEventListener implements ApplicationListener<Outbou
 		var user = event.getUser();
 		
 		MailInfo mailInfo = MailInfo.builder()
-				.from("maousama333@gmail.com")
 				.to(user.getEmail())
 				.subject("Email đăng ký tài khoản thông qua gmail")
 				.body(mailerService.generateCreatePasswordBody(event.getPassword()))
 				.build();
 		
-		try {
-			mailerService.send(mailInfo);
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		}
+		mailerService.queue(mailInfo);
 	}
 }

@@ -2,6 +2,7 @@ package com.fpoly.httc_sport.service;
 
 import com.fpoly.httc_sport.dto.request.PayOSRequest;
 import com.fpoly.httc_sport.dto.response.PayOSPaymentResponse;
+import com.fpoly.httc_sport.dto.response.PayOSResponse;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.repository.RentInfoRepository;
@@ -41,7 +42,7 @@ public class PaymentService {
 	@Value("${payos.checksum-key}")
 	String PAYOS_CHECKSUM_KEY;
 	
-	public String createRentPaymentLink(int rentInfoId, float deposit) throws NoSuchAlgorithmException, InvalidKeyException {
+	public PayOSResponse createRentPaymentLink(int rentInfoId, float deposit) throws NoSuchAlgorithmException, InvalidKeyException {
 		var rentInfo = rentInfoRepository.findById(rentInfoId).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
@@ -69,9 +70,7 @@ public class PaymentService {
 		
 		request.setSignature(signature);
 		
-		var response = payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
-		
-		return response.getData().getCheckoutUrl();
+		return payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
 	}
 	
 	public PayOSPaymentResponse getPaymentInfo(String id) {

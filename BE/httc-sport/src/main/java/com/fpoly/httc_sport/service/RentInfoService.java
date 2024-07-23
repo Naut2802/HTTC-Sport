@@ -8,6 +8,7 @@ import java.util.List;
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.PayOSPaymentResponse;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
+import com.fpoly.httc_sport.entity.MailInfo;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.mapper.RentInfoMapper;
@@ -36,6 +37,7 @@ public class RentInfoService {
 	RentInfoMapper rentInfoMapper;
 	
 	PaymentService paymentService;
+	MailerService mailerService;
 	
 	public RentInfoResponse rentPitch(RentRequest request) {
 		var pitch = pitchRepository.findById(request.getPitchId()).orElseThrow(
@@ -51,12 +53,7 @@ public class RentInfoService {
 		LocalDate dateNow = LocalDate.now();
 		LocalTime timeNow = LocalTime.now();
 		LocalTime startStopTime = LocalTime.of(23, 0);
-		LocalTime endStopTime = LocalTime.of(6, 0);
-		
-		if (rentInfoRepository.existsByPitchIdEqualsAndEmailEqualsAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-				pitch.getId(), request.getEmail(),
-				request.getRentedAt(), startTime, endTime))
-			throw new AppException(ErrorCode.RENT_INFO_EXISTED);
+		LocalTime endStopTime = LocalTime.of(6, 1);
 		
 		if (request.getRentedAt().getYear() < dateNow.getYear()) {
 			return RentInfoResponse.builder().message("Đặt sân thất bại, năm đặt không hợp lệ").build();
@@ -69,8 +66,19 @@ public class RentInfoService {
 					return RentInfoResponse.builder().message("Đặt sân thất bại, thời gian đặt không hợp lệ").build();
 		}
 		
-		if (startTime.isAfter(startStopTime) || startTime.isBefore(endStopTime))
+		if (startTime.isAfter(startStopTime) || startTime.isBefore(endStopTime)
+				|| endTime.isAfter(startStopTime) || endTime.isBefore(endStopTime))
 			return RentInfoResponse.builder().message("Đặt sân thất bại, sân bóng không hoạt động trong khoảng thời gian này").build();
+		
+		int stepHour = 0;
+		int time = request.getRentTime();
+		
+		while (time > 0) {
+			stepHour = request.getRentTime() - time;
+			if (startTime.plusMinutes(stepHour).isAfter(startStopTime) && startTime.plusMinutes(stepHour).isAfter(endStopTime))
+				return RentInfoResponse.builder().message("Đặt sân thất bại, sân bóng không hoạt động trong khoảng thời gian này").build();
+			time -= 60;
+		}
 		
 		if (rentInfoRepository
 				.existsByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
@@ -84,7 +92,8 @@ public class RentInfoService {
 						endTime.minusSeconds(1))
 			) {
 			return RentInfoResponse.builder().message("Đặt sân thất bại, ngày đặt hoặc thời gian đặt bị trùng").build();
-		} else if (rentInfoRepository.existsByRentedAtEqualsAndEndTimeBetween(request.getRentedAt(), startTime, endTime))
+		} else if (rentInfoRepository.existsByRentedAtEqualsAndEndTimeBetween(request.getRentedAt(), startTime, endTime)
+				|| rentInfoRepository.existsByRentedAtEqualsAndStartTimeBetween(request.getRentedAt(), startTime, endTime))
 			return RentInfoResponse.builder().message("Đặt sân thất bại, ngày đặt hoặc thời gian đặt bị trùng").build();
 		
 		var user = userRepository.findByEmail(request.getEmail()).orElse(null);
@@ -121,33 +130,19 @@ public class RentInfoService {
 		
 		rentInfoRepository.save(rentInfo);
 		
+		MailInfo mailInfo = MailInfo.builder()
+				.to(rentInfo.getEmail())
+				.subject("Thông tin đặt sân")
+				.body(mailerService.generateRentPitchBody(rentInfo))
+				.build();
+		
+		mailerService.queue(mailInfo);
+		
 		return RentInfoResponse.builder()
 				.id(rentInfo.getId())
 				.total(rentInfo.getTotal())
-				.message("Thanh toán đặt cọc thành công")
+				.deposit(rentInfo.getDeposit())
+				.message("Thanh toán đặt cọc thành công, vui lòng kiểm tra thông tin đặt sân được gửi qua Email")
 				.build();
 	}
-	
-//	@Autowired
-//	private RentInfoRepository ttRepository;
-//
-//	public void save(RentInfo ttsan) {
-//		ttRepository.save(ttsan);
-//	}
-//
-//	public List<RentInfo> findByMaLoai(){
-//		return (List<RentInfo>) ttRepository.findAll();
-//	}
-//
-//	public RentInfo getTTSan(long id) {
-//		return ttRepository.findById(id).orElse(null);
-//	}
-//
-//	public Boolean existsByDateAndTime(LocalDate date, LocalTime time) {
-//		return ttRepository.existsByNgayDatEqualsAndThoiGianNhanSanLessThanEqualAndThoiGianKetThucGreaterThanEqual(date, time, time);
-//	}
-//
-//	public Boolean existsByBetween(LocalDate date, LocalTime time1, LocalTime time2) {
-//		return ttRepository.existsByNgayDatEqualsAndThoiGianNhanSanBetween(date, time1, time2) || ttRepository.existsByNgayDatEqualsAndThoiGianKetThucBetween(date, time1, time2);
-//	}
 }

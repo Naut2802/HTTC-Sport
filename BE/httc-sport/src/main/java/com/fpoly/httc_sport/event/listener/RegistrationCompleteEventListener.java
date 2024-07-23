@@ -32,17 +32,12 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
 		String url = event.getUrl()+"/verify-email?token="+verificationToken;
 		
 		MailInfo mailInfo = MailInfo.builder()
-				.from("maousama333@gmail.com")
 				.to(user.getEmail())
 				.subject("Email xác thực tài khoản")
 				.body(mailerService.generateVerificationBody(url))
 				.build();
 		
-		try {
-			mailerService.send(mailInfo);
-			log.info(url);
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		}
+		mailerService.queue(mailInfo);
+		log.info(url);
 	}
 }

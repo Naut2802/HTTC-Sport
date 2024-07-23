@@ -45,8 +45,10 @@ public class PitchService {
 		
 		var pitch = pitchMapper.toPitch(request);
 		pitch.setRemaining(request.getTotal());
-		pitch.setImages(new HashSet<>(imageService.saveWithPitch(request.getImages(), pitch)));
 		pitch.setAddress(pitchMapper.toAddress(request));
+		
+		if (request.getImages() != null)
+			pitch.setImages(new HashSet<>(imageService.saveWithPitch(request.getImages(), pitch)));
 		
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}

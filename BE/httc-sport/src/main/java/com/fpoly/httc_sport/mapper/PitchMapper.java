@@ -28,5 +28,9 @@ public interface PitchMapper {
 	PitchDetailsResponse toPitchDetailsResponse(Pitch pitch);
 	
 	@Mapping(target = "images", ignore = true)
+	@Mapping(target = "address.street", source = "street")
+	@Mapping(target = "address.ward", source = "ward")
+	@Mapping(target = "address.district", source = "district")
+	@Mapping(target = "address.city", source = "city")
 	void updatePitch(@MappingTarget Pitch pitch, PitchRequest request);
 }

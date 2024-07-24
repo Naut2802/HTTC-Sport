@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class PitchController {
 	PitchService pitchService;
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> createPitch(@Valid @ModelAttribute PitchRequest request) throws IOException {
 		return ApiResponse.<PitchResponse>builder()
 				.result(pitchService.createPitch(request))
@@ -29,6 +31,7 @@ public class PitchController {
 	}
 	
 	@PutMapping("{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws IOException {
 		return ApiResponse.<PitchResponse>builder()
 				.result(pitchService.updatePitch(id, request))
@@ -36,6 +39,7 @@ public class PitchController {
 	}
 	
 	@DeleteMapping("{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> deletePitch(@PathVariable int id) {
 		pitchService.deletePitch(id);
 		return ApiResponse.<PitchResponse>builder()

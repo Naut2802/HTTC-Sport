@@ -27,12 +27,20 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
+	String[] WHITE_LIST_ENDPOINT = {
+			"/api/v1/user/forgot-password/**",
+			"/api/v1/rent-pitch/**",
+			"/api/v1/payment/**",
+			"/api/v1/pitch/**"
+	};
 	JwtUtils jwtUtils;
 	LogoutHandler logoutHandler;
 	CustomUserDetailsService userDetailsService;
@@ -94,7 +102,7 @@ public class SecurityConfig {
 				.securityMatcher(new AntPathRequestMatcher("/api/v1/**"))
 				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(http -> http
-								.requestMatchers("/api/v1/user/forgot-password/**").permitAll()
+								.requestMatchers(WHITE_LIST_ENDPOINT).permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

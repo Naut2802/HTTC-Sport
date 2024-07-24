@@ -59,7 +59,7 @@ public class PitchService {
 		
 		pitchMapper.updatePitch(pitch, request);
 		
-		if (!request.getImages().isEmpty()) {
+		if (request.getImages() != null) {
 			List<Image> images = List.copyOf(pitch.getImages());
 			
 			var imageResponse = imageService.saveWithPitch(request.getImages(), pitch);

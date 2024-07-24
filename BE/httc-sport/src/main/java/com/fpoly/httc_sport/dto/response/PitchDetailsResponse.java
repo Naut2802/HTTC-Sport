@@ -13,6 +13,7 @@ import java.util.Set;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PitchDetailsResponse {
+	int id;
 	String pitchName;
 	Double price;
 	String street;

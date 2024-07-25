@@ -29,7 +29,6 @@ public class Pitch implements Serializable {
 	String type;
 	@Column(nullable = false)
 	int total;
-	int remaining;
 
 	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	Address address;

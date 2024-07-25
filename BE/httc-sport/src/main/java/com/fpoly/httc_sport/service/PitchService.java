@@ -44,7 +44,6 @@ public class PitchService {
 			throw new AppException(ErrorCode.PITCH_EXISTED);
 		
 		var pitch = pitchMapper.toPitch(request);
-		pitch.setRemaining(request.getTotal());
 		pitch.setAddress(pitchMapper.toAddress(request));
 		
 		if (request.getImages() != null)

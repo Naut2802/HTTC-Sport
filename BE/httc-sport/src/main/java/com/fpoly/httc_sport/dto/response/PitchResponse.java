@@ -27,6 +27,5 @@ public class PitchResponse {
 	Boolean isEnabled;
 	String type;
 	int total;
-	int remaining;
 	Set<ImageResponse> images;
 }

@@ -80,20 +80,35 @@ public class RentInfoService {
 			time -= 60;
 		}
 		
-		if (rentInfoRepository
-				.existsByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+		int countByStartTime = rentInfoRepository
+				.countByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
 						request.getRentedAt(),
 						startTime.plusSeconds(1),
-						startTime.plusSeconds(1)) ||
-			rentInfoRepository
-				.existsByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+						startTime.plusSeconds(1));
+		
+		System.out.println("Count rent-info by start time: " + countByStartTime);
+		
+		int countByEndTime = rentInfoRepository
+				.countByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
 						request.getRentedAt(),
 						endTime.minusSeconds(1),
-						endTime.minusSeconds(1))
-			) {
+						endTime.minusSeconds(1));
+		
+		System.out.println("Count rent-info by end time: " + countByStartTime);
+		
+		int countByStartTimeBetween = rentInfoRepository
+				.countByRentedAtEqualsAndStartTimeBetween(request.getRentedAt(), startTime, endTime);
+		
+		System.out.println("Count rent-info by start time between: " + countByStartTimeBetween);
+		
+		int countByEndTimeBetween = rentInfoRepository
+				.countByRentedAtEqualsAndEndTimeBetween(request.getRentedAt(), startTime, endTime);
+		
+		System.out.println("Count rent-info by end time between: " + countByEndTimeBetween);
+		
+		if ( countByStartTime >= pitch.getTotal() || countByEndTime >= pitch.getTotal() ) {
 			return RentInfoResponse.builder().message("Đặt sân thất bại, ngày đặt hoặc thời gian đặt bị trùng").build();
-		} else if (rentInfoRepository.existsByRentedAtEqualsAndEndTimeBetween(request.getRentedAt(), startTime, endTime)
-				|| rentInfoRepository.existsByRentedAtEqualsAndStartTimeBetween(request.getRentedAt(), startTime, endTime))
+		} else if ( countByStartTimeBetween >= pitch.getTotal() || countByEndTimeBetween >= pitch.getTotal() )
 			return RentInfoResponse.builder().message("Đặt sân thất bại, ngày đặt hoặc thời gian đặt bị trùng").build();
 		
 		var user = userRepository.findByEmail(request.getEmail()).orElse(null);

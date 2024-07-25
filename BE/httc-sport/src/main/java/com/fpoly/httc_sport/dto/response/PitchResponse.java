@@ -16,6 +16,7 @@ import java.util.Set;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PitchResponse {
+	int id;
 	String pitchName;
 	Double price;
 	String street;
@@ -26,6 +27,5 @@ public class PitchResponse {
 	Boolean isEnabled;
 	String type;
 	int total;
-	int remaining;
 	Set<ImageResponse> images;
 }

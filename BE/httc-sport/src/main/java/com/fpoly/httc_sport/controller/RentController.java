@@ -2,7 +2,6 @@ package com.fpoly.httc_sport.controller;
 
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
-import com.fpoly.httc_sport.dto.response.PayOSPaymentResponse;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
 import com.fpoly.httc_sport.service.RentInfoService;
 import jakarta.validation.Valid;

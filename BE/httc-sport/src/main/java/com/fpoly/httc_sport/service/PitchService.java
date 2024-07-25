@@ -44,7 +44,6 @@ public class PitchService {
 			throw new AppException(ErrorCode.PITCH_EXISTED);
 		
 		var pitch = pitchMapper.toPitch(request);
-		pitch.setRemaining(request.getTotal());
 		pitch.setAddress(pitchMapper.toAddress(request));
 		
 		if (request.getImages() != null)
@@ -59,7 +58,7 @@ public class PitchService {
 		
 		pitchMapper.updatePitch(pitch, request);
 		
-		if (!request.getImages().isEmpty()) {
+		if (request.getImages() != null) {
 			List<Image> images = List.copyOf(pitch.getImages());
 			
 			var imageResponse = imageService.saveWithPitch(request.getImages(), pitch);

@@ -22,21 +22,21 @@ import UserHome from './components/Layout/UserHome';
 import AdminHomePage from './pages/AdminHomePage';
 import UserHomePage from './pages/UserHomePage';
 
-//FIELD
-import FieldBooking from './components/Field/FieldBooking';
-import FieldDetail from './components/Field/FieldDetail';
-import FieldList from './components/Field/FieldList';
+//PITCH
+import PitchDetail from './components/Pitch/PitchDetail';
+import PitchList from './components/Pitch/PitchList';
+import PitchRent from './components/Pitch/PitchRent';
 
 //USER
-import UserHistoryOrder from './components/User/UserHistoryOrder';
+import UserBills from './components/User/UserBills';
 import UserInfo from './components/User/UserInfo';
-import UserOrderInfo from './components/User/UserOrderInfo';
+import UserRentInfo from './components/User/UserRentInfo';
 
 //ADMIN
-import AddField from './components/Admin/AddField';
-import FieldsOrderInfo from './components/Admin/FieldsOrderInfo';
-import ListFieldAdmin from './components/Admin/ListFieldAdmin';
+import AddPitch from './components/Admin/AddPitch';
+import ListPitchs from './components/Admin/ListPitchs';
 import ListUsers from './components/Admin/ListUsers';
+import RentInfo from './components/Admin/RentInfo';
 import Statistics from './components/Admin/Statistics';
 
 const ProtectedRoute = () => {
@@ -57,35 +57,35 @@ function App() {
     return (
         <Routes>
             <Route path="/" element={<Navigate to="/trang-chu" replace={true} />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/forgot-password-verify-error" element={<FPVerifyError />} />
             <Route path="/forgot-password-verify-success" element={<FPVerifySuccess />} />
             <Route path="/forgot-password/reset-password" element={<ResetPassword />} />
-            <Route path="/dat-san" element={<FieldBooking />} />
             <Route element={<UserHomePage />}>
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/trang-chu" element={<UserHome />} />
-                <Route path="/san-bong" element={<FieldList />} />
+                <Route path="/san-bong" element={<PitchList />} />
                 <Route path="/tin-tuc" element={<News />} />
                 <Route path="/lien-he" element={<Contact />} />
-                <Route path="/chi-tiet-san" element={<FieldDetail />} />
+                <Route path="/chi-tiet-san" element={<PitchDetail />} />
+                <Route path="/dat-san" element={<PitchRent />} />
             </Route>
 
             <Route element={<ProtectedRoute />}>
                 <Route element={<UserHomePage />}>
                     <Route path="/tai-khoan" element={<UserInfo />} />
                     <Route path="/change-password" element={<ChangePassword />} />
-                    <Route path="/thong-tin-dat-san" element={<UserOrderInfo />} />
-                    <Route path="/lich-su-giao-dich" element={<UserHistoryOrder />} />
+                    <Route path="/thong-tin-dat-san" element={<UserRentInfo />} />
+                    <Route path="/lich-su-giao-dich" element={<UserBills />} />
                 </Route>
 
                 <Route element={<AdminHomePage />}>
                     <Route path="/admin/trang-chu" element={<AdminHome />} />
-                    <Route path="/admin/them-san" element={<AddField />} />
+                    <Route path="/admin/them-san" element={<AddPitch />} />
                     <Route path="/admin/khach-hang" element={<ListUsers />} />
                     <Route path="/admin/thong-ke" element={<Statistics />} />
-                    <Route path="/admin/thong-tin-dat-san" element={<FieldsOrderInfo />} />
-                    <Route path="/admin/danh-sach-san" element={<ListFieldAdmin />} />
+                    <Route path="/admin/thong-tin-dat-san" element={<RentInfo />} />
+                    <Route path="/admin/danh-sach-san" element={<ListPitchs />} />
                     <Route path="/admin/thong-tin-tai-khoan" element={<UserInfo />} />
                 </Route>
             </Route>

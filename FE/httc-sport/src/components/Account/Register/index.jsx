@@ -1,6 +1,5 @@
-import React from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -16,22 +15,6 @@ export default function Register() {
         console.log(res);
         toast.success(res.data.message);
     };
-
-    const ValidationTextField = styled(TextField)({
-        width: '100%',
-        '& input:valid + fieldset': {
-            borderColor: '#E0E3E7',
-            borderWidth: 1,
-        },
-        '& input:invalid + fieldset': {
-            borderColor: 'red',
-            borderWidth: 1,
-        },
-        '& input:valid:focus + fieldset': {
-            borderLeftWidth: 4,
-            padding: '4px !important', // override inline-style
-        },
-    });
 
     return (
         <>
@@ -56,22 +39,20 @@ export default function Register() {
                             </Typography>
                             <Typography component="div" className="card-body ">
                                 <Typography component="div" className="w-100">
-                                    <ValidationTextField
+                                    <TextField
                                         label="Tài Khoản"
                                         variant="outlined"
-                                        // id="validation-outlined-input"
-                                        className="my-2 "
+                                        className="my-2 w-100"
                                         autoComplete="username"
                                         {...register('username')}
                                     />
                                 </Typography>
                                 <Typography component="div" className="w-100">
-                                    <ValidationTextField
+                                    <TextField
                                         label="Mật Khẩu"
                                         variant="outlined"
-                                        // id="validation-outlined-input"
                                         type="password"
-                                        className="my-2 "
+                                        className="my-2 w-100"
                                         autoComplete="current-password"
                                         {...register('password')}
                                     />
@@ -86,20 +67,38 @@ export default function Register() {
                                         {...register('email')}
                                     />
                                 </Typography>
-                                <Typography
-                                    component="div"
-                                    className="d-flex w-100 justify-content-between align-items-center my-2"
-                                >
-                                    <div className="d-flex align-items-center"></div>
-                                    <Button type="submit" size="large" variant="contained" className="text-capitalize">
-                                        Đăng Ký
-                                    </Button>
-                                </Typography>
                             </Typography>
-                            <Typography component="div" className="card-footer text-center">
-                                <Typography component={Link} to="/login" variant="subtitle2">
-                                    Bạn Đã Có Tài Khoản? Đăng Nhập Ngay!
-                                </Typography>
+                            <Typography component="div" className="d-flex justify-content-between card-footer">
+                                <Button
+                                    sx={{
+                                        '&:hover': {
+                                            color: 'white',
+                                            backgroundColor: 'blue',
+                                        },
+                                    }}
+                                    component={Link}
+                                    to="/trang-chu"
+                                    variant="outlined"
+                                    size="large"
+                                    className="text-capitalize"
+                                >
+                                    Quay Về
+                                </Button>
+                                <Button
+                                    sx={{
+                                        '&:hover': {
+                                            color: 'white',
+                                            backgroundColor: 'green',
+                                        },
+                                    }}
+                                    type="submit"
+                                    variant="outlined"
+                                    size="large"
+                                    color="success"
+                                    className="text-capitalize"
+                                >
+                                    Đăng Ký
+                                </Button>
                             </Typography>
                         </Box>
                     </div>

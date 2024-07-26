@@ -2,7 +2,7 @@
 import { Avatar, Box, Button, Checkbox, FormControlLabel, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { handleLogInAPI } from '~/apis';
@@ -133,12 +133,11 @@ export default function Login() {
                                     <Avatar sx={{ width: 24, height: 24, mr: 1 }} alt="Avatar 2" src={fb} />
                                     Đăng nhập với tài khoản Facebook
                                 </Button> */}
-                            <Typography component={Link} to="/forgot-password" variant="subtitle2">
-                                Quên Mật Khẩu ?
+                            <Typography sx={{ fontSize: '15px' }} variant="subtitle2">
+                                <a href="/forgot-password">Quên Mật Khẩu ?</a>
                             </Typography>
-                            <br />
-                            <Typography component={Link} to="/register" variant="subtitle2">
-                                Bạn Chưa Có Tài Khoản? Đăng Ký Tại Đây!
+                            <Typography sx={{ fontSize: '15px' }} variant="subtitle2">
+                                <a href="/register">Bạn Chưa Có Tài Khoản? Đăng Ký Tại Đây!</a>
                             </Typography>
                         </Typography>
                     </Box>

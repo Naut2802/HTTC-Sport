@@ -1,7 +1,7 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Box, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material';
+import { Box, Drawer, IconButton, Toolbar, Typography } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import { styled, useTheme } from '@mui/material/styles';
 import * as React from 'react';
@@ -58,7 +58,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function NavbarAdmin() {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);

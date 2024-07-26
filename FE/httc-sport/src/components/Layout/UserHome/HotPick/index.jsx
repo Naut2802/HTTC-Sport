@@ -1,7 +1,7 @@
 import StarRateIcon from '@mui/icons-material/StarRate';
 import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
 import WifiSharpIcon from '@mui/icons-material/WifiSharp';
-import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
+import { Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import sanQN_1 from '~/components/Images/sanquynhnhu/anh_san_1_1.png';
@@ -17,11 +17,7 @@ export default function HotPick() {
                     marginTop: 2,
                 }}
             >
-                <CardActionArea
-                    sx={{
-                        border: '50px soild',
-                    }}
-                >
+                <CardActionArea>
                     <Typography gutterBottom variant="h5" component={Link} to="/san-bong">
                         <CardMedia component="img" height="250" image={sanQN_1} alt="" sx={{ borderRadius: '5px' }} />
                     </Typography>
@@ -72,11 +68,6 @@ export default function HotPick() {
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
-                    <Button size="small" color="success" variant="outlined">
-                        Chi Tiết
-                    </Button>
-                </CardActions>
             </Card>
             <Card
                 sx={{
@@ -86,11 +77,7 @@ export default function HotPick() {
                     marginTop: 2,
                 }}
             >
-                <CardActionArea
-                    sx={{
-                        border: '50px soild',
-                    }}
-                >
+                <CardActionArea>
                     <Typography gutterBottom variant="h5" component={Link} to="/san-bong">
                         <CardMedia component="img" height="250" image={sanQN_1} alt="" sx={{ borderRadius: '5px' }} />
                     </Typography>
@@ -141,11 +128,6 @@ export default function HotPick() {
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
-                    <Button size="small" color="success" variant="outlined">
-                        Chi Tiết
-                    </Button>
-                </CardActions>
             </Card>
             <Card
                 sx={{
@@ -155,11 +137,7 @@ export default function HotPick() {
                     marginTop: 2,
                 }}
             >
-                <CardActionArea
-                    sx={{
-                        border: '50px soild',
-                    }}
-                >
+                <CardActionArea>
                     <Typography gutterBottom variant="h5" component={Link} to="/san-bong">
                         <CardMedia component="img" height="250" image={sanQN_1} alt="" sx={{ borderRadius: '5px' }} />
                     </Typography>
@@ -210,11 +188,6 @@ export default function HotPick() {
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
-                    <Button size="small" color="success" variant="outlined">
-                        Chi Tiết
-                    </Button>
-                </CardActions>
             </Card>
         </div>
     );

@@ -30,10 +30,10 @@ public class Pitch implements Serializable {
 	@Column(nullable = false)
 	int total;
 
-	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	Address address;
 	
-	@OneToMany(mappedBy = "pitch", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	Set<Image> images;
 	
 	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

@@ -74,7 +74,6 @@ public class ImageService {
 	@Transactional
 	public void deleteImages(List<Image> images) throws Exception {
 		List<String> publicIds = new ArrayList<>();
-		
 		images.forEach(image -> {
 			if (imageRepository.existsByPublicId(image.getPublicId())) {
 				imageRepository.deleteByPublicId(image.getPublicId());

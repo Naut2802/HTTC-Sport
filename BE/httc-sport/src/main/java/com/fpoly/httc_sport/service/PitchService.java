@@ -52,19 +52,16 @@ public class PitchService {
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}
 	
-	public PitchResponse updatePitch(int id, PitchRequest request) throws IOException {
+	public PitchResponse updatePitch(int id, PitchRequest request) throws Exception {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
 		pitchMapper.updatePitch(pitch, request);
 		
 		if (request.getImages() != null) {
-			List<Image> images = List.copyOf(pitch.getImages());
-			
-			var imageResponse = imageService.saveWithPitch(request.getImages(), pitch);
-			imageResponse.addAll(images);
-			
-			pitch.setImages(new HashSet<>(images));
+			imageService.deleteImages(new ArrayList<>(List.copyOf(pitch.getImages())));
+			List<Image> imageResponse = imageService.saveWithPitch(request.getImages(), pitch);
+			pitch.setImages(new HashSet<>(imageResponse));
 		}
 		
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));

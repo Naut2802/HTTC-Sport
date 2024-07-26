@@ -13,6 +13,7 @@ import MailAuthSuccess from './components/Account/Register/MailAuthSuccess';
 
 //LAYOUTS
 import AdminHome from './components/Layout/AdminHome';
+import AuthenticateGG from './components/Layout/AuthenticateGG';
 import Contact from './components/Layout/Contact';
 import News from './components/Layout/News';
 import UserHome from './components/Layout/UserHome';
@@ -20,10 +21,6 @@ import UserHome from './components/Layout/UserHome';
 //PAGE
 import AdminHomePage from './pages/AdminHomePage';
 import UserHomePage from './pages/UserHomePage';
-
-//AUTHENTICATION
-import AuthenticateFB from './components/AuthenticateFB';
-import AuthenticateGG from './components/AuthenticateGG';
 
 //FIELD
 import FieldBooking from './components/Field/FieldBooking';
@@ -71,7 +68,7 @@ function App() {
                 <Route path="/san-bong" element={<FieldList />} />
                 <Route path="/tin-tuc" element={<News />} />
                 <Route path="/lien-he" element={<Contact />} />
-                <Route path="/field-detail" element={<FieldDetail />} />
+                <Route path="/chi-tiet-san" element={<FieldDetail />} />
             </Route>
 
             <Route element={<ProtectedRoute />}>
@@ -96,7 +93,6 @@ function App() {
             <Route element={<UnauthorizedRoute />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/authenticate/google" element={<AuthenticateGG />} />
-                <Route path="/authenticate/facebook" element={<AuthenticateFB />} />
                 <Route path="/auth-mail-success" element={<MailAuthSuccess />} />
                 <Route path="/auth-mail-error" element={<MailAuthError />} />
             </Route>

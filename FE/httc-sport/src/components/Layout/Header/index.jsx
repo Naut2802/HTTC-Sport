@@ -8,6 +8,7 @@ import {
     Box,
     Button,
     Container,
+    Grid,
     IconButton,
     InputBase,
     Menu,
@@ -17,20 +18,23 @@ import {
     Typography,
 } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
-import React from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import slugify from 'slugify'; // Import slugify nè
 
 import { handleLogoutAPI } from '~/apis';
+import Login from '~/components/Account/Login';
 import avt from '~/components/Images/avt.jpg';
+import Popup from '../Popup';
 
 const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mảng trang trên navbar nè
 const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch']; //Mảng dòng của cái avatar click ra nè
 
 export default function Header() {
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [anchorElNav, setAnchorElNav] = useState(null);
+    const [anchorElUser, setAnchorElUser] = useState(null);
+    const [openPopup, setOpenPopup] = useState(false);
     const navigate = useNavigate();
 
     var checkUser = null;
@@ -211,12 +215,17 @@ export default function Header() {
                     </Box>
 
                     {!checkUser ? (
-                        <Typography component={Link} to="/login" variant="">
-                            <Button sx={{ ml: 1, color: 'teal' }} startIcon={<LoginIcon />} size="small">
-                                Đăng nhập
-                            </Button>
-                        </Typography>
+                        // <Typography component={Link} to="/login" variant="">
+                        <Button
+                            onClick={() => setOpenPopup(true)}
+                            sx={{ ml: 1, color: 'teal' }}
+                            startIcon={<LoginIcon />}
+                            size="small"
+                        >
+                            Đăng nhập
+                        </Button>
                     ) : (
+                        // </Typography>
                         <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -271,6 +280,14 @@ export default function Header() {
                     )}
                 </Toolbar>
             </Container>
+
+            <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
+                <Grid container>
+                    <Grid item>
+                        <Login />
+                    </Grid>
+                </Grid>
+            </Popup>
         </AppBar>
     );
 }

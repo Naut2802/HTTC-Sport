@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-globals */
 import { Avatar, Box, Button, Checkbox, FormControlLabel, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -64,89 +63,61 @@ export default function Login() {
         setRememberAccount(event.target.checked);
     };
 
-    const ValidationTextField = styled(TextField)({
-        width: '100%',
-        '& input:valid + fieldset': {
-            borderColor: '#E0E3E7',
-            borderWidth: 1,
-        },
-        '& input:invalid + fieldset': {
-            borderColor: 'red',
-            borderWidth: 1,
-        },
-        '& input:valid:focus + fieldset': {
-            borderLeftWidth: 4,
-            padding: '4px !important', // override inline-style
-        },
-    });
-
     return (
         <>
-            <div className="my-3 container">
+            <div className="mt-2 container px-5">
                 <div className="d-flex justify-content-center">
                     <img src={logo} alt="" style={{ width: 120 }} />
                 </div>
-                <div className="row">
-                    <div className="col-sm-1 col-md-2 col-lg-3"></div>
-                    <div className="col-sm-10 col-md-8 col-lg-6">
-                        <Box
-                            className="card"
-                            component="form"
-                            onSubmit={handleSubmit(submitLogin)}
-                            noValidate
-                            sx={{
-                                top: '10%',
-                            }}
-                        >
-                            <Typography className="card-header text-center fs-3" variant="h6" component="div">
-                                Đăng Nhập
-                            </Typography>
-                            <Typography component="div" className="card-body">
-                                <ValidationTextField
-                                    label="Tài Khoản"
-                                    variant="outlined"
-                                    id="validation-outlined-input"
-                                    className="my-2 "
-                                    autoComplete="username"
-                                    {...register('username')}
-                                />
-                                <ValidationTextField
-                                    label="Mật Khẩu"
-                                    variant="outlined"
-                                    id="validation-outlined-input"
-                                    type="password"
-                                    className="my-2 "
-                                    autoComplete="current-password"
-                                    {...register('password')}
-                                />
-                                <FormControlLabel
-                                    control={<Checkbox value="a" checked={rememberAccount} onChange={handleCheckboxChange} />}
-                                    label="Ghi Nhớ Tài Khoản"
-                                />
-                                <Typography component="div" className="d-flex justify-content-end">
-                                    <Button type="submit" size="large" variant="contained" className="text-capitalize">
-                                        Đăng Nhập
-                                    </Button>
-                                </Typography>
-                            </Typography>
-                            <Typography component="div" className="card-footer text-center my-2">
-                                <Button
-                                    sx={{
-                                        width: '100%',
-                                        mt: 1,
-                                        border: 1,
-                                        borderRadius: '8px',
-                                        '&:hover': {
-                                            color: 'white',
-                                            backgroundColor: 'navy',
-                                        },
-                                    }}
-                                    onClick={handleLoginWithGG}
-                                >
-                                    <Avatar sx={{ width: 24, height: 24, mr: 1 }} alt="Avatar 1" src={gg} />
-                                    Đăng nhập với tài khoản Google
+                <div className="row my-4">
+                    <Box className="card" component="form" onSubmit={handleSubmit(submitLogin)}>
+                        <Typography className="card-header text-center fs-3" variant="h6" component="div">
+                            Đăng Nhập
+                        </Typography>
+                        <Typography component="div" className="card-body">
+                            <TextField
+                                label="Tài Khoản"
+                                variant="outlined"
+                                className="my-2 w-100"
+                                autoComplete="username"
+                                {...register('username')}
+                            />
+                            <TextField
+                                label="Mật Khẩu"
+                                variant="outlined"
+                                type="password"
+                                className="my-2 w-100"
+                                autoComplete="current-password"
+                                {...register('password')}
+                            />
+                            <FormControlLabel
+                                control={<Checkbox value="a" checked={rememberAccount} onChange={handleCheckboxChange} />}
+                                label="Ghi Nhớ Tài Khoản"
+                            />
+                            <Typography component="div" className="d-flex justify-content-end">
+                                <Button type="submit" size="large" variant="contained" className="text-capitalize">
+                                    Đăng Nhập
                                 </Button>
-                                {/* <Button
+                            </Typography>
+                        </Typography>
+                        <Typography component="div" className="card-footer text-center my-2">
+                            <Button
+                                sx={{
+                                    width: '100%',
+                                    mt: 1,
+                                    border: 1,
+                                    borderRadius: '8px',
+                                    '&:hover': {
+                                        color: 'white',
+                                        backgroundColor: 'navy',
+                                    },
+                                }}
+                                onClick={handleLoginWithGG}
+                            >
+                                <Avatar sx={{ width: 24, height: 24, mr: 1 }} alt="Avatar 1" src={gg} />
+                                Đăng nhập với tài khoản Google
+                            </Button>
+                            {/* <Button
                                     sx={{
                                         width: '100%',
                                         my: 1,
@@ -162,17 +133,15 @@ export default function Login() {
                                     <Avatar sx={{ width: 24, height: 24, mr: 1 }} alt="Avatar 2" src={fb} />
                                     Đăng nhập với tài khoản Facebook
                                 </Button> */}
-                                <Typography component={Link} to="/forgot-password" variant="subtitle2">
-                                    Quên Mật Khẩu ?
-                                </Typography>
-                                <br />
-                                <Typography component={Link} to="/register" variant="subtitle2">
-                                    Bạn Chưa Có Tài Khoản? Đăng Ký Tại Đây!
-                                </Typography>
+                            <Typography component={Link} to="/forgot-password" variant="subtitle2">
+                                Quên Mật Khẩu ?
                             </Typography>
-                        </Box>
-                    </div>
-                    <div className="col-sm-1 col-md-2 col-lg-3"></div>
+                            <br />
+                            <Typography component={Link} to="/register" variant="subtitle2">
+                                Bạn Chưa Có Tài Khoản? Đăng Ký Tại Đây!
+                            </Typography>
+                        </Typography>
+                    </Box>
                 </div>
             </div>
         </>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Button,
@@ -17,7 +17,7 @@ import { styled } from '@mui/material/styles';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { handleCreatePitch, handleProvinces, handleUpdatePitch } from '~/apis';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const ValidationTextField = styled(TextField)({
     width: '100%',
@@ -36,20 +36,34 @@ const ValidationTextField = styled(TextField)({
 });
 
 export default function FormAddField({ selectedPitch }) {
-    const navigate = useNavigate();
     const { register, handleSubmit, control, setValue } = useForm();
 
+    // const navigate = useNavigate();
+    // const [formData, setFormData] = useState({
+    //     pitchName: '',
+    //     price: '',
+    //     total: '',
+    //     street: '',
+    //     ward: '',
+    //     district: '',
+    //     city: '',
+    //     type: '',
+    //     images: '',
+    //     description: '',
+    // });
     const [dataCity, setDataCity] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
+    const [selectedImages, setSelectedImages] = useState([]);
+    const [fileNames, setFileNames] = useState([]);
 
+    //Dữ liệu API Thành phố HCM
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await handleProvinces();
                 const hcmCity = response.data[49]; // Lấy thành phố Hồ Chí Minh từ vị trí thứ 49
                 setDataCity(hcmCity ? [hcmCity] : []);
-                // console.log(response.data);
             } catch (error) {
                 console.error('Error fetching data: ', error);
                 setDataCity([]);
@@ -59,6 +73,7 @@ export default function FormAddField({ selectedPitch }) {
         fetchData();
     }, []);
 
+    //Edit fill thông tin
     useEffect(() => {
         if (selectedPitch) {
             setValue('pitchName', selectedPitch.pitchName);
@@ -71,8 +86,8 @@ export default function FormAddField({ selectedPitch }) {
             setValue('type', selectedPitch.type);
             setValue('total', selectedPitch.total);
             setValue('images', selectedPitch.images);
-
-            // Update wards and districts based on city and district values
+            setSelectedImages(selectedPitch.images || []);
+            console.log('selectedImages:', selectedPitch.images);
             const city = selectedPitch.city;
             const district = selectedPitch.district;
 
@@ -96,6 +111,14 @@ export default function FormAddField({ selectedPitch }) {
         const districtId = event.target.value;
         const selectedDistrict = districts.find((district) => district.Name === districtId);
         setWards(selectedDistrict ? selectedDistrict.Wards : []);
+    };
+
+    const handleImageChange = (event) => {
+        const files = event.target.files;
+        console.log('Files selected:', files); // Kiểm tra xem files có được nhận không
+        const fileNamesList = Array.from(files).map((file) => file.name);
+        console.log('File names:', fileNamesList); // Kiểm tra tên file
+        setFileNames(fileNamesList);
     };
 
     const submitAddPitch = async (data) => {
@@ -128,11 +151,38 @@ export default function FormAddField({ selectedPitch }) {
     const submitUpdatePitch = async (data) => {
         console.log('Data update submitted:', data);
         try {
-            const pithId = selectedPitch.id;
-            const res = await handleUpdatePitch(pithId + 1, data);
-            toast.success(res.data.message);
-            toast.success('Bạn vừa cập nhật sân thành công!');
-            window.location.reload();
+            const pitchId = selectedPitch.id;
+            const formData = new FormData();
+
+            // Thêm dữ liệu vào FormData
+            formData.append('pitchName', data.pitchName);
+            formData.append('price', data.price);
+            formData.append('street', data.street);
+            formData.append('city', data.city);
+            formData.append('district', data.district);
+            formData.append('ward', data.ward);
+            formData.append('description', data.description);
+            formData.append('type', data.type);
+            formData.append('total', data.total);
+
+            // Thêm hình ảnh vào FormData
+            if (data.images) {
+                Array.from(data.images).forEach((image) => {
+                    formData.append('images', image); // Nếu bạn đang gửi các đối tượng File
+                });
+            }
+
+            const res = await handleUpdatePitch(pitchId, formData); // Đảm bảo rằng handleUpdatePitch hỗ trợ FormData
+
+            if (res && res.data) {
+                toast.success(res.data.message || 'Cập nhật sân thành công!');
+            } else {
+                toast.error('Cập nhật sân thất bại!');
+            }
+
+            // Cập nhật dữ liệu hoặc trạng thái thay vì tải lại trang
+            // updatePitchData(); // Nếu bạn có một hàm để làm mới dữ liệu
+
             console.log('Pitch updated successfully');
         } catch (error) {
             console.error('Failed to update pitch:', error.response ? error.response.data : error.message);
@@ -156,9 +206,22 @@ export default function FormAddField({ selectedPitch }) {
                     <Typography className="card-header text-center fs-3" variant="h6" component="div">
                         Hình Ảnh Sân
                     </Typography>
-                    <Typography className="card-body text-center fs-3" variant="h6" component="div">
-                        <img {...register('images')} alt="" />
-                    </Typography>
+                    <div className="row">
+                        <Typography className="card-body  fs-3 " variant="h6" component="div">
+                            {selectedImages.length > 0 ? (
+                                selectedImages.map((image, index) => (
+                                    <img
+                                        key={index}
+                                        src={image.url || image}
+                                        alt={`Hình ảnh ${index}`}
+                                        style={{ width: '40%', height: 'auto', marginLeft: '20px', marginBottom: '20px' }}
+                                    />
+                                ))
+                            ) : (
+                                <p>Chưa có hình</p>
+                            )}
+                        </Typography>
+                    </div>
                 </Box>
             </div>
             <div className="col-6">
@@ -321,7 +384,13 @@ export default function FormAddField({ selectedPitch }) {
                                 )}
                             />
                             <FormLabel id="demo-radio-buttons-group-label">Ảnh Sân</FormLabel>
-                            <input type="file" multiple {...register('images')} className="my-2 w-100" />
+                            <input
+                                type="file"
+                                multiple
+                                {...register('images')}
+                                className="my-2 w-100"
+                                onChange={handleImageChange}
+                            />
                             <Controller
                                 name="description"
                                 control={control}
@@ -339,7 +408,25 @@ export default function FormAddField({ selectedPitch }) {
                         <Button variant="outlined" color="secondary" className="text-capitalize mx-2" type="submit">
                             Cập Nhật
                         </Button>
-                        <Button variant="outlined" color="inherit" className="text-capitalize mx-2">
+                        <Button
+                            variant="outlined"
+                            color="inherit"
+                            type="button"
+                            // onClick={() =>
+                            //     submitReset({
+                            //         pitchName: '',
+                            //         price: '',
+                            //         street: '',
+                            //         city: '',
+                            //         district: '',
+                            //         ward: '',
+                            //         description: '',
+                            //         type: '',
+                            //         total: '',
+                            //         images: '',
+                            //     })
+                            // }
+                        >
                             Làm Mới
                         </Button>
                     </Typography>

@@ -63,7 +63,7 @@ export default function ForgotPassword() {
                                         },
                                     }}
                                     component={Link}
-                                    to="/login"
+                                    to="/trang-chu"
                                     variant="outlined"
                                     className="text-capitalize"
                                 >

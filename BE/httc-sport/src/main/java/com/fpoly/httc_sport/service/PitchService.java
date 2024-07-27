@@ -71,7 +71,7 @@ public class PitchService {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
-		if (pitch.getIsEnabled())
+		if (!pitch.getIsEnabled())
 			return;
 		
 		pitch.setIsEnabled(false);

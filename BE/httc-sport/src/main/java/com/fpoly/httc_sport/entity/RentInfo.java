@@ -33,6 +33,7 @@ public class RentInfo {
 	@Builder.Default
 	Integer deposit = 0;
 	String note;
+	int typePitch;
 	@Builder.Default
 	Boolean isDone = false;
 	@Builder.Default

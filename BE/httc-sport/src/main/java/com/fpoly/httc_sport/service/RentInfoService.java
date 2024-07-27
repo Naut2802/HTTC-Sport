@@ -2,11 +2,9 @@ package com.fpoly.httc_sport.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fpoly.httc_sport.dto.request.RentRequest;
-import com.fpoly.httc_sport.dto.response.PayOSPaymentResponse;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
 import com.fpoly.httc_sport.entity.MailInfo;
 import com.fpoly.httc_sport.exception.AppException;
@@ -20,10 +18,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fpoly.httc_sport.entity.RentInfo;
 
 @Service
 @RequiredArgsConstructor
@@ -80,36 +75,66 @@ public class RentInfoService {
 			time -= 60;
 		}
 		
-		int countByStartTime = rentInfoRepository
-				.countByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+		int initCount = request.getTypePitch() == 5 ? 1
+				: request.getTypePitch() == 7 ? 3
+				: request.getTypePitch() == 11 ? 9 : 1;
+		
+		AtomicInteger countByStartTime = new AtomicInteger(initCount);
+		rentInfoRepository
+				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+						pitch.getId(),
 						request.getRentedAt(),
 						startTime.plusSeconds(1),
-						startTime.plusSeconds(1));
-		
+						startTime.plusSeconds(1))
+				.forEach(rentInfo -> {
+					if (rentInfo.getTypePitch() == 5)
+						countByStartTime.addAndGet(1);
+					else if (rentInfo.getTypePitch() == 7)
+						countByStartTime.addAndGet(3);
+				});
 		System.out.println("Count rent-info by start time: " + countByStartTime);
 		
-		int countByEndTime = rentInfoRepository
-				.countByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+		AtomicInteger countByEndTime = new AtomicInteger(initCount);
+		rentInfoRepository
+				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+						pitch.getId(),
 						request.getRentedAt(),
 						endTime.minusSeconds(1),
-						endTime.minusSeconds(1));
-		
+						endTime.minusSeconds(1))
+				.forEach(rentInfo -> {
+					if (rentInfo.getTypePitch() == 5)
+						countByEndTime.addAndGet(1);
+					else if (rentInfo.getTypePitch() == 7)
+						countByEndTime.addAndGet(3);
+				});
 		System.out.println("Count rent-info by end time: " + countByStartTime);
 		
-		int countByStartTimeBetween = rentInfoRepository
-				.countByRentedAtEqualsAndStartTimeBetween(request.getRentedAt(), startTime, endTime);
-		
+		AtomicInteger countByStartTimeBetween = new AtomicInteger(initCount);
+		rentInfoRepository
+				.findByPitchIdAndRentedAtEqualsAndStartTimeBetween(pitch.getId(), request.getRentedAt(), startTime, endTime)
+				.forEach(rentInfo -> {
+					if (rentInfo.getTypePitch() == 5)
+						countByStartTimeBetween.addAndGet(1);
+					else if (rentInfo.getTypePitch() == 7)
+						countByStartTimeBetween.addAndGet(3);
+				});
 		System.out.println("Count rent-info by start time between: " + countByStartTimeBetween);
 		
-		int countByEndTimeBetween = rentInfoRepository
-				.countByRentedAtEqualsAndEndTimeBetween(request.getRentedAt(), startTime, endTime);
-		
+		AtomicInteger countByEndTimeBetween = new AtomicInteger(initCount);
+		rentInfoRepository
+				.findByPitchIdAndRentedAtEqualsAndEndTimeBetween(pitch.getId(), request.getRentedAt(), startTime, endTime)
+				.forEach(rentInfo -> {
+					if (rentInfo.getTypePitch() == 5)
+						countByEndTimeBetween.addAndGet(1);
+					else if (rentInfo.getTypePitch() == 7)
+						countByEndTimeBetween.addAndGet(3);
+				});
 		System.out.println("Count rent-info by end time between: " + countByEndTimeBetween);
 		
-		if ( countByStartTime >= pitch.getTotal() || countByEndTime >= pitch.getTotal() ) {
-			return RentInfoResponse.builder().message("Đặt sân thất bại, ngày đặt hoặc thời gian đặt bị trùng").build();
-		} else if ( countByStartTimeBetween >= pitch.getTotal() || countByEndTimeBetween >= pitch.getTotal() )
-			return RentInfoResponse.builder().message("Đặt sân thất bại, ngày đặt hoặc thời gian đặt bị trùng").build();
+		if ( countByStartTime.get() > pitch.getTotal() || countByEndTime.get() > pitch.getTotal() ) {
+			return RentInfoResponse.builder().message("Đặt sân thất bại, không còn sân trống trong khoảng thời gian này").build();
+		} else if ( countByStartTimeBetween.get() > pitch.getTotal() || countByEndTimeBetween.get() > pitch.getTotal() )
+			return RentInfoResponse.builder().message("Đặt sân thất bại, không còn sân trống trong khoảng thời gian này").build();
 		
 		var user = userRepository.findByEmail(request.getEmail()).orElse(null);
 		
@@ -118,7 +143,10 @@ public class RentInfoService {
 		rentInfo.setUser(user);
 		rentInfo.setStartTime(startTime);
 		rentInfo.setEndTime(endTime);
-		rentInfo.setTotal((int) (((float) request.getRentTime() / 60) * (pitch.getPrice() * paymentMethod.getPriceRate())));
+		int total = (int) (((float) request.getRentTime() / 60) * (pitch.getPrice() * paymentMethod.getPriceRate()));
+		rentInfo.setTotal(rentInfo.getTypePitch() == 5 ? total
+				: rentInfo.getTypePitch() == 7 ? total * 3
+				: rentInfo.getTypePitch() == 11 ? total * 9 : total);
 		rentInfo.setPaymentMethod(paymentMethod);
 		
 		rentInfo = rentInfoRepository.save(rentInfo);
@@ -131,14 +159,16 @@ public class RentInfoService {
 	}
 	
 	public RentInfoResponse confirmRent(String code, String id, String status) {
-		if (code.equals("01") || !status.equals("PAID"))
-			return RentInfoResponse.builder().message("Thanh toán đặt cọc thất bại").build();
-		
 		var paymentInfo = paymentService.getPaymentInfo(id);
 		
 		var rentInfo = rentInfoRepository.findById(paymentInfo.getData().getOrderCode()).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
+		
+		if (code.equals("01") || !status.equals("PAID")) {
+			rentInfoRepository.delete(rentInfo);
+			return RentInfoResponse.builder().message("Thanh toán đặt cọc thất bại").build();
+		}
 		
 		rentInfo.setDeposit(paymentInfo.getData().getAmountPaid());
 		rentInfo.setPaymentStatus(true);

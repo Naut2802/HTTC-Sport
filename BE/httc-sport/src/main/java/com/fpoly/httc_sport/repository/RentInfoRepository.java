@@ -11,7 +11,7 @@ import com.fpoly.httc_sport.entity.RentInfo;
 public interface RentInfoRepository extends JpaRepository<RentInfo, Integer> {
 	List<RentInfo> findByPitchId(Integer pitchId);
 	List<RentInfo> findByUserId(String userId);
-	int countByRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(LocalDate date, LocalTime time, LocalTime time2);
-	int countByRentedAtEqualsAndStartTimeBetween(LocalDate date, LocalTime time, LocalTime time2);
-	int countByRentedAtEqualsAndEndTimeBetween(LocalDate date, LocalTime time, LocalTime time2);
+	List<RentInfo> findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(Integer pitchId, LocalDate date, LocalTime time, LocalTime time2);
+	List<RentInfo> findByPitchIdAndRentedAtEqualsAndStartTimeBetween(Integer pitchId, LocalDate date, LocalTime time, LocalTime time2);
+	List<RentInfo> findByPitchIdAndRentedAtEqualsAndEndTimeBetween(Integer pitchId, LocalDate date, LocalTime time, LocalTime time2);
 }

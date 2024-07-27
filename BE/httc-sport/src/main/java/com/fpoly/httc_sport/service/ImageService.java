@@ -2,6 +2,7 @@ package com.fpoly.httc_sport.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import com.fpoly.httc_sport.dto.request.ImageRequest;
@@ -71,7 +72,19 @@ public class ImageService {
 	}
 	
 	@Transactional
-	public void deleteImages(ImageRequest request) throws Exception {
+	public void deleteImages(List<Image> images) throws Exception {
+		List<String> publicIds = new ArrayList<>();
+		images.forEach(image -> {
+			if (imageRepository.existsByPublicId(image.getPublicId())) {
+				imageRepository.deleteByPublicId(image.getPublicId());
+				publicIds.add(image.getPublicId());
+			}
+		});
+		cloudinaryService.deleteImages(new HashSet<>(publicIds));
+	}
+	
+	@Transactional
+	public void deleteImagesFromApi(ImageRequest request) throws Exception {
 		request.getPublicIds().forEach(image -> {
 			if (imageRepository.existsByPublicId(image))
 				imageRepository.deleteByPublicId(image);

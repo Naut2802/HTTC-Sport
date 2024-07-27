@@ -33,6 +33,7 @@ public class RentRequest {
 	LocalTime startTime;
 	@NotNull(message = "RENT_INFO_RENT_TIME_NULL")
 	int rentTime;
+	int typePitch;
 	String note;
 	String paymentMethod;
 }

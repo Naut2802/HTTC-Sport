@@ -32,7 +32,7 @@ public class PitchController {
 	
 	@PutMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<PitchResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws IOException {
+	ApiResponse<PitchResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws Exception {
 		return ApiResponse.<PitchResponse>builder()
 				.result(pitchService.updatePitch(id, request))
 				.build();

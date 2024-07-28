@@ -48,9 +48,10 @@ public enum ErrorCode {
 	RENT_INFO_RENT_DATE_NULL(1031, "Vui lòng chọn ngày đặt sân", HttpStatus.BAD_REQUEST),
 	RENT_INFO_START_TIME_NULL(1032, "Vui lòng chọn thời gian đặt sân", HttpStatus.BAD_REQUEST),
 	RENT_INFO_RENT_TIME_NULL(1033, "Vui lòng chọn thời gian muốn đặt", HttpStatus.BAD_REQUEST),
-	RENT_INFO_EXISTED(1034, "Sân đã được đặt", HttpStatus.BAD_REQUEST),
-	RENT_INFO_NOT_EXISTED(1035, "Không tìm thấy thông tin đặt sân", HttpStatus.NOT_FOUND),
-	PAYMENT_METHOD_NOT_EXISTED(1036, "Phương thức thanh toán không hợp lệ", HttpStatus.NOT_FOUND),
+	RENT_INFO_TYPE_PITCH_NULL(1034, "Loại sân không được để trống", HttpStatus.BAD_REQUEST),
+	RENT_INFO_EXISTED(1035, "Sân đã được đặt", HttpStatus.BAD_REQUEST),
+	RENT_INFO_NOT_EXISTED(1036, "Không tìm thấy thông tin đặt sân", HttpStatus.NOT_FOUND),
+	PAYMENT_METHOD_NOT_EXISTED(1037, "Phương thức thanh toán không hợp lệ", HttpStatus.NOT_FOUND),
 	
 	
 	NOT_EXISTED(1096, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),

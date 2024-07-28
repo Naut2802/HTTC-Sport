@@ -1,14 +1,11 @@
 package com.fpoly.httc_sport.dto.request;
 
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @Builder
 @Data
@@ -17,9 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RentRequest {
-	@NotNull(message = "PITCH_NULL")
-	int pitchId;
+public class RentInfoUpdateRequest {
 	@NotNull(message = "RENT_INFO_EMAIL_NULL")
 	String email;
 	@NotNull(message = "RENT_INFO_PHONE_NUMBER_NULL")
@@ -36,5 +31,4 @@ public class RentRequest {
 	@NotNull(message = "RENT_INFO_TYPE_PITCH_NULL")
 	int typePitch;
 	String note;
-	String paymentMethod;
 }

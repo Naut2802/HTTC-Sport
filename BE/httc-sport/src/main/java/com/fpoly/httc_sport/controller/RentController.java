@@ -1,16 +1,20 @@
 package com.fpoly.httc_sport.controller;
 
+import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
+import com.fpoly.httc_sport.dto.response.RentResponse;
 import com.fpoly.httc_sport.service.RentInfoService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/rent-pitch")
@@ -20,28 +24,48 @@ public class RentController {
 	RentInfoService rentInfoService;
 	
 	@PostMapping
-	ApiResponse<RentInfoResponse> rentPitch(@Valid @RequestBody RentRequest request) throws IOException {
-		return ApiResponse.<RentInfoResponse>builder()
+	ApiResponse<RentResponse> rentPitch(@Valid @RequestBody RentRequest request) throws IOException {
+		return ApiResponse.<RentResponse>builder()
 				.result(rentInfoService.rentPitch(request))
 				.build();
 	}
 	
+	@PostMapping("confirm-rent")
+	ApiResponse<RentResponse> confirmRent(@RequestParam("code") String code, @RequestParam("id") String id, @RequestParam("status") String status) {
+		return ApiResponse.<RentResponse>builder()
+				.result(rentInfoService.confirmRent(code, id, status))
+				.build();
+	}
+	
 	@GetMapping("{id}")
-	ApiResponse<?> getRentInfo(@PathVariable int id) {
-		return ApiResponse.builder()
+	ApiResponse<RentInfoResponse> getRentInfo(@PathVariable int id) {
+		return ApiResponse.<RentInfoResponse>builder()
+				.result(rentInfoService.getRentInfo(id))
 				.build();
 	}
 	
 	@GetMapping
-	ApiResponse<?> getAllRentInfo() {
-		return ApiResponse.builder()
+	ApiResponse<List<RentInfoResponse>> getAllRentInfo() {
+		return ApiResponse.<List<RentInfoResponse>>builder()
+				.result(rentInfoService.getRentInfoResponses())
 				.build();
 	}
 	
-	@PostMapping("confirm-rent")
-	ApiResponse<RentInfoResponse> confirmRent(@RequestParam("code") String code, @RequestParam("id") String id, @RequestParam("status") String status) {
+	@PutMapping("{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<RentInfoResponse> updateRentInfo(@PathVariable int id, @Valid @RequestBody RentInfoUpdateRequest request) {
 		return ApiResponse.<RentInfoResponse>builder()
-				.result(rentInfoService.confirmRent(code, id, status))
+				.result(rentInfoService.updateRentInfo(id, request))
+				.build();
+	}
+	
+	@DeleteMapping("{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<?> deleteRentInfo(@PathVariable int id) {
+		rentInfoService.deleteRentInfo(id);
+		
+		return ApiResponse.builder()
+				.message("Đã xóa thông tin đặt sân")
 				.build();
 	}
 	

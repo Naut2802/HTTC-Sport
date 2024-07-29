@@ -18,7 +18,7 @@ export default function PitchList() {
         const fetchData = async () => {
             try {
                 const res = await handleGetPitches();
-                console.log(res.data);
+                console.log(res.data.result);
             } catch (error) {
                 console.error(error);
             }

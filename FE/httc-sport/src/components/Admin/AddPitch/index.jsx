@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
 import { Breadcrumbs, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import FormAddField from './FormAddField';
-import TableListField from './TableListField';
+import FormAddPitch from './FormAddPitch';
+import TableListPitch from './TableListPitch';
 
 export default function AddField() {
     const [selectedPitch, setSelectedPitch] = useState(null);
@@ -24,9 +24,9 @@ export default function AddField() {
             </Breadcrumbs>
             <hr />
 
-            <FormAddField selectedPitch={selectedPitch} />
+            <FormAddPitch selectedPitch={selectedPitch} />
 
-            <TableListField onRowClick={handleRowClick} />
+            <TableListPitch onRowClick={handleRowClick} />
         </div>
     );
 }

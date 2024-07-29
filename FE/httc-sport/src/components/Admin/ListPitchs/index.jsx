@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import CreateIcon from '@mui/icons-material/Create';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Breadcrumbs, Button, Tooltip, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CreateIcon from '@mui/icons-material/Create';
-import { handleGetPitch } from '~/apis';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { handleGetPitches } from '~/apis';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ export default function ListFieldAdmin({ onRowClick }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const re = await handleGetPitch();
+                const re = await handleGetPitches();
                 const dataWithId = re.data.result.map((item, index) => ({
                     ...item,
                     id: item.id || index,

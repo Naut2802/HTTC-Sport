@@ -2,10 +2,10 @@ import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
 import WifiSharpIcon from '@mui/icons-material/WifiSharp';
 import { Box, Breadcrumbs, Card, CardContent, CardMedia, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
-
 import { useEffect, useState } from 'react';
-import { handleGetPitch } from '~/apis';
+import { Link } from 'react-router-dom';
+import { handleGetPitches } from '~/apis';
+
 import logo from '~/components/Images/logo.png';
 import sanQN_1 from '~/components/Images/sanquynhnhu/anh_san_1_1.png';
 import SortGauge from './SortGauge';
@@ -17,7 +17,7 @@ export default function PitchList() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await handleGetPitch();
+                const res = await handleGetPitches();
                 console.log(res.data);
             } catch (error) {
                 console.error(error);

@@ -56,7 +56,7 @@ export const handleResetPasswordUser = async (token, data) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/user/forgot-password/reset-password?token=${token}`, data);
 };
 
-export const handleGetPitchs = async () => {
+export const handleGetPitches = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch`);
 };
 

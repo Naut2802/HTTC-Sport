@@ -36,13 +36,13 @@ const ValidationTextField = styled(TextField)({
 //
 export default function FormAddPitch({ selectedPitch }) {
     const { register, handleSubmit, control, setValue, reset } = useForm();
-
     // const navigate = useNavigate();
     const [dataCity, setDataCity] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
     const [fileNames, setFileNames] = useState([]);
+    const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
 
     //Dữ liệu API Thành phố HCM
     useEffect(() => {
@@ -84,7 +84,6 @@ export default function FormAddPitch({ selectedPitch }) {
                 handleDistrictChange({ target: { value: district } });
             }
         } else {
-            const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
             if (savedPitch) {
                 setValue('pitchName', savedPitch.pitchName);
                 setValue('price', savedPitch.price);
@@ -187,23 +186,20 @@ export default function FormAddPitch({ selectedPitch }) {
     };
 
     const submitUpdatePitch = async (data) => {
-        console.log('Data update submitted:', data);
+        console.log(savedPitch.id);
         try {
-            const pitchId = selectedPitch.id;
-
-            console.log('Pitch ID:', pitchId);
+            const pitchId = selectedPitch?.id || savedPitch?.id;
             const res = await handleUpdatePitch(pitchId, data);
 
             if (res && res.data) {
                 toast.success(res.data.message || 'Cập nhật sân thành công!');
+                sessionStorage.removeItem('selectedPitch');
             } else {
                 toast.error('Cập nhật sân thất bại!');
             }
-
-            console.log('Pitch updated successfully');
         } catch (error) {
-            console.error('Failed to update pitch:', error.response ? error.response.data : error.message);
-            toast.error(`Failed to update pitch: ${error.response ? error.response.data.message : error.message}`);
+            console.error('Error updating pitch:', error);
+            toast.error('Cập nhật sân thất bại!');
         }
     };
 
@@ -223,11 +219,13 @@ export default function FormAddPitch({ selectedPitch }) {
         });
         setSelectedImages([]);
         setFileNames([]);
+
+        sessionStorage.removeItem('selectedPitch');
     };
 
     const onSubmit = async (data) => {
         console.log('Data to be submitted:', data);
-        if (selectedPitch) {
+        if (selectedPitch || savedPitch) {
             await submitUpdatePitch(data);
         } else {
             await submitAddPitch(data);
@@ -438,8 +436,11 @@ export default function FormAddPitch({ selectedPitch }) {
                         </FormControl>
                     </Typography>
                     <Typography component="div" className="d-flex w-100 align-items-center my-2 card-footer">
+                        <Button variant="outlined" color="success" className="text-capitalize mx-1" type="submit">
+                            Thêm
+                        </Button>
                         <Button variant="outlined" color="success" className="text-capitalize mx-2" type="submit">
-                            {selectedPitch ? 'Cập Nhật' : 'Thêm Sân'}
+                            Cập Nhật
                         </Button>
                         <Button variant="outlined" color="inherit" type="button" onClick={submitReset}>
                             Làm Mới

@@ -37,7 +37,24 @@ export default function ListFieldAdmin({ onRowClick }) {
 
     const columns = [
         { field: 'pitchName', headerName: 'Tên Sân', width: 150 },
-        { field: 'images', headerName: 'Hình Ảnh', width: 150 },
+        {
+            field: 'images',
+            headerName: 'Hình Ảnh',
+            width: 150,
+            renderCell: (params) => (
+                <div>
+                    {params.value && params.value.length > 0 ? (
+                        <img
+                            src={params.value[0].url} // Assuming the images field is an array of image objects with a url property
+                            alt="Hình ảnh sân"
+                            style={{ width: '100%', height: 'auto' }}
+                        />
+                    ) : (
+                        <p>Chưa có hình</p>
+                    )}
+                </div>
+            ),
+        },
         { field: 'price', headerName: 'Giá', width: 80 },
         { field: 'description', headerName: 'Mô Tả', width: 150 },
         { field: 'address', headerName: 'Địa Chỉ', width: 570 },
@@ -80,6 +97,7 @@ export default function ListFieldAdmin({ onRowClick }) {
                 pageSize={10}
                 rowsPerPageOptions={[5, 10, 20, 50, 100]}
                 getRowId={(row) => row.id}
+                rowHeight={150}
             />
         </div>
     );

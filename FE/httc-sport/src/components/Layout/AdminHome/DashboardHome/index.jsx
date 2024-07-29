@@ -66,7 +66,7 @@ export default function DashboardHome() {
                 <div className="w-75 bg-white mx-2">
                     <Bar options={options} data={data} />
                     <div className="float-end fs-5 m-2">
-                        Doanh Thu: 123123123123<i class="bi bi-currency-dollar"> </i>
+                        Doanh Thu: 123123123123<i className="bi bi-currency-dollar"> </i>
                     </div>
                 </div>
             </div>

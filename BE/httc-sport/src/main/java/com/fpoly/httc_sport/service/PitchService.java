@@ -93,7 +93,7 @@ public class PitchService {
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}
 	
-	public void deletePitch(int id) {
+	public void deletePitch(int id) throws Exception {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
@@ -101,6 +101,8 @@ public class PitchService {
 			return;
 		
 		pitch.setIsEnabled(false);
+		imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
+		pitch.getImages().clear();
 		
 		pitchRepository.save(pitch);
 	}

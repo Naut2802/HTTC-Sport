@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { handleGetPitch } from '~/apis';
+import { handleGetPitches } from '~/apis';
 
 export default function TableListPitch({ onRowClick }) {
     const [pitch, setPitch] = useState([]);
@@ -11,7 +11,7 @@ export default function TableListPitch({ onRowClick }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const re = await handleGetPitch();
+                const re = await handleGetPitches();
                 const dataWithId = re.data.result.map((item, index) => ({
                     ...item,
                     id: item.id || index,

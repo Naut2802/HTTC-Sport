@@ -18,29 +18,29 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PitchRequest {
-	@NotNull(message = "PITCH_NAME_NULL")
 	@NotBlank(message = "PITCH_NAME_NULL")
+	@NotNull(message = "PITCH_NAME_NULL")
 	String pitchName;
-	@NotNull(message = "PITCH_PRICE_NULL")
 	@NotBlank(message = "PITCH_PRICE_NULL")
+	@NotNull(message = "PITCH_PRICE_NULL")
 //	@DecimalMin(value = "300000", message = "PITCH_MIN_PRICE")
 	Double price;
-	@NotNull(message = "PITCH_ADDRESS_NULL")
 	@NotBlank(message = "PITCH_ADDRESS_NULL")
+	@NotNull(message = "PITCH_ADDRESS_NULL")
 	String street;
 	String ward;
-	@NotNull(message = "PITCH_ADDRESS_NULL")
 	@NotBlank(message = "PITCH_ADDRESS_NULL")
+	@NotNull(message = "PITCH_ADDRESS_NULL")
 	String district;
-	@NotNull(message = "PITCH_ADDRESS_NULL")
 	@NotBlank(message = "PITCH_ADDRESS_NULL")
+	@NotNull(message = "PITCH_ADDRESS_NULL")
 	String city;
 	String description;
-	@NotNull(message = "PITCH_TYPE_NULL")
 	@NotBlank(message = "PITCH_TYPE_NULL")
+	@NotNull(message = "PITCH_TYPE_NULL")
 	String type;
-	@NotNull(message = "PITCH_TOTAL_NULL")
 	@NotBlank(message = "PITCH_TOTAL_NULL")
+	@NotNull(message = "PITCH_TOTAL_NULL")
 	int total;
 	List<MultipartFile> images;
 }

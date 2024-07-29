@@ -16,14 +16,14 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RentInfoUpdateRequest {
-	@NotNull(message = "RENT_INFO_EMAIL_NULL")
 	@NotBlank(message = "RENT_INFO_EMAIL_NULL")
+	@NotNull(message = "RENT_INFO_EMAIL_NULL")
 	String email;
-	@NotNull(message = "RENT_INFO_PHONE_NUMBER_NULL")
 	@NotBlank(message = "RENT_INFO_PHONE_NUMBER_NULL")
+	@NotNull(message = "RENT_INFO_PHONE_NUMBER_NULL")
 	String phoneNumber;
-	@NotNull(message = "RENT_INFO_FIRST_NAME_NULL")
 	@NotBlank(message = "RENT_INFO_FIRST_NAME_NULL")
+	@NotNull(message = "RENT_INFO_FIRST_NAME_NULL")
 	String firstName;
 	String lastName;
 	@NotNull(message = "RENT_INFO_RENT_DATE_NULL")

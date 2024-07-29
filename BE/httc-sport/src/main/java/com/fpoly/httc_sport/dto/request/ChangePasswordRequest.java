@@ -14,14 +14,14 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ChangePasswordRequest {
-	@NotNull(message = "PASSWORD_NULL")
 	@NotBlank(message = "PASSWORD_NULL")
+	@NotNull(message = "PASSWORD_NULL")
 	String currentPassword;
-	@NotNull(message = "NEW_PASSWORD_NULL")
 	@NotBlank(message = "NEW_PASSWORD_NULL")
+	@NotNull(message = "NEW_PASSWORD_NULL")
 	@Size(min = 5, message = "PASSWORD_INVALID")
 	String newPassword;
-	@NotNull(message = "CONFIRMATION_PASSWORD_NULL")
 	@NotBlank(message = "CONFIRMATION_PASSWORD_NULL")
+	@NotNull(message = "CONFIRMATION_PASSWORD_NULL")
 	String confirmationPassword;
 }

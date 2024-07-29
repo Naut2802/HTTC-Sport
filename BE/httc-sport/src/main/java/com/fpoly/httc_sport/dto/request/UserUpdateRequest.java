@@ -16,8 +16,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserUpdateRequest{
-	@NotNull(message = "EMAIL_NULL")
 	@NotBlank(message = "EMAIL_NULL")
+	@NotNull(message = "EMAIL_NULL")
 	@Email(message = "EMAIL_INVALID")
 	String email;
 	String firstName;

@@ -13,8 +13,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoleRequest{
-	@NotNull(message = "ROLE_NAME_NULL")
 	@NotBlank(message = "ROLE_NAME_NULL")
+	@NotNull(message = "ROLE_NAME_NULL")
 	String roleName;
 	String description;
 }

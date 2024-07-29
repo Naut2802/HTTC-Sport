@@ -1,4 +1,4 @@
-import { sanImages } from '../dataImageThumbs.js';
+import { sanImages } from './dataImageThumbs.js';
 import ThumbS from './ThumbS.jsx';
 
 import 'swiper/css';

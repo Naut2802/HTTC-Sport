@@ -60,6 +60,10 @@ export const handleGetPitches = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch`);
 };
 
+export const handleGetPitch = async (id) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${id}`)
+}
+
 export const handleChangePitchInfo = async (pitchId, data) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${pitchId}`, data);
 };

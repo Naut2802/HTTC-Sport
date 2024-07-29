@@ -20,6 +20,7 @@ export default function Login() {
         const res = await handleLogInAPI(data);
         localStorage.setItem('accessToken', res.data.result.accessToken);
         localStorage.setItem('userId', res.data.result.userId);
+        console.log(res.data);
         const checkRole = res.data.result.roles[0].roleName;
         localStorage.setItem('role', checkRole);
         if (checkRole === 'ADMIN') {

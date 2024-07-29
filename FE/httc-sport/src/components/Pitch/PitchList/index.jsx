@@ -7,9 +7,15 @@ import { Link } from 'react-router-dom';
 import { handleGetPitches } from '~/apis';
 
 import logo from '~/components/Images/logo.png';
-import sanQN_1 from '~/components/Images/sanquynhnhu/anh_san_1_1.png';
 import SortGauge from './SortGauge';
 import SortRating from './SortRating';
+
+function formatCurrency(amount) {
+    return amount.toLocaleString('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+}
 
 export default function PitchList() {
     const [pitches, setPitches] = useState([]);
@@ -19,6 +25,7 @@ export default function PitchList() {
             try {
                 const res = await handleGetPitches();
                 console.log(res.data.result);
+                setPitches(res.data.result)
             } catch (error) {
                 console.error(error);
             }
@@ -46,67 +53,71 @@ export default function PitchList() {
                     <SortGauge />
                 </div>
                 <div className="col-10 mt-2">
-                    <Card sx={{ display: 'flex', maxWidth: 'auto' }}>
-                        <Typography
-                            className="text-decoration-none text-dark fs-3 fw-bold"
-                            variant="h6"
-                            noWrap
-                            component={Link}
-                            to="/chi-tiet-san"
-                        >
-                            <CardMedia
-                                component="img"
-                                sx={{ maxWidth: 300 }}
-                                image={sanQN_1}
-                                alt="Sân Minh Nghiệm"
-                                className="img-fluid"
-                            />
-                        </Typography>
-                        <Box>
-                            <CardContent>
-                                <Typography
-                                    className="text-decoration-none text-dark fs-3 fw-bolder"
-                                    variant="subtitle2"
-                                    component={Link}
-                                    to="/chi-tiet-san"
-                                >
-                                    Sân Minh Nghiệm
-                                </Typography>
+                {pitches.map((pitch) => (
+                        <Card key={pitch.id} sx={{ display: 'flex', maxWidth: 'auto', mb: 2 }}>
+                            <Typography
+                                className="text-decoration-none text-dark fs-3 fw-bold"
+                                variant="h6"
+                                noWrap
+                                component={Link}
+                                to={`/chi-tiet-san/${pitch.id}`}
+                            >
+                                <CardMedia
+                                    component="img"
+                                    sx={{ maxWidth: 300 }}
+                                    image={pitch.images[0].url } // Nếu API trả về đường dẫn ảnh
+                                    alt={pitch.name}
+                                    className="img-fluid"
+                                />
+                            </Typography>
+                            <Box>
+                                <CardContent>
+                                    <Typography
+                                        className="text-decoration-none text-dark fs-3 fw-bolder"
+                                        variant="subtitle2"
+                                        component={Link}
+                                        to={`/chi-tiet-san/${pitch.id}`}
+                                    >
+                                        {pitch.pitchName}
+                                    </Typography>
 
-                                <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
-                                    <strong>Số Sân: </strong>
-                                    <span className="text-dark">4 Sân</span>
-                                </Typography>
+                                    <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
+                                        <strong>Số Sân: </strong>
+                                        <span className="text-dark">{pitch.total} Sân</span>
+                                    </Typography>
 
-                                <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
-                                    <strong>Đánh Giá: </strong>
-                                    <span className="text-dark">5</span>
-                                    <StarRoundedIcon sx={{ mb: 1, color: '#FFC107' }} />
-                                </Typography>
+                                    <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
+                                        <strong>Đánh Giá: </strong>
+                                        <span className="text-dark">{pitch.rating}</span>
+                                        <StarRoundedIcon sx={{ mb: 1, color: '#FFC107' }} />
+                                    </Typography>
 
-                                <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
-                                    <strong>Giá Sân: </strong>
-                                    <span className="text-danger">350.000 đ</span>
-                                </Typography>
+                                    <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
+                                        <strong>Giá Sân: </strong>
+                                        <span className="text-danger"> {formatCurrency(pitch.price)} </span>
+                                    </Typography>
 
-                                <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
-                                    <strong>Địa Chỉ: </strong>
-                                    <span className="text-dark">202 Hoàng Văn Thụ, P. 9, Quận Phú Nhuận - Hồ Chí Minh</span>
-                                </Typography>
+                                    <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
+                                        <strong>Địa Chỉ: </strong>
+                                        <span className="text-dark">
+                                            {pitch.street + (' ') +  pitch.ward + (' ') +  pitch.district + (' ') +  pitch.city}
+                                        </span>
+                                    </Typography>
 
-                                <Typography sx={{ mt: 1 }} variant="subtitle2" color="text.secondary">
-                                    <span className="fs-6">
-                                        Căn Tin
-                                        <StorefrontSharpIcon sx={{ marginLeft: 1, marginRight: 1 }} />
-                                    </span>
-                                    <span className="fs-6 border-start">
-                                        <WifiSharpIcon sx={{ marginRight: 1, marginLeft: 1 }} />
-                                        Wifi
-                                    </span>
-                                </Typography>
-                            </CardContent>
-                        </Box>
-                    </Card>
+                                    <Typography sx={{ mt: 1 }} variant="subtitle2" color="text.secondary">
+                                        <span className="fs-6">
+                                            Căn Tin
+                                            <StorefrontSharpIcon sx={{ marginLeft: 1, marginRight: 1 }} />
+                                        </span>
+                                        <span className="fs-6 border-start">
+                                            <WifiSharpIcon sx={{ marginRight: 1, marginLeft: 1 }} />
+                                            Wifi
+                                        </span>
+                                    </Typography>
+                                </CardContent>
+                            </Box>
+                        </Card>
+                    ))}
                 </div>
             </div>
         </div>

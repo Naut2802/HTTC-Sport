@@ -67,8 +67,10 @@ public class PitchService {
 		pitchMapper.updatePitch(pitch, request);
 		
 		if (request.getImages() != null) {
-			imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
-			pitch.getImages().clear();
+			if (pitch.getImages() != null) {
+				imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
+				pitch.getImages().clear();
+			}
 			pitchRepository.save(pitch);
 			
 			List<Image> imageResponse = imageService.saveWithPitch(request.getImages(), pitch);
@@ -101,8 +103,10 @@ public class PitchService {
 			return;
 		
 		pitch.setIsEnabled(false);
-		imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
-		pitch.getImages().clear();
+		if (pitch.getImages() != null) {
+			imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
+			pitch.getImages().clear();
+		}
 		
 		pitchRepository.save(pitch);
 	}

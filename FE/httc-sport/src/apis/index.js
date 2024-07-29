@@ -1,6 +1,6 @@
+import axios from 'axios';
 import authorizedAxiosInstance from '~/utils/authorizedAxios';
 import { API_ROOT } from '~/utils/constants';
-import axios from 'axios'
 
 export const refreshTokenAPI = async (userId) => {
     return await authorizedAxiosInstance.put(`${API_ROOT}/api/auth/refresh-token`, {
@@ -65,25 +65,23 @@ export const handleChangePitchInfo = async (pitchId, data) => {
 };
 
 export const handleUpdatePitch = async (pitchId, data) => {
-    return await authorizedAxiosInstance.put(`${API_ROOT}/api/v1/pitch/${pitchId}`, data,{
+    return await authorizedAxiosInstance.put(`${API_ROOT}/api/v1/pitch/${pitchId}`, data, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-data',
         },
-      });
+    });
 };
-
 
 export const handleCreatePitch = async (data) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/pitch`, data, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-data',
         },
-      });;
+    });
 };
 
 export const handleProvinces = async () => {
-    return await axios.get
-    ('https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json',{
-        reponseType: '/json'
+    return await axios.get('https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json', {
+        reponseType: '/json',
     });
 };

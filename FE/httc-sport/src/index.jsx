@@ -1,3 +1,5 @@
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import React from 'react';
@@ -13,10 +15,12 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <GlobalStyles>
-            <App />
-        </GlobalStyles>
-        <ToastContainer position="bottom-right" theme="colored" />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <GlobalStyles>
+                <App />
+            </GlobalStyles>
+            <ToastContainer position="bottom-right" theme="colored" />
+        </LocalizationProvider>
     </BrowserRouter>,
 );
 reportWebVitals();

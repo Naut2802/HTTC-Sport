@@ -1,15 +1,31 @@
-import StarRateIcon from '@mui/icons-material/StarRate';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
 import WifiSharpIcon from '@mui/icons-material/WifiSharp';
 import { Box, Breadcrumbs, Card, CardContent, CardMedia, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import { useEffect, useState } from 'react';
+import { handleGetPitch } from '~/apis';
 import logo from '~/components/Images/logo.png';
 import sanQN_1 from '~/components/Images/sanquynhnhu/anh_san_1_1.png';
 import SortGauge from './SortGauge';
 import SortRating from './SortRating';
 
 export default function PitchList() {
+    const [pitches, setPitches] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await handleGetPitch();
+                console.log(res.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
+
     return (
         <div className="my-3 container">
             <div className="d-flex justify-content-center">
@@ -36,7 +52,7 @@ export default function PitchList() {
                             variant="h6"
                             noWrap
                             component={Link}
-                            to="/field-detail"
+                            to="/chi-tiet-san"
                         >
                             <CardMedia
                                 component="img"
@@ -46,37 +62,39 @@ export default function PitchList() {
                                 className="img-fluid"
                             />
                         </Typography>
-
-                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <CardContent sx={{ flex: '1 0 auto' }}>
+                        <Box>
+                            <CardContent>
                                 <Typography
-                                    className="text-decoration-none text-dark fs-3 fw-bold"
-                                    variant="h6"
-                                    noWrap
+                                    className="text-decoration-none text-dark fs-3 fw-bolder"
+                                    variant="subtitle2"
                                     component={Link}
-                                    to="/field-detail"
+                                    to="/chi-tiet-san"
                                 >
                                     Sân Minh Nghiệm
                                 </Typography>
-                                <Typography variant="subtitle1" color="text.secondary">
-                                    <span className="fw-bold fs-5">Loại Sân :</span> Sân 5
-                                    <br />
+
+                                <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
+                                    <strong>Số Sân: </strong>
+                                    <span className="text-dark">4 Sân</span>
                                 </Typography>
-                                <Typography variant="subtitle1" color="text.secondary">
-                                    <span className="fw-bold fs-5">Đánh Giá :</span> 5
-                                    <StarRateIcon sx={{ width: 15, marginBottom: 1, color: '#FFC107' }} />
-                                    <br />
+
+                                <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
+                                    <strong>Đánh Giá: </strong>
+                                    <span className="text-dark">5</span>
+                                    <StarRoundedIcon sx={{ mb: 1, color: '#FFC107' }} />
                                 </Typography>
-                                <Typography variant="subtitle1" color="text.secondary">
-                                    <span className="fw-bold fs-5">Giá : </span>
-                                    <span className="fw-bold text-danger fs-5">250.000 </span> /Giờ
-                                    <br />
+
+                                <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
+                                    <strong>Giá Sân: </strong>
+                                    <span className="text-danger">350.000 đ</span>
                                 </Typography>
-                                <Typography variant="subtitle1" color="text.secondary">
-                                    <span className="fw-bold fs-5">Địa Chỉ :</span> 202 Hoàng Văn Thụ, P. 9, Quận Phú Nhuận - Hồ
-                                    Chí Minh
+
+                                <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
+                                    <strong>Địa Chỉ: </strong>
+                                    <span className="text-dark">202 Hoàng Văn Thụ, P. 9, Quận Phú Nhuận - Hồ Chí Minh</span>
                                 </Typography>
-                                <Typography variant="subtitle1" color="text.secondary">
+
+                                <Typography sx={{ mt: 1 }} variant="subtitle2" color="text.secondary">
                                     <span className="fs-6">
                                         Căn Tin
                                         <StorefrontSharpIcon sx={{ marginLeft: 1, marginRight: 1 }} />

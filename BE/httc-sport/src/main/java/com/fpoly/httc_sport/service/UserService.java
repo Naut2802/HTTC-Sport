@@ -102,7 +102,7 @@ public class UserService {
 	
 	public String sendForgotPasswordEmail(String email, HttpServletRequest request) {
 		var user = userRepository.findByEmail(email).orElseThrow(() ->
-				new AppException(ErrorCode.USER_NOT_EXISTED));
+				new AppException(ErrorCode.EMAIL_NOT_EXISTED));
 		
 		Optional<ForgotPasswordToken> token = forgotPasswordTokenRepository.findByUser(user);
 		

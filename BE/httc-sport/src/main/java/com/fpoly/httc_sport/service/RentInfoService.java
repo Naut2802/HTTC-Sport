@@ -55,7 +55,7 @@ public class RentInfoService {
 		LocalTime endTime = request.getStartTime().plusMinutes(request.getRentTime());
 		LocalDate dateNow = LocalDate.now();
 		LocalTime timeNow = LocalTime.now();
-		LocalTime startStopTime = LocalTime.of(23, 0);
+		LocalTime startStopTime = LocalTime.of(23, 59);
 		LocalTime endStopTime = LocalTime.of(6, 1);
 		
 		if (request.getRentedAt().getYear() < dateNow.getYear()) {
@@ -78,7 +78,7 @@ public class RentInfoService {
 		
 		while (time > 0) {
 			stepHour = request.getRentTime() - time;
-			if (startTime.plusMinutes(stepHour).isAfter(startStopTime) && startTime.plusMinutes(stepHour).isAfter(endStopTime))
+			if (startTime.plusMinutes(stepHour).isAfter(startStopTime) || startTime.plusMinutes(stepHour).isBefore(endStopTime))
 				return RentResponse.builder().message("Đặt sân thất bại, sân bóng không hoạt động trong khoảng thời gian này").build();
 			time -= 60;
 		}
@@ -222,7 +222,7 @@ public class RentInfoService {
 		LocalTime endTime = request.getStartTime().plusMinutes(request.getRentTime());
 		LocalDate dateNow = LocalDate.now();
 		LocalTime timeNow = LocalTime.now();
-		LocalTime startStopTime = LocalTime.of(23, 0);
+		LocalTime startStopTime = LocalTime.of(23, 59);
 		LocalTime endStopTime = LocalTime.of(6, 1);
 		
 		if (request.getRentedAt().getYear() < dateNow.getYear()) {
@@ -245,7 +245,7 @@ public class RentInfoService {
 		
 		while (time > 0) {
 			stepHour = request.getRentTime() - time;
-			if (startTime.plusMinutes(stepHour).isAfter(startStopTime) && startTime.plusMinutes(stepHour).isAfter(endStopTime))
+			if (startTime.plusMinutes(stepHour).isAfter(startStopTime) || startTime.plusMinutes(stepHour).isBefore(endStopTime))
 				throw new DateTimeException("Đặt sân thất bại, sân bóng không hoạt động trong khoảng thời gian này");
 			time -= 60;
 		}

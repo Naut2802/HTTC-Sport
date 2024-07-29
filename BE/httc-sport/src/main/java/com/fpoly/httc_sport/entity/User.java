@@ -32,14 +32,14 @@ public class User {
 	Vip vip;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-	Set<RentInfo> listRentInfo;
+	Set<RentInfo> rentInfoSet;
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-	Set<Comment> listComment;
+	Set<Review> reviewSet;
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-	Set<Bill> listBill;
+	Set<Bill> billSet;
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	Set<RefreshTokenWhiteList> tokens;
+	Set<RefreshTokenWhiteList> tokenSet;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	Set<Role> roles;
+	Set<Role> roleSet;
 }

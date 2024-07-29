@@ -42,9 +42,11 @@ public class Bill implements Serializable {
 	@Builder.Default
 	Boolean isRate = false;
 	
-	@ManyToOne @JoinColumn(name = "pitch_id")
+	@ManyToOne
+	@JoinColumn(name = "pitch_id")
 	Pitch pitch;
-	@ManyToOne @JoinColumn(name = "user_id")
+	@ManyToOne
+	@JoinColumn(name = "user_id")
 	User user;
 	
 	@ManyToOne

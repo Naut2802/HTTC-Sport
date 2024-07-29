@@ -107,7 +107,7 @@ public class AuthenticationService {
 		var role = roleRepository.findById("USER").orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 		
-		user.setRoles(new HashSet<>(List.of(role)));
+		user.setRoleSet(new HashSet<>(List.of(role)));
 		userRepository.save(user);
 		String url = generateUrl(httpRequest);
 		publisher.publishEvent(new RegistrationCompleteEvent(user, url));
@@ -174,7 +174,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
-				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
+				.roles(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	
@@ -206,7 +206,7 @@ public class AuthenticationService {
 					.firstName(userInfo.getName())
 					.lastName(userInfo.getFamilyName())
 					.isEnabled(true)
-					.roles(new HashSet<>(List.of(role)))
+					.roleSet(new HashSet<>(List.of(role)))
 					.build());
 			publisher.publishEvent(new OutboundCompleteEvent(user, password));
 		} else
@@ -229,7 +229,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
-				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
+				.roles(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	
@@ -320,7 +320,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
-				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
+				.roles(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	

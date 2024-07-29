@@ -24,6 +24,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -88,7 +89,7 @@ public class RentInfoService {
 		
 		AtomicInteger countByStartTime = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(
 						pitch.getId(),
 						request.getRentedAt(),
 						startTime.plusSeconds(1),
@@ -103,7 +104,7 @@ public class RentInfoService {
 		
 		AtomicInteger countByEndTime = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(
 						pitch.getId(),
 						request.getRentedAt(),
 						endTime.minusSeconds(1),
@@ -118,7 +119,7 @@ public class RentInfoService {
 		
 		AtomicInteger countByStartTimeBetween = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndStartTimeBetween(pitch.getId(), request.getRentedAt(), startTime, endTime)
+				.findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(pitch.getId(), request.getRentedAt(), startTime, endTime)
 				.forEach(rentInfo -> {
 					if (rentInfo.getTypePitch() == 5)
 						countByStartTimeBetween.addAndGet(1);
@@ -129,7 +130,7 @@ public class RentInfoService {
 		
 		AtomicInteger countByEndTimeBetween = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndEndTimeBetween(pitch.getId(), request.getRentedAt(), startTime, endTime)
+				.findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(pitch.getId(), request.getRentedAt(), startTime, endTime)
 				.forEach(rentInfo -> {
 					if (rentInfo.getTypePitch() == 5)
 						countByEndTimeBetween.addAndGet(1);
@@ -143,7 +144,9 @@ public class RentInfoService {
 		} else if ( countByStartTimeBetween.get() > pitch.getTotal() || countByEndTimeBetween.get() > pitch.getTotal() )
 			return RentResponse.builder().message("Đặt sân thất bại, không còn sân trống trong khoảng thời gian này").build();
 		
-		var user = userRepository.findByEmail(request.getEmail()).orElse(null);
+		var context = SecurityContextHolder.getContext();
+		var user = userRepository.findByUsername(context.getAuthentication().getName())
+				.orElse(userRepository.findByEmail(request.getEmail()).orElse(null));
 		
 		var rentInfo = rentInfoMapper.toRentInfo(request);
 		rentInfo.setPitch(pitch);
@@ -253,7 +256,7 @@ public class RentInfoService {
 		
 		AtomicInteger countByStartTime = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(
 						rentInfo.getPitch().getId(),
 						request.getRentedAt(),
 						startTime.plusSeconds(1),
@@ -268,7 +271,7 @@ public class RentInfoService {
 		
 		AtomicInteger countByEndTime = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(
 						rentInfo.getPitch().getId(),
 						request.getRentedAt(),
 						endTime.minusSeconds(1),
@@ -283,7 +286,7 @@ public class RentInfoService {
 		
 		AtomicInteger countByStartTimeBetween = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndStartTimeBetween(rentInfo.getPitch().getId(), request.getRentedAt(), startTime, endTime)
+				.findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(rentInfo.getPitch().getId(), request.getRentedAt(), startTime, endTime)
 				.forEach(_rentInfo -> {
 					if (_rentInfo.getTypePitch() == 5)
 						countByStartTimeBetween.addAndGet(1);
@@ -294,7 +297,7 @@ public class RentInfoService {
 		
 		AtomicInteger countByEndTimeBetween = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndEndTimeBetween(rentInfo.getPitch().getId(), request.getRentedAt(), startTime, endTime)
+				.findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(rentInfo.getPitch().getId(), request.getRentedAt(), startTime, endTime)
 				.forEach(_rentInfo -> {
 					if (_rentInfo.getTypePitch() == 5)
 						countByEndTimeBetween.addAndGet(1);
@@ -330,6 +333,12 @@ public class RentInfoService {
 		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
+		
+		if (rentInfo.getIsDone())
+			throw new AppException(ErrorCode.BILL_EXISTED);
+		
+		if (!rentInfo.getPaymentStatus())
+			throw new AppException(ErrorCode.UNPAID);
 		
 		Bill bill = Bill.builder()
 				.email(rentInfo.getEmail())

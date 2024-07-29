@@ -34,11 +34,11 @@ public class Pitch implements Serializable {
 	Address address;
 	
 	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-	Set<Image> images;
+	Set<Image> imageSet;
 	
-	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	Set<Comment> comments;
+	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	Set<Review> reviewSet;
 
 	@OneToMany(mappedBy = "pitch")
-	Set<Bill> bills;
+	Set<Bill> billSet;
 }

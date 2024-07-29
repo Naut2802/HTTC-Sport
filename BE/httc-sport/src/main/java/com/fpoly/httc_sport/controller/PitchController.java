@@ -56,6 +56,15 @@ public class PitchController {
 				.build();
 	}
 	
+	@PatchMapping("/review/{id}/{reviewId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<PitchDetailsResponse> deleteReview(@PathVariable int id, @PathVariable long reviewId) {
+		return ApiResponse.<PitchDetailsResponse>builder()
+				.message("Xóa nhận xét thành công")
+				.result(pitchService.deleteReview(id, reviewId))
+				.build();
+	}
+	
 	@GetMapping("{id}")
 	ApiResponse<PitchDetailsResponse> getPitch(@PathVariable int id) {
 		return ApiResponse.<PitchDetailsResponse>builder()

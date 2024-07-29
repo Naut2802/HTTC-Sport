@@ -16,14 +16,14 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Comment {
+public class Review {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	Integer rate;
 	String description;
 	
-	@ManyToOne @JoinColumn(name = "pitchId")
+	@ManyToOne @JoinColumn(name = "pitch_id")
 	Pitch pitch;
 	
 	@ManyToOne @JoinColumn(name = "user_id")

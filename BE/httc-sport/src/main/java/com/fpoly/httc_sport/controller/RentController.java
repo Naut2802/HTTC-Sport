@@ -37,7 +37,7 @@ public class RentController {
 				.build();
 	}
 	
-	@PostMapping("{id}")
+	@PostMapping("/rent-info-to-bill/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<?> exchangeRentInfoToBill(@PathVariable int id) {
 		rentInfoService.exchangeRentInfoToBill(id);

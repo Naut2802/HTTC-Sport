@@ -10,15 +10,43 @@ import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
 
 import { Box, Breadcrumbs, Card, CardContent, Grid, Typography } from '@mui/material';
-import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
+import { handleGetPitch } from '~/apis';
 import logo from '~/components/Images/logo.png';
 import Comments from './Comments';
 import ImagePitch from './ImagePitch';
 import RentForm from './RentForm';
 
+function formatCurrency(amount) {
+    return amount.toLocaleString('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+}
+
 export default function PitchDetail() {
+    const { id } = useParams();
+    const [pitch, setPitch] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await handleGetPitch(id);
+                console.log(res.data.result);
+                setPitch(res.data.result);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, [id]);
+
+    if (!pitch) {
+        return <Typography sx={{textAlign : 'center', fontSize : 33, mt : 5}}>Loading...</Typography>;
+    }
+
     return (
         <Box sx={{ my: 3, mx: 10 }}>
             <div className="d-flex justify-content-center">
@@ -45,12 +73,13 @@ export default function PitchDetail() {
             <Box sx={{ p: 2, backgroundColor: 'whitesmoke' }}>
                 <div className="pb-4">
                     <Typography className="text-dark fs-2 fw-bolder" variant="inherit" noWrap>
-                        Sân Minh Nghiệm
+                        {pitch.pitchName}
                     </Typography>
                     <div className="row">
                         <div className="col-md-6">
                             <Typography sx={{ fontSize: 17 }} variant="subtitle2" color="text.secondary">
-                                <LocationOnIcon sx={{ color: 'red' }} /> 202 Hoàng Văn Thụ, P. 9, Quận Phú Nhuận - Hồ Chí Minh
+                                <LocationOnIcon sx={{ color: 'red' }} /> 
+                                {pitch.street} {pitch.ward} {pitch.district} {pitch.city}
                             </Typography>
                         </div>
                         <div className="col-md-6 text-end">
@@ -66,7 +95,7 @@ export default function PitchDetail() {
                     <div className="col-md-12 col-12">
                         <div className="row">
                             <div className="col-lg-8">
-                                <ImagePitch />
+                                <ImagePitch images={pitch.images} />
                             </div>
                             <div className="col-lg-4">
                                 <div className="row">
@@ -85,7 +114,7 @@ export default function PitchDetail() {
                                                         </Typography>
                                                     </div>
                                                     <div className="col-6">
-                                                        <Typography className="fw-bolder text-end">6h - 23h</Typography>
+                                                        <Typography className="fw-bolder text-end">8h - 23h</Typography>
                                                     </div>
                                                 </div>
 
@@ -96,7 +125,7 @@ export default function PitchDetail() {
                                                         </Typography>
                                                     </div>
                                                     <div className="col-6">
-                                                        <Typography className="fw-bolder text-end">4 Sân (Sân 5)</Typography>
+                                                        <Typography className="fw-bolder text-end">{pitch.total} (Sân 5)</Typography>
                                                     </div>
                                                 </div>
 
@@ -107,7 +136,7 @@ export default function PitchDetail() {
                                                         </Typography>
                                                     </div>
                                                     <div className="col-6">
-                                                        <Typography className="fw-bolder text-end">350.000 đ</Typography>
+                                                        <Typography className="fw-bolder text-end">{formatCurrency(pitch.price)}</Typography>
                                                     </div>
                                                 </div>
 
@@ -118,7 +147,7 @@ export default function PitchDetail() {
                                                         </Typography>
                                                     </div>
                                                     <div className="col-6">
-                                                        <Typography className="text-end">Sân mới - đẹp - cỏ mượt</Typography>
+                                                        <Typography className="text-end">{pitch.description}</Typography>
                                                     </div>
                                                 </div>
 

@@ -39,10 +39,10 @@ export default function RentForm() {
                         top: '10%',
                     }}
                 >
-                    <Typography>
+                    <Typography component={'span'}>
                         <Grid container spacing={1}>
                             <Grid item xs={6}>
-                                <Typography>
+                                <Typography component={'span'}>
                                     <TextField
                                         label="Họ"
                                         variant="outlined"
@@ -53,7 +53,7 @@ export default function RentForm() {
                                 </Typography>
                             </Grid>
                             <Grid item xs={6}>
-                                <Typography>
+                                <Typography component={'span'}>
                                     <TextField
                                         label="Tên"
                                         variant="outlined"
@@ -64,7 +64,7 @@ export default function RentForm() {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <Typography>
+                                <Typography component={'span'}>
                                     <TextField
                                         label="Số điện thoại"
                                         variant="outlined"
@@ -75,7 +75,7 @@ export default function RentForm() {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <Typography>
+                                <Typography component={'span'}>
                                     <TextField
                                         label="Email"
                                         variant="outlined"
@@ -87,7 +87,7 @@ export default function RentForm() {
                                 </Typography>
                             </Grid>
                             <Grid item xs={6}>
-                                <Typography>
+                                <Typography component={'span'}>
                                     <DatePicker
                                         value={dateValue}
                                         onChange={(newDateValue) => setDateValue(newDateValue)}
@@ -96,7 +96,7 @@ export default function RentForm() {
                                 </Typography>
                             </Grid>
                             <Grid item xs={6}>
-                                <Typography>
+                                <Typography component={'span'}>
                                     <TimePicker
                                         label="Chọn giờ"
                                         value={timeValue}
@@ -107,7 +107,7 @@ export default function RentForm() {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <Typography>
+                                <Typography component={'span'}>
                                     <FormControl fullWidth>
                                         <InputLabel id="demo-simple-select-label">Thời gian đá</InputLabel>
                                         <Select
@@ -125,7 +125,7 @@ export default function RentForm() {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <Typography>
+                                <Typography component={'span'}>
                                     <TextField
                                         label="Ghi chú"
                                         variant="outlined"

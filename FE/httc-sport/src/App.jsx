@@ -64,10 +64,10 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/trang-chu" element={<UserHome />} />
-                <Route path="/san-bong" element={<PitchList />} />
                 <Route path="/tin-tuc" element={<News />} />
                 <Route path="/lien-he" element={<Contact />} />
-                <Route path="/chi-tiet-san" element={<PitchDetail />} />
+                <Route path="/san-bong" element={<PitchList />} />
+                <Route path="/chi-tiet-san/:id" element={<PitchDetail />} />
                 <Route path="/dat-san" element={<PitchRent />} />
             </Route>
 

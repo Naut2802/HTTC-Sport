@@ -38,7 +38,7 @@ public class Bill implements Serializable {
 	LocalTime startTime;
 	@Temporal(TemporalType.TIME)
 	LocalTime endTime;
-	Double total;
+	Integer total;
 	@Builder.Default
 	Boolean isRate = false;
 	

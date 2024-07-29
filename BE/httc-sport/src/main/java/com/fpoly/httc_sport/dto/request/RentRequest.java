@@ -1,6 +1,7 @@
 package com.fpoly.httc_sport.dto.request;
 
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,10 +22,13 @@ public class RentRequest {
 	@NotNull(message = "PITCH_NULL")
 	int pitchId;
 	@NotNull(message = "RENT_INFO_EMAIL_NULL")
+	@NotBlank(message = "RENT_INFO_EMAIL_NULL")
 	String email;
 	@NotNull(message = "RENT_INFO_PHONE_NUMBER_NULL")
+	@NotBlank(message = "RENT_INFO_PHONE_NUMBER_NULL")
 	String phoneNumber;
 	@NotNull(message = "RENT_INFO_FIRST_NAME_NULL")
+	@NotBlank(message = "RENT_INFO_FIRST_NAME_NULL")
 	String firstName;
 	String lastName;
 	@NotNull(message = "RENT_INFO_RENT_DATE_NULL")

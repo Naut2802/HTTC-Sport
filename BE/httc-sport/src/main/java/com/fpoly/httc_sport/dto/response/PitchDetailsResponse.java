@@ -25,6 +25,6 @@ public class PitchDetailsResponse {
 	String type;
 	int total;
 	int remaining;
-	Set<ImageResponse> imageSet;
-	Set<CommentResponse> reviewSet;
+	Set<ImageResponse> images;
+	Set<CommentResponse> reviews;
 }

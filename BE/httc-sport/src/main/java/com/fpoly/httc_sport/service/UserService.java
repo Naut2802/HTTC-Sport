@@ -169,7 +169,7 @@ public class UserService {
 		
 		List<Role> roles = roleRepository.findAllById(request.getRoles());
 		
-		user.setRoleSet(new HashSet<>(roles));
+		user.setRoles(new HashSet<>(roles));
 		return userMapper.toUserResponse(userRepository.save(user));
 	}
 	

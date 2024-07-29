@@ -47,7 +47,7 @@ public class PitchService {
 		address.setPitch(pitch);
 		
 		if (request.getImages() != null)
-			pitch.setImageSet(new HashSet<>(imageService.saveWithPitch(request.getImages(), pitch)));
+			pitch.setImages(new HashSet<>(imageService.saveWithPitch(request.getImages(), pitch)));
 		
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}
@@ -60,14 +60,14 @@ public class PitchService {
 		pitchMapper.updatePitch(pitch, request);
 		
 		if (request.getImages() != null) {
-			if (pitch.getImageSet() != null) {
-				imageService.deleteImages(pitch.getImageSet().stream().map(Image::getPublicId).toList());
-				pitch.getImageSet().clear();
+			if (pitch.getImages() != null) {
+				imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
+				pitch.getImages().clear();
 			}
 			pitchRepository.save(pitch);
 			
 			List<Image> imageResponse = imageService.saveWithPitch(request.getImages(), pitch);
-			pitch.getImageSet().addAll(imageResponse);
+			pitch.getImages().addAll(imageResponse);
 		}
 		
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
@@ -77,12 +77,12 @@ public class PitchService {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
-		Image imageToRemove = pitch.getImageSet().stream()
+		Image imageToRemove = pitch.getImages().stream()
 				.filter(image -> image.getPublicId().equals(publicId))
 				.findFirst()
 				.orElseThrow(() -> new AppException(ErrorCode.NOT_EXISTED));
 		
-		pitch.getImageSet().remove(imageToRemove);
+		pitch.getImages().remove(imageToRemove);
 		imageRepository.delete(imageToRemove);
 		imageService.deleteImages(List.of(imageToRemove.getPublicId()));
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
@@ -96,9 +96,9 @@ public class PitchService {
 			return;
 		
 		pitch.setIsEnabled(false);
-		if (pitch.getImageSet() != null) {
-			imageService.deleteImages(pitch.getImageSet().stream().map(Image::getPublicId).toList());
-			pitch.getImageSet().clear();
+		if (pitch.getImages() != null) {
+			imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
+			pitch.getImages().clear();
 		}
 		
 		pitchRepository.save(pitch);
@@ -109,12 +109,12 @@ public class PitchService {
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED)
 		);
 		
-		var review = pitch.getReviewSet().stream()
+		var review = pitch.getReviews().stream()
 				.filter(rv -> rv.getId().equals(reviewId))
 				.findFirst()
 				.orElseThrow(() -> new AppException(ErrorCode.REVIEW_NOT_EXISTED));
 		
-		pitch.getReviewSet().remove(review);
+		pitch.getReviews().remove(review);
 		reviewRepository.delete(review);
 		return pitchMapper.toPitchDetailsResponse(pitchRepository.save(pitch));
 	}

@@ -21,7 +21,6 @@ import com.fpoly.httc_sport.repository.httpclient.FacebookOutboundUserInfoClient
 import com.fpoly.httc_sport.repository.httpclient.GoogleOutboundExchangeTokenClient;
 import com.fpoly.httc_sport.repository.httpclient.GoogleOutboundUserInfoClient;
 import com.fpoly.httc_sport.security.jwt.KeyUtils;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -56,8 +55,8 @@ public class AuthenticationService {
 	VerificationTokenRepository verificationTokenRepository;
 	GoogleOutboundExchangeTokenClient googleOutboundExchangeTokenClient;
 	GoogleOutboundUserInfoClient googleOutboundUserInfoClient;
-	FacebookOutboundExchangeTokenClient facebookOutboundExchangeTokenClient;
-	FacebookOutboundUserInfoClient facebookOutboundUserInfoClient;
+//	FacebookOutboundExchangeTokenClient facebookOutboundExchangeTokenClient;
+//	FacebookOutboundUserInfoClient facebookOutboundUserInfoClient;
 	UserMapper userMapper;
 	RoleMapper roleMapper;
 	PasswordEncoder passwordEncoder;
@@ -107,7 +106,7 @@ public class AuthenticationService {
 		var role = roleRepository.findById("USER").orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 		
-		user.setRoleSet(new HashSet<>(List.of(role)));
+		user.setRoles(new HashSet<>(List.of(role)));
 		userRepository.save(user);
 		String url = generateUrl(httpRequest);
 		publisher.publishEvent(new RegistrationCompleteEvent(user, url));
@@ -174,7 +173,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
-				.roleSet(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
+				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	
@@ -206,7 +205,7 @@ public class AuthenticationService {
 					.firstName(userInfo.getName())
 					.lastName(userInfo.getFamilyName())
 					.isEnabled(true)
-					.roleSet(new HashSet<>(List.of(role)))
+					.roles(new HashSet<>(List.of(role)))
 					.build());
 			publisher.publishEvent(new OutboundCompleteEvent(user, password));
 		} else
@@ -229,7 +228,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
-				.roleSet(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
+				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	
@@ -320,7 +319,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
-				.roleSet(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
+				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	

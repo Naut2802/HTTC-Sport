@@ -11,7 +11,7 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface PitchMapper {
-	@Mapping(target = "imageSet", ignore = true)
+	@Mapping(target = "images", ignore = true)
 	Pitch toPitch(PitchRequest request);
 	Address toAddress(PitchRequest request);
 	
@@ -27,7 +27,7 @@ public interface PitchMapper {
 	@Mapping(source = "address.city", target = "city")
 	PitchDetailsResponse toPitchDetailsResponse(Pitch pitch);
 	
-	@Mapping(target = "imageSet", ignore = true)
+	@Mapping(target = "images", ignore = true)
 	@Mapping(target = "address.street", source = "street")
 	@Mapping(target = "address.ward", source = "ward")
 	@Mapping(target = "address.district", source = "district")

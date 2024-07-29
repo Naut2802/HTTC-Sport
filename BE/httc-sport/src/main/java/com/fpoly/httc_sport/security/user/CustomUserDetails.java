@@ -24,8 +24,8 @@ public class CustomUserDetails implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		StringJoiner stringJoiner = new StringJoiner(" ");
 		
-		if (!CollectionUtils.isEmpty(this.user.getRoleSet())) {
-			this.user.getRoleSet().forEach(role -> {
+		if (!CollectionUtils.isEmpty(this.user.getRoles())) {
+			this.user.getRoles().forEach(role -> {
 				stringJoiner.add("ROLE_" + role.getRoleName());
 //				if (!CollectionUtils.isEmpty(role.getPermissions())) {
 //					role.getPermissions().forEach(permission -> stringJoiner.add(permission.getPermissionName()));

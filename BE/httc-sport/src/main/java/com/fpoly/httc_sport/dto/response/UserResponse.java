@@ -18,5 +18,5 @@ public class UserResponse {
 	String lastName;
 	String phoneNumber;
 	Boolean isEnabled;
-	Set<RoleResponse> roles;
+	Set<RoleResponse> roleSet;
 }

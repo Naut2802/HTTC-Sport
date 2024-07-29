@@ -14,5 +14,5 @@ public class AuthenticationResponse {
 	String userId;
 	String accessToken;
 	boolean authenticated;
-	Set<RoleResponse> roles;
+	Set<RoleResponse> roleSet;
 }

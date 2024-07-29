@@ -55,9 +55,11 @@ public class PitchController {
 	}
 	
 	@GetMapping
-	ApiResponse<List<PitchResponse>> getPitches() {
+	ApiResponse<List<PitchResponse>> getPitches(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<PitchResponse>>builder()
-				.result(pitchService.getPitches())
+				.result(pitchService.getPitches(page, size))
 				.build();
 	}
 	

@@ -11,6 +11,7 @@ import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
 import com.fpoly.httc_sport.dto.response.RentResponse;
+import com.fpoly.httc_sport.entity.Bill;
 import com.fpoly.httc_sport.entity.MailInfo;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
@@ -38,6 +39,7 @@ public class RentInfoService {
 	
 	PaymentService paymentService;
 	MailerService mailerService;
+	BillService billService;
 	
 	public RentResponse rentPitch(RentRequest request) {
 		var pitch = pitchRepository.findById(request.getPitchId()).orElseThrow(
@@ -322,5 +324,30 @@ public class RentInfoService {
 			throw new AppException(ErrorCode.RENT_INFO_NOT_EXISTED);
 		
 		rentInfoRepository.deleteById(id);
+	}
+
+	public void exchangeRentInfoToBill(int id) {
+		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
+		);
+		
+		Bill bill = Bill.builder()
+				.email(rentInfo.getEmail())
+				.phoneNumber(rentInfo.getPhoneNumber())
+				.firstName(rentInfo.getFirstName())
+				.lastName(rentInfo.getLastName())
+				.createdAt(LocalDate.now())
+				.rentedAt(rentInfo.getRentedAt())
+				.startTime(rentInfo.getStartTime())
+				.endTime(rentInfo.getEndTime())
+				.total(rentInfo.getTotal())
+				.pitch(rentInfo.getPitch())
+				.user(rentInfo.getUser())
+				.paymentMethod(rentInfo.getPaymentMethod())
+				.build();
+		
+		rentInfo.setIsDone(true);
+		rentInfoRepository.save(rentInfo);
+		billService.createBill(bill);
 	}
 }

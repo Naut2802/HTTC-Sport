@@ -47,6 +47,15 @@ public class PitchController {
 				.build();
 	}
 	
+	@PatchMapping("{id}/{publicId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<PitchResponse> deleteImageFromPitch(@PathVariable int id, @PathVariable String publicId) throws Exception {
+		return ApiResponse.<PitchResponse>builder()
+				.message("Xóa ảnh thành công")
+				.result(pitchService.deleteImageFromPitch(id, publicId))
+				.build();
+	}
+	
 	@GetMapping("{id}")
 	ApiResponse<PitchDetailsResponse> getPitch(@PathVariable int id) {
 		return ApiResponse.<PitchDetailsResponse>builder()

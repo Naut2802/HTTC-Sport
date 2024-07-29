@@ -37,6 +37,16 @@ public class RentController {
 				.build();
 	}
 	
+	@PostMapping("{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<?> exchangeRentInfoToBill(@PathVariable int id) {
+		rentInfoService.exchangeRentInfoToBill(id);
+		
+		return ApiResponse.builder()
+				.message("Đổi thông tin đặt sân sang hóa đơn thành công")
+				.build();
+	}
+	
 	@GetMapping("{id}")
 	ApiResponse<RentInfoResponse> getRentInfo(@PathVariable int id) {
 		return ApiResponse.<RentInfoResponse>builder()

@@ -35,12 +35,4 @@ public class ImageController {
 				.result(imageService.getImages(request))
 				.build();
 	}
-	
-	@DeleteMapping
-	ApiResponse<?> deleteImages(@RequestBody ImageRequest request) throws Exception {
-		imageService.deleteImagesFromApi(request);
-		return ApiResponse.builder()
-				.message("Xóa hình ảnh thành công")
-				.build();
-	}
 }

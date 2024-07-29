@@ -17,10 +17,11 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	String id;
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	String username;
+	@Column(nullable = false)
 	String password;
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	String email;
 	String firstName;
 	String lastName;

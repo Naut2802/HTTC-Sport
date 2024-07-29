@@ -68,27 +68,10 @@ public class ImageService {
 	}
 	
 	public List<ImageResponse> getImages(ImageRequest request) throws Exception {
-		return imageRepository.findAllByPublicIdIn(request.getPublicIds()).stream().map(imageMapper::toImageResponse).toList();
+		return imageRepository.findByPublicIdIn(request.getPublicIds()).stream().map(imageMapper::toImageResponse).toList();
 	}
 	
-	@Transactional
-	public void deleteImages(List<Image> images) throws Exception {
-		List<String> publicIds = new ArrayList<>();
-		images.forEach(image -> {
-			if (imageRepository.existsByPublicId(image.getPublicId())) {
-				imageRepository.deleteByPublicId(image.getPublicId());
-				publicIds.add(image.getPublicId());
-			}
-		});
+	public void deleteImages(List<String> publicIds) throws Exception {
 		cloudinaryService.deleteImages(new HashSet<>(publicIds));
-	}
-	
-	@Transactional
-	public void deleteImagesFromApi(ImageRequest request) throws Exception {
-		request.getPublicIds().forEach(image -> {
-			if (imageRepository.existsByPublicId(image))
-				imageRepository.deleteByPublicId(image);
-		});
-		cloudinaryService.deleteImages(request.getPublicIds());
 	}
 }

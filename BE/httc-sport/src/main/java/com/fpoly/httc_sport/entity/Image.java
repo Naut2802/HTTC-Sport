@@ -18,7 +18,7 @@ public class Image {
 	String publicId;
 	String url;
 	
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.PERSIST})
 	@JoinColumn(name = "pitch_id")
 	Pitch pitch;
 }

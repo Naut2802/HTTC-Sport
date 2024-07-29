@@ -24,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fpoly.httc_sport.entity.Comment;
@@ -86,8 +88,9 @@ public class PitchService {
 		return pitchMapper.toPitchDetailsResponse(pitch);
 	}
 	
-	public List<PitchResponse> getPitches() {
-		return pitchRepository.findAllByIsEnabledTrue().stream().map(pitchMapper::toPitchResponse).toList();
+	public List<PitchResponse> getPitches(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return pitchRepository.findAllByIsEnabledTrue(pageable).stream().map(pitchMapper::toPitchResponse).toList();
 	}
 	
 //	public List<Pitch> findbyKeyWords(String tenSan) {

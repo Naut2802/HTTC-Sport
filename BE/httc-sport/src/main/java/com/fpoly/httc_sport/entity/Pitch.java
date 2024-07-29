@@ -21,7 +21,7 @@ public class Pitch implements Serializable {
 	@Column(nullable = false)
 	String pitchName;
 	@Column(nullable = false)
-	Integer price;
+	int price;
 	@Builder.Default
 	Boolean isEnabled = true;
 	String description;

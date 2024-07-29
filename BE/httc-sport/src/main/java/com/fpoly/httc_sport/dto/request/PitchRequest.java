@@ -21,10 +21,9 @@ public class PitchRequest {
 	@NotBlank(message = "PITCH_NAME_NULL")
 	@NotNull(message = "PITCH_NAME_NULL")
 	String pitchName;
-	@NotBlank(message = "PITCH_PRICE_NULL")
 	@NotNull(message = "PITCH_PRICE_NULL")
 //	@DecimalMin(value = "300000", message = "PITCH_MIN_PRICE")
-	Double price;
+	int price;
 	@NotBlank(message = "PITCH_ADDRESS_NULL")
 	@NotNull(message = "PITCH_ADDRESS_NULL")
 	String street;
@@ -39,7 +38,6 @@ public class PitchRequest {
 	@NotBlank(message = "PITCH_TYPE_NULL")
 	@NotNull(message = "PITCH_TYPE_NULL")
 	String type;
-	@NotBlank(message = "PITCH_TOTAL_NULL")
 	@NotNull(message = "PITCH_TOTAL_NULL")
 	int total;
 	List<MultipartFile> images;

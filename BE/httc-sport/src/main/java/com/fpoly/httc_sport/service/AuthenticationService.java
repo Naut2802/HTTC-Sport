@@ -174,7 +174,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
-				.roles(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
+				.roleSet(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	
@@ -229,7 +229,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
-				.roles(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
+				.roleSet(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	
@@ -320,7 +320,7 @@ public class AuthenticationService {
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
-				.roles(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
+				.roleSet(new HashSet<>(user.getRoleSet().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
 	

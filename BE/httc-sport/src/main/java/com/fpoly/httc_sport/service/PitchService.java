@@ -1,13 +1,13 @@
 package com.fpoly.httc_sport.service;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import com.fpoly.httc_sport.dto.request.PitchRequest;
 import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
 import com.fpoly.httc_sport.dto.response.PitchResponse;
 import com.fpoly.httc_sport.entity.Image;
+import com.fpoly.httc_sport.entity.Pitch;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.mapper.PitchMapper;
@@ -15,12 +15,14 @@ import com.fpoly.httc_sport.repository.AddressRepository;
 import com.fpoly.httc_sport.repository.ImageRepository;
 import com.fpoly.httc_sport.repository.PitchRepository;
 import com.fpoly.httc_sport.repository.ReviewRepository;
+import com.fpoly.httc_sport.repository.spec.PitchSpecification;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -111,9 +113,32 @@ public class PitchService {
 		return pitchMapper.toPitchDetailsResponse(pitch);
 	}
 	
-	public List<PitchResponse> getPitches(int page, int size) {
+	public List<PitchResponse> getPitches(String rates, String district,
+	                                      String city, String name,
+	                                      String price, String type,
+	                                      int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		return pitchRepository.findAllByIsEnabledTrue(pageable).stream().map(pitchMapper::toPitchResponse).toList();
+		List<Integer> rateList = new ArrayList<>();
+		int price1 = -1;
+		int price2 = -1;
+		
+		if (rates != null) {
+			rateList = Arrays.stream(rates.split("-")).map(Integer::parseInt).toList();
+		}
+		if (price != null) {
+			var p = Arrays.stream(price.split("-")).map(Integer::parseInt).toList();
+			price1 = p.getFirst();
+			price2 = p.getLast();
+		}
+		
+		Specification<Pitch> spec = Specification.where(PitchSpecification.hasEnabled(true))
+				.and(!rateList.isEmpty() ? PitchSpecification.hasRateIn(rateList) : null)
+				.and(district != null && city != null ? PitchSpecification.hasAddress(district, city) : null)
+				.and(price1 >= 0 && price2 > price1 ? PitchSpecification.hasPriceBetween(price1, price2) : null)
+				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null)
+				.and(type != null ? PitchSpecification.hasType(type) : null);
+		
+		return pitchRepository.findAll(spec, pageable).stream().map(pitchMapper::toPitchResponse).toList();
 	}
 	
 //	public List<Pitch> findbyKeyWords(String tenSan) {

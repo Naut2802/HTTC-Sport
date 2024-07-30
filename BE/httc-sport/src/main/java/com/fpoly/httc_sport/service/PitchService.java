@@ -118,21 +118,32 @@ public class PitchService {
 	                                      String price, String type,
 	                                      int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		List<Integer> rateList = new ArrayList<>();
+		int rate1 = 0;
+		int rate2 = 0;
 		int price1 = -1;
 		int price2 = -1;
 		
 		if (rates != null) {
-			rateList = Arrays.stream(rates.split("-")).map(Integer::parseInt).toList();
+			try {
+				var r = Arrays.stream(rates.split("-")).map(Integer::parseInt).toList();
+				rate1 = r.getFirst();
+				rate2 = r.getLast();
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
 		}
 		if (price != null) {
-			var p = Arrays.stream(price.split("-")).map(Integer::parseInt).toList();
-			price1 = p.getFirst();
-			price2 = p.getLast();
+			try {
+				var p = Arrays.stream(price.split("-")).map(Integer::parseInt).toList();
+				price1 = p.getFirst();
+				price2 = p.getLast();
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
 		}
 		
-		Specification<Pitch> spec = Specification.where(PitchSpecification.hasEnabled(true))
-				.and(!rateList.isEmpty() ? PitchSpecification.hasRateIn(rateList) : null)
+		Specification<Pitch> spec = Specification.where(PitchSpecification.hasEnabled())
+				.and(rate1 >= 0 && rate2 > rate1 ? PitchSpecification.hasRateIn(rate1, rate2) : null)
 				.and(district != null && city != null ? PitchSpecification.hasAddress(district, city) : null)
 				.and(price1 >= 0 && price2 > price1 ? PitchSpecification.hasPriceBetween(price1, price2) : null)
 				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null)

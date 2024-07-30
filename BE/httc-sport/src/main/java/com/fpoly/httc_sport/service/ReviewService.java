@@ -28,9 +28,9 @@ import java.util.List;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ReviewService {
+	PitchRepository pitchRepository;
 	ReviewRepository reviewRepository;
 	BillRepository billRepository;
-	PitchRepository pitchRepository;
 	ReviewMapper reviewMapper;
 	
 	@Transactional
@@ -59,9 +59,16 @@ public class ReviewService {
 				.user(bill.getUser())
 				.build();
 		
+		var pitch = bill.getPitch();
+		
 		bill.setIsRate(true);
+		pitch.getReviews().add(review);
+		
+		var rateAverage = pitch.getReviews().stream().mapToDouble(Review::getRate).average();
+		pitch.setRate(rateAverage.isPresent() ? rateAverage.getAsDouble() : 0);
 		
 		reviewRepository.save(review);
+		pitchRepository.save(pitch);
 		billRepository.save(bill);
 	}
 

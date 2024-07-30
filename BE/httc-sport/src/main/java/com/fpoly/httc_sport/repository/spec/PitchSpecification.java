@@ -9,18 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PitchSpecification {
-	public static Specification<Pitch> hasEnabled(boolean isEnabled) {
+	public static Specification<Pitch> hasEnabled() {
 		return (root, query, criteriaBuilder) -> criteriaBuilder.isTrue(root.get("isEnabled"));
 	}
 	
-	public static Specification<Pitch> hasRateIn(Iterable<Integer> rates) {
-		return (root, query, criteriaBuilder) -> {
-			CriteriaBuilder.In<Integer> inClause = criteriaBuilder.in(root.get("reviews").get("rate"));
-			for (Integer rate : rates) {
-				inClause.value(rate);
-			}
-			return inClause;
-		};
+	public static Specification<Pitch> hasRateIn(int rate1, int rate2) {
+		return (root, query, criteriaBuilder) -> criteriaBuilder.between(root.get("rate"), rate1, rate2);
 	}
 	
 	public static Specification<Pitch> hasAddress(String district, String city) {

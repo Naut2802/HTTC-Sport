@@ -29,6 +29,8 @@ public class Pitch implements Serializable {
 	String type;
 	@Column(nullable = false)
 	int total;
+	@Builder.Default
+	double rate = 0;
 	
 	@OneToOne(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	Address address;

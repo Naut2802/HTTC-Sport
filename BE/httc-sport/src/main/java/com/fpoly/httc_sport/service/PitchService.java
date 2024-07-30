@@ -104,21 +104,6 @@ public class PitchService {
 		pitchRepository.save(pitch);
 	}
 	
-	public PitchDetailsResponse deleteReview(int id, long reviewId) {
-		var pitch = pitchRepository.findById(id).orElseThrow(
-				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED)
-		);
-		
-		var review = pitch.getReviews().stream()
-				.filter(rv -> rv.getId().equals(reviewId))
-				.findFirst()
-				.orElseThrow(() -> new AppException(ErrorCode.REVIEW_NOT_EXISTED));
-		
-		pitch.getReviews().remove(review);
-		reviewRepository.delete(review);
-		return pitchMapper.toPitchDetailsResponse(pitchRepository.save(pitch));
-	}
-	
 	public PitchDetailsResponse getPitch(int id) {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));

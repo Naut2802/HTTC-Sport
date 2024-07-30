@@ -15,7 +15,8 @@ import com.fpoly.httc_sport.entity.ReportForYear;
 
 
 public interface BillRepository extends JpaRepository<Bill, Long> {
-	List<Bill> findByUserUsername(String username);
+	Page<Bill> findByUserId(String userId, Pageable pageable);
+	Page<Bill> findByPitchId(int pitchId, Pageable pageable);
 	
 //	@Query("SELECT new Report(o.pitch, SUM(o.total), MONTH(o.createdAt)) FROM Bill o GROUP BY o.pitch")
 //    List<Report> revenueReport();

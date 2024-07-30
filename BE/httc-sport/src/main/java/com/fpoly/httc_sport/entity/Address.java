@@ -23,6 +23,6 @@ public class Address {
 	String city;
 	
 	@OneToOne
-	@JoinColumn(name = "pitch_id", referencedColumnName = "id")
+	@JoinColumn(name = "pitch_id")
 	Pitch pitch;
 }

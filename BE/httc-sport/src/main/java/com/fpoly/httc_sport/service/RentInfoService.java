@@ -24,6 +24,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -201,8 +203,19 @@ public class RentInfoService {
 				.build();
 	}
 
-	public List<RentInfoResponse> getRentInfoResponses() {
-		return rentInfoRepository.findAll().stream().map(rentInfoMapper::toRentInfoResponse).toList();
+	public List<RentInfoResponse> getAllRentInfo(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return rentInfoRepository.findAll(pageable).stream().map(rentInfoMapper::toRentInfoResponse).toList();
+	}
+	
+	public List<RentInfoResponse> getAllRentInfoByUserId(String userId, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return rentInfoRepository.findByUserId(userId, pageable).stream().map(rentInfoMapper::toRentInfoResponse).toList();
+	}
+	
+	public List<RentInfoResponse> getAllRentInfoByPitchId(int pitchId, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return rentInfoRepository.findByPitchId(pitchId, pageable).stream().map(rentInfoMapper::toRentInfoResponse).toList();
 	}
 	
 	public RentInfoResponse getRentInfo(int id) {
@@ -350,6 +363,7 @@ public class RentInfoService {
 				.startTime(rentInfo.getStartTime())
 				.endTime(rentInfo.getEndTime())
 				.total(rentInfo.getTotal())
+				.typePitch(rentInfo.getTypePitch())
 				.pitch(rentInfo.getPitch())
 				.user(rentInfo.getUser())
 				.paymentMethod(rentInfo.getPaymentMethod())

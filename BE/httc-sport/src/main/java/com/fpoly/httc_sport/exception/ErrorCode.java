@@ -56,8 +56,11 @@ public enum ErrorCode {
 	UNPAID(1040, "Thông tin đặt sân này chưa được thanh toán tiền cọc", HttpStatus.NOT_ACCEPTABLE),
 	BILL_NOT_EXISTED(1041, "Không tìm thấy hóa đơn", HttpStatus.NOT_FOUND),
 	BILL_EXISTED(1042, "Hóa đơn đã tồn tại", HttpStatus.BAD_REQUEST),
-	REVIEW_NOT_EXISTED(1043, "Không tìm thấy nhận xét", HttpStatus.NOT_FOUND),
-	REVIEW_EXISTED(1044, "Đã gửi đánh giá hóa đơn này", HttpStatus.BAD_REQUEST),
+	REVIEW_RATE_NULL(1043, "Đánh giá sao không được trống", HttpStatus.BAD_REQUEST),
+	REVIEW_RATE_MIN(1044, "Đánh giá thấp nhất 1 sao", HttpStatus.BAD_REQUEST),
+	REVIEW_RATE_MAX(1045, "Đánh giá cao nhất 5 sao", HttpStatus.BAD_REQUEST),
+	REVIEW_NOT_EXISTED(1046, "Không tìm thấy nhận xét", HttpStatus.NOT_FOUND),
+	REVIEW_EXISTED(1047, "Đã gửi đánh giá hóa đơn này", HttpStatus.BAD_REQUEST),
 	
 	
 	NOT_EXISTED(1096, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),

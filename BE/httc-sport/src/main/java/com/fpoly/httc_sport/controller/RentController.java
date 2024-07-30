@@ -54,10 +54,32 @@ public class RentController {
 				.build();
 	}
 	
-	@GetMapping
-	ApiResponse<List<RentInfoResponse>> getAllRentInfo() {
+	@GetMapping("/get-all-by-user/{userId}")
+	ApiResponse<List<RentInfoResponse>> getAllRentInfoByUser(@PathVariable String userId,
+				@RequestParam(defaultValue = "0") int page,
+				@RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<RentInfoResponse>>builder()
-				.result(rentInfoService.getRentInfoResponses())
+				.result(rentInfoService.getAllRentInfoByUserId(userId, page, size))
+				.build();
+	}
+	
+	@GetMapping
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<List<RentInfoResponse>> getAllRentInfo(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "5") int size) {
+		return ApiResponse.<List<RentInfoResponse>>builder()
+				.result(rentInfoService.getAllRentInfo(page, size))
+				.build();
+	}
+	
+	@GetMapping("/get-all-by-pitch/{pitchId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<List<RentInfoResponse>> getAllRentInfoByPitch(@PathVariable int pitchId,
+	                                                          @RequestParam(defaultValue = "0") int page,
+	                                                          @RequestParam(defaultValue = "5") int size) {
+		return ApiResponse.<List<RentInfoResponse>>builder()
+				.result(rentInfoService.getAllRentInfoByPitchId(pitchId, page, size))
 				.build();
 	}
 	

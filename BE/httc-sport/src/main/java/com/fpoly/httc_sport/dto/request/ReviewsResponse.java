@@ -1,7 +1,5 @@
 package com.fpoly.httc_sport.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,9 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleRequest{
-	@NotBlank(message = "ROLE_NAME_NULL")
-	@NotNull(message = "ROLE_NAME_NULL")
-	String roleName;
+public class ReviewsResponse {
+	int rate;
 	String description;
 }

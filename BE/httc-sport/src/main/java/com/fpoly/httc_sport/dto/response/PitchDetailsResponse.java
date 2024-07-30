@@ -26,5 +26,5 @@ public class PitchDetailsResponse {
 	int total;
 	int remaining;
 	Set<ImageResponse> images;
-	Set<CommentResponse> comments;
+	Set<CommentResponse> reviews;
 }

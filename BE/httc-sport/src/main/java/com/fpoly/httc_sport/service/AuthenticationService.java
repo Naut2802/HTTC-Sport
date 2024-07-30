@@ -21,7 +21,6 @@ import com.fpoly.httc_sport.repository.httpclient.FacebookOutboundUserInfoClient
 import com.fpoly.httc_sport.repository.httpclient.GoogleOutboundExchangeTokenClient;
 import com.fpoly.httc_sport.repository.httpclient.GoogleOutboundUserInfoClient;
 import com.fpoly.httc_sport.security.jwt.KeyUtils;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -56,8 +55,8 @@ public class AuthenticationService {
 	VerificationTokenRepository verificationTokenRepository;
 	GoogleOutboundExchangeTokenClient googleOutboundExchangeTokenClient;
 	GoogleOutboundUserInfoClient googleOutboundUserInfoClient;
-	FacebookOutboundExchangeTokenClient facebookOutboundExchangeTokenClient;
-	FacebookOutboundUserInfoClient facebookOutboundUserInfoClient;
+//	FacebookOutboundExchangeTokenClient facebookOutboundExchangeTokenClient;
+//	FacebookOutboundUserInfoClient facebookOutboundUserInfoClient;
 	UserMapper userMapper;
 	RoleMapper roleMapper;
 	PasswordEncoder passwordEncoder;

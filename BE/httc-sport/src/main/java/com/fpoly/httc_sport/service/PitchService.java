@@ -1,39 +1,37 @@
 package com.fpoly.httc_sport.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.fpoly.httc_sport.dto.request.PitchRequest;
-import com.fpoly.httc_sport.dto.response.ImageResponse;
 import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
 import com.fpoly.httc_sport.dto.response.PitchResponse;
-import com.fpoly.httc_sport.entity.Address;
 import com.fpoly.httc_sport.entity.Image;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
-import com.fpoly.httc_sport.mapper.ImageMapper;
 import com.fpoly.httc_sport.mapper.PitchMapper;
 import com.fpoly.httc_sport.repository.AddressRepository;
+import com.fpoly.httc_sport.repository.ImageRepository;
 import com.fpoly.httc_sport.repository.PitchRepository;
+import com.fpoly.httc_sport.repository.ReviewRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.fpoly.httc_sport.entity.Comment;
-import com.fpoly.httc_sport.entity.Pitch;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PitchService {
+	ReviewRepository reviewRepository;
+	ImageRepository imageRepository;
 	PitchRepository pitchRepository;
 	AddressRepository addressRepository;
 	PitchMapper pitchMapper;
@@ -44,7 +42,9 @@ public class PitchService {
 			throw new AppException(ErrorCode.PITCH_EXISTED);
 		
 		var pitch = pitchMapper.toPitch(request);
-		pitch.setAddress(pitchMapper.toAddress(request));
+		var address = pitchMapper.toAddress(request);
+		pitch.setAddress(address);
+		address.setPitch(pitch);
 		
 		if (request.getImages() != null)
 			pitch.setImages(new HashSet<>(imageService.saveWithPitch(request.getImages(), pitch)));
@@ -52,6 +52,7 @@ public class PitchService {
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}
 	
+	@Transactional
 	public PitchResponse updatePitch(int id, PitchRequest request) throws Exception {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
@@ -59,15 +60,35 @@ public class PitchService {
 		pitchMapper.updatePitch(pitch, request);
 		
 		if (request.getImages() != null) {
-			imageService.deleteImages(new ArrayList<>(List.copyOf(pitch.getImages())));
+			if (pitch.getImages() != null) {
+				imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
+				pitch.getImages().clear();
+			}
+			pitchRepository.save(pitch);
+			
 			List<Image> imageResponse = imageService.saveWithPitch(request.getImages(), pitch);
-			pitch.setImages(new HashSet<>(imageResponse));
+			pitch.getImages().addAll(imageResponse);
 		}
 		
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}
 	
-	public void deletePitch(int id) {
+	public PitchResponse deleteImageFromPitch(int id, String publicId) throws Exception {
+		var pitch = pitchRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
+		
+		Image imageToRemove = pitch.getImages().stream()
+				.filter(image -> image.getPublicId().equals(publicId))
+				.findFirst()
+				.orElseThrow(() -> new AppException(ErrorCode.NOT_EXISTED));
+		
+		pitch.getImages().remove(imageToRemove);
+		imageRepository.delete(imageToRemove);
+		imageService.deleteImages(List.of(imageToRemove.getPublicId()));
+		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
+	}
+	
+	public void deletePitch(int id) throws Exception {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
@@ -75,6 +96,10 @@ public class PitchService {
 			return;
 		
 		pitch.setIsEnabled(false);
+		if (pitch.getImages() != null) {
+			imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
+			pitch.getImages().clear();
+		}
 		
 		pitchRepository.save(pitch);
 	}
@@ -86,8 +111,9 @@ public class PitchService {
 		return pitchMapper.toPitchDetailsResponse(pitch);
 	}
 	
-	public List<PitchResponse> getPitches() {
-		return pitchRepository.findAllByIsEnabledTrue().stream().map(pitchMapper::toPitchResponse).toList();
+	public List<PitchResponse> getPitches(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return pitchRepository.findAllByIsEnabledTrue(pageable).stream().map(pitchMapper::toPitchResponse).toList();
 	}
 	
 //	public List<Pitch> findbyKeyWords(String tenSan) {

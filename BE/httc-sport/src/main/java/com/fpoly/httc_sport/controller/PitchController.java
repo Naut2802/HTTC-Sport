@@ -40,10 +40,19 @@ public class PitchController {
 	
 	@DeleteMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<PitchResponse> deletePitch(@PathVariable int id) {
+	ApiResponse<PitchResponse> deletePitch(@PathVariable int id) throws Exception {
 		pitchService.deletePitch(id);
 		return ApiResponse.<PitchResponse>builder()
 				.message("Xóa sân thành công")
+				.build();
+	}
+	
+	@PatchMapping("{id}/{publicId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<PitchResponse> deleteImageFromPitch(@PathVariable int id, @PathVariable String publicId) throws Exception {
+		return ApiResponse.<PitchResponse>builder()
+				.message("Xóa ảnh thành công")
+				.result(pitchService.deleteImageFromPitch(id, publicId))
 				.build();
 	}
 	
@@ -55,9 +64,11 @@ public class PitchController {
 	}
 	
 	@GetMapping
-	ApiResponse<List<PitchResponse>> getPitches() {
+	ApiResponse<List<PitchResponse>> getPitches(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<PitchResponse>>builder()
-				.result(pitchService.getPitches())
+				.result(pitchService.getPitches(page, size))
 				.build();
 	}
 	

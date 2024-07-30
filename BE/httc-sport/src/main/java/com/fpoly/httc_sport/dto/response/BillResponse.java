@@ -13,22 +13,21 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RentInfoResponse {
+public class BillResponse {
 	int id;
 	int pitchId;
+	String userId;
 	String pitchName;
 	String email;
 	String phoneNumber;
 	String firstName;
 	String lastName;
+	LocalDate createdAt;
 	LocalDate rentedAt;
 	LocalTime startTime;
 	LocalTime endTime;
 	int total;
-	@Builder.Default
-	int deposit = 0;
-	String note;
 	int typePitch;
-	Boolean isDone;
-	Boolean paymentStatus;
+	boolean isRate;
+	String paymentMethod;
 }

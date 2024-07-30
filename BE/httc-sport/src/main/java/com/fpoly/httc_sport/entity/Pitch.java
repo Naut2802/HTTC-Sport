@@ -21,7 +21,7 @@ public class Pitch implements Serializable {
 	@Column(nullable = false)
 	String pitchName;
 	@Column(nullable = false)
-	Integer price;
+	int price;
 	@Builder.Default
 	Boolean isEnabled = true;
 	String description;
@@ -29,15 +29,15 @@ public class Pitch implements Serializable {
 	String type;
 	@Column(nullable = false)
 	int total;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	
+	@OneToOne(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	Address address;
 	
-	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	Set<Image> images;
 	
-	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	Set<Comment> comments;
+	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	Set<Review> reviews;
 
 	@OneToMany(mappedBy = "pitch")
 	Set<Bill> bills;

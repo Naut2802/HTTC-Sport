@@ -21,4 +21,8 @@ public class Address {
 	String ward;
 	String district;
 	String city;
+	
+	@OneToOne
+	@JoinColumn(name = "pitch_id")
+	Pitch pitch;
 }

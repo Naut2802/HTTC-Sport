@@ -21,8 +21,8 @@ public class PaymentMethod {
 	float priceRate;
 	
 	@OneToMany(mappedBy = "paymentMethod")
-	Set<RentInfo> rentInfoSet;
+	Set<RentInfo> rentInfos;
 	
 	@OneToMany(mappedBy = "paymentMethod")
-	Set<Bill> billSet;
+	Set<Bill> bills;
 }

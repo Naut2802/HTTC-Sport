@@ -4,14 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -38,13 +31,19 @@ public class Bill implements Serializable {
 	LocalTime startTime;
 	@Temporal(TemporalType.TIME)
 	LocalTime endTime;
-	Double total;
+	Integer total;
+	Integer typePitch;
 	@Builder.Default
 	Boolean isRate = false;
 	
-	@ManyToOne @JoinColumn(name = "pitch_id")
+	@OneToOne(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	Review review;
+	
+	@ManyToOne
+	@JoinColumn(name = "pitch_id")
 	Pitch pitch;
-	@ManyToOne @JoinColumn(name = "user_id")
+	@ManyToOne
+	@JoinColumn(name = "user_id")
 	User user;
 	
 	@ManyToOne

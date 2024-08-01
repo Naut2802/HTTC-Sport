@@ -1,7 +1,6 @@
 package com.fpoly.httc_sport.repository.spec;
 
 import com.fpoly.httc_sport.entity.Pitch;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 

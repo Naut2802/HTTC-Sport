@@ -1,6 +1,5 @@
 package com.fpoly.httc_sport.repository;
 
-import com.fpoly.httc_sport.repository.spec.PitchSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

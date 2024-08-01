@@ -14,7 +14,7 @@ import com.fpoly.httc_sport.mapper.PitchMapper;
 import com.fpoly.httc_sport.repository.AddressRepository;
 import com.fpoly.httc_sport.repository.ImageRepository;
 import com.fpoly.httc_sport.repository.PitchRepository;
-import com.fpoly.httc_sport.repository.spec.PitchSpecification;
+import com.fpoly.httc_sport.repository.specification.PitchSpecification;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -111,10 +111,8 @@ public class PitchService {
 		return pitchMapper.toPitchDetailsResponse(pitch);
 	}
 	
-	public List<PitchResponse> getPitches(String rates, String district,
-	                                      String city, String name,
-	                                      String price, String type,
-	                                      int page, int size) {
+	public List<PitchResponse> getPitches(String rates, String district, String city,
+	                                      String name, String price, String type, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		int rate1 = 0;
 		int rate2 = 0;
@@ -140,8 +138,44 @@ public class PitchService {
 			}
 		}
 		
-		Specification<Pitch> spec = Specification.where(PitchSpecification.hasEnabled())
+		Specification<Pitch> spec = PitchSpecification.hasEnabled()
 				.and(rate1 >= 0 && rate2 > rate1 ? PitchSpecification.hasRateIn(rate1, rate2) : null)
+				.and(district != null && city != null ? PitchSpecification.hasAddress(district, city) : null)
+				.and(price1 >= 0 && price2 > price1 ? PitchSpecification.hasPriceBetween(price1, price2) : null)
+				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null)
+				.and(type != null ? PitchSpecification.hasType(type) : null);
+		
+		return pitchRepository.findAll(spec, pageable).stream().map(pitchMapper::toPitchResponse).toList();
+	}
+	
+	public List<PitchResponse> getPitchesByAdmin(String rates, String district, String city,
+	                                             String name, String price, String type, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		int rate1 = 0;
+		int rate2 = 0;
+		int price1 = -1;
+		int price2 = -1;
+		
+		if (rates != null) {
+			try {
+				var r = Arrays.stream(rates.split("-")).map(Integer::parseInt).toList();
+				rate1 = r.getFirst();
+				rate2 = r.getLast();
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
+		}
+		if (price != null) {
+			try {
+				var p = Arrays.stream(price.split("-")).map(Integer::parseInt).toList();
+				price1 = p.getFirst();
+				price2 = p.getLast();
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
+		}
+		
+		Specification<Pitch> spec = (rate1 > 0 && rate2 > rate1 ? PitchSpecification.hasRateIn(rate1, rate2) : PitchSpecification.hasRateIn(0, 5))
 				.and(district != null && city != null ? PitchSpecification.hasAddress(district, city) : null)
 				.and(price1 >= 0 && price2 > price1 ? PitchSpecification.hasPriceBetween(price1, price2) : null)
 				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null)

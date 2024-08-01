@@ -78,6 +78,22 @@ public class PitchController {
 				.build();
 	}
 	
+	@GetMapping("admin")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<List<PitchResponse>> getPitchesByAdmin(
+			@RequestParam(value = "rates", required = false) String rates,
+			@RequestParam(value = "district", required = false) String district,
+			@RequestParam(value = "city", required = false) String city,
+			@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "price", required = false) String price,
+			@RequestParam(value = "type", required = false) String type,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "5") int size) {
+		return ApiResponse.<List<PitchResponse>>builder()
+				.result(pitchService.getPitchesByAdmin(rates, district, city, name, price, type, page, size))
+				.build();
+	}
+	
 //	@GetMapping("find/keywords")
 //	public String findKW(Model model, @RequestParam("keywords") Optional<String> keywords) {
 //		String keyword = keywords.orElse(request.getAttribute("keywords") + "");

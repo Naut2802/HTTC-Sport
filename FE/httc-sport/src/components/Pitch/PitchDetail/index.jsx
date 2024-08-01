@@ -9,7 +9,7 @@ import RssFeedIcon from '@mui/icons-material/RssFeed';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
 
-import { Box, Breadcrumbs, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Card, CardContent, CircularProgress, Grid, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -34,7 +34,6 @@ export default function PitchDetail() {
         const fetchData = async () => {
             try {
                 const res = await handleGetPitch(id);
-                console.log(res.data.result);
                 setPitch(res.data.result);
             } catch (error) {
                 console.error(error);
@@ -44,7 +43,21 @@ export default function PitchDetail() {
     }, [id]);
 
     if (!pitch) {
-        return <Typography sx={{textAlign : 'center', fontSize : 33, mt : 5}}>Loading...</Typography>;
+        return (
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '30px',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                }}
+            >
+                <CircularProgress></CircularProgress>
+                <Typography>Loading...</Typography>
+            </Box>
+        );
     }
 
     return (
@@ -78,14 +91,15 @@ export default function PitchDetail() {
                     <div className="row">
                         <div className="col-md-6">
                             <Typography sx={{ fontSize: 17 }} variant="subtitle2" color="text.secondary">
-                                <LocationOnIcon sx={{ color: 'red' }} /> 
+                                <LocationOnIcon sx={{ color: 'red' }} />
                                 {pitch.street} {pitch.ward} {pitch.district} {pitch.city}
                             </Typography>
                         </div>
                         <div className="col-md-6 text-end">
                             <Typography sx={{ fontSize: 17 }} variant="subtitle2" color="text.secondary">
                                 Đánh Giá: 4/5
-                                <StarRoundedIcon sx={{ mb: 1, color: '#FFC107' }} /> (1 Đánh giá)
+                                {/* {pitch.reviews.rate} */}
+                                <StarRoundedIcon sx={{ mb: 1, color: '#FFC107' }} />
                             </Typography>
                         </div>
                     </div>
@@ -125,7 +139,9 @@ export default function PitchDetail() {
                                                         </Typography>
                                                     </div>
                                                     <div className="col-6">
-                                                        <Typography className="fw-bolder text-end">{pitch.total} (Sân 5)</Typography>
+                                                        <Typography className="fw-bolder text-end">
+                                                            {pitch.total} (Sân 5)
+                                                        </Typography>
                                                     </div>
                                                 </div>
 
@@ -136,7 +152,9 @@ export default function PitchDetail() {
                                                         </Typography>
                                                     </div>
                                                     <div className="col-6">
-                                                        <Typography className="fw-bolder text-end">{formatCurrency(pitch.price)}</Typography>
+                                                        <Typography className="fw-bolder text-end">
+                                                            {formatCurrency(pitch.price)}
+                                                        </Typography>
                                                     </div>
                                                 </div>
 
@@ -151,7 +169,7 @@ export default function PitchDetail() {
                                                     </div>
                                                 </div>
 
-                                                <Card sx={{ mt: 6, backgroundColor: 'whitesmoke' }}>
+                                                <Card sx={{ mt: 3, backgroundColor: 'whitesmoke' }}>
                                                     <CardContent sx={{ p: 1 }}>
                                                         <Typography variant="subtitle2" color="text.dark">
                                                             <PlaylistAddCheckIcon sx={{ color: 'teal' }} />
@@ -198,14 +216,14 @@ export default function PitchDetail() {
                     </div>
                 </div>
                 <Grid sx={{ mt: 2 }} container spacing={2}>
-                    <Grid item xs={3}>
-                        <RentForm />
+                    <Grid item xs={4}>
+                        <RentForm id={pitch.id} />
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={8}>
                         {/* List Time Per Days */}
+                        <Comments />
                     </Grid>
                 </Grid>
-                <Comments />
             </Box>
         </Box>
     );

@@ -1,83 +1,180 @@
-import { Box, Breadcrumbs, Button, TextField, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import { toast } from 'react-toastify';
+import { handleCreatePaymentLink } from '~/apis';
 
 import logo from '~/components/Images/logo.png';
-export default function Payment() {
+
+function formatCurrency(amount) {
+    return amount.toLocaleString('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+}
+
+export default function Payment({ resData, resPayment, resDate }) {
+    const handlePayPercent = async () => {
+        const id = resPayment.id;
+        const deposit = 0.35;
+        const res = await handleCreatePaymentLink(id, deposit);
+        console.log(res.data.result.data);
+        if (res.data.result.data) {
+            window.location.href = res.data.result.data.checkoutUrl;
+        } else {
+            toast.warning(res.data.result.desc);
+        }
+    };
+
+    const handlePayAll = async () => {
+        const id = resPayment.id;
+        const deposit = 1;
+        const res = await handleCreatePaymentLink(id, deposit);
+        console.log(res.data.result.data);
+        if (res.data.result.data) {
+            window.location.href = res.data.result.data.checkoutUrl;
+        } else {
+            toast.warning(res.data.result.desc);
+        }
+    };
+
     return (
         <div className="my-3 container">
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center mb-4">
                 <img src={logo} alt="" style={{ width: 120 }} />
             </div>
-            <Typography className="fs-3 fw-bold mt-3 mb-2">Đặt Sân</Typography>
-            <Breadcrumbs aria-label="breadcrumb" className="fs-5 mb-2">
-                <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/trang-chu">
-                    Trang Chủ
+
+            <Box className="card" component="form" noValidate>
+                <Typography className="card-header text-center fs-3" variant="h6" component="div">
+                    Xác Nhận Thông Tin Đặt Sân
                 </Typography>
-                <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/san">
-                    Sân
-                </Typography>
-                <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/dat-san">
-                    Đặt Sân
-                </Typography>
-                <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/dat-san">
-                    Thanh Toán
-                </Typography>
-            </Breadcrumbs>
-            <hr />
-            <div className="row mt-5">
-                <div className="col-3"></div>
-                <div className="col-6">
-                    <Box className="card" component="form" noValidate>
-                        <Typography className="card-header text-center fs-3" variant="h6" component="div">
-                            Thanh Toán Sân
-                        </Typography>
-                        <Typography component="div" className="card-body ">
-                            <Box className="card" component="form" noValidate>
-                                <Typography component="div" className="card-body">
-                                    <div className="row">
-                                        <div className="col-6">
-                                            <TextField
-                                                label="Tổng Tiền"
-                                                variant="outlined"
-                                                id="tongTien"
-                                                defaultValue=""
-                                                className="my-2"
-                                            />
-                                        </div>
-                                        <div className="col-6">
-                                            <TextField
-                                                label="Tiền Cọc"
-                                                variant="outlined"
-                                                id="tienCoc"
-                                                defaultValue=""
-                                                className="my-2 w-100"
-                                            />
-                                        </div>
-                                    </div>
-                                    <Typography className="text-center text-danger" variant="h6" component="div">
-                                        * LƯU Ý: Nội dung chuyển khoản
+                <Typography component="div" className="card-body ">
+                    <Box className="card" noValidate>
+                        <Typography component="div" className="card-body">
+                            <Grid container spacing={1}>
+                                <Grid item xs={4}>
+                                    <Typography component={'span'}>
+                                        <TextField label="Họ" variant="outlined" fullWidth value={resData.lastName} />
                                     </Typography>
-                                    <Typography className="text-center text-dark" variant="h6" component="div">
-                                        Điền Họ Tên và Số Điện Thoại ở phần nội dung chuyển khoản
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography component={'span'}>
+                                        <TextField label="Tên" variant="outlined" fullWidth value={resData.firstName} />
                                     </Typography>
-                                </Typography>
-                            </Box>
-                        </Typography>
-                        <Typography component="div" className="d-flex w-100 justify-content-between card-footer">
-                            <Button variant="outlined" className="text-capitalize">
-                                Thanh Toán Toàn Bộ
-                            </Button>
-                            <Button variant="outlined" className="text-capitalize">
-                                Thanh Toán Qua Ví
-                            </Button>
-                            <Button variant="outlined" className="text-capitalize">
-                                Thanh Toán Tiền Cọc
-                            </Button>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography component={'span'}>
+                                        <TextField
+                                            label="Loại Sân"
+                                            variant="outlined"
+                                            fullWidth
+                                            value={resData.typePitch === 5 ? 'Sân 5' : 'Sân 7'}
+                                        />
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography component={'span'}>
+                                        <TextField
+                                            label="Số điện thoại"
+                                            variant="outlined"
+                                            fullWidth
+                                            value={resData.phoneNumber}
+                                        />
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography component={'span'}>
+                                        <TextField
+                                            label="Email"
+                                            variant="outlined"
+                                            fullWidth
+                                            type="email"
+                                            value={resData.email}
+                                        />
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography component={'span'}>
+                                        <DatePicker
+                                            disableOpenPicker
+                                            format="DD/MM/YYYY"
+                                            sx={{ width: '100%' }}
+                                            label="Ngày đá"
+                                            value={resDate}
+                                        />
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography component={'span'}>
+                                        <TextField label="Giờ bắt đầu" variant="outlined" fullWidth value={resData.startTime} />
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography component={'span'}>
+                                        <TextField
+                                            label="Tổng thời gian"
+                                            variant="outlined"
+                                            fullWidth
+                                            value={
+                                                resData.rentTime === 60 ? '1 Giờ' : resData.rentTime === 90 ? '1.5 Giờ' : '2 Giờ'
+                                            }
+                                        />
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography component={'span'}>
+                                        <TextField
+                                            label="Ghi chú"
+                                            variant="outlined"
+                                            fullWidth
+                                            value={resData.note === '' ? '(không có)' : resData.note}
+                                        />
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography component={'span'}>
+                                        <TextField
+                                            label="Tổng tiền"
+                                            variant="outlined"
+                                            fullWidth
+                                            value={formatCurrency(resPayment.total)}
+                                        />
+                                    </Typography>
+                                </Grid>
+                            </Grid>
                         </Typography>
                     </Box>
-                </div>
-                <div className="col-3"></div>
-            </div>
+                </Typography>
+                <Typography component="div" className="text-end card-footer">
+                    <Button
+                        sx={{
+                            '&:hover': {
+                                color: 'white',
+                                backgroundColor: 'darkseagreen',
+                            },
+                        }}
+                        variant="outlined"
+                        color="success"
+                        className="text-capitalize"
+                        onClick={handlePayPercent}
+                    >
+                        Thanh Toán 35%
+                    </Button>
+                    <Button
+                        sx={{
+                            '&:hover': {
+                                color: 'white',
+                                backgroundColor: 'darkseagreen',
+                            },
+                        }}
+                        variant="outlined"
+                        color="success"
+                        className="text-capitalize ms-2"
+                        onClick={handlePayAll}
+                    >
+                        Thanh Toán Toàn Bộ
+                    </Button>
+                </Typography>
+            </Box>
         </div>
     );
 }

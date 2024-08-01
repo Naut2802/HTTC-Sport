@@ -1,4 +1,3 @@
-import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import StorefrontSharpIcon from '@mui/icons-material/StorefrontSharp';
 import WifiSharpIcon from '@mui/icons-material/WifiSharp';
 import { Box, Breadcrumbs, Card, CardContent, CardMedia, Typography } from '@mui/material';
@@ -24,8 +23,7 @@ export default function PitchList() {
         const fetchData = async () => {
             try {
                 const res = await handleGetPitches();
-                console.log(res.data.result);
-                setPitches(res.data.result)
+                setPitches(res.data.result);
             } catch (error) {
                 console.error(error);
             }
@@ -48,12 +46,12 @@ export default function PitchList() {
                 </Typography>
             </Breadcrumbs>
             <div className="row">
-                <div className="col-2 mt-2">
+                <div className="col-3 mt-2">
                     <SortRating />
                     <SortGauge />
                 </div>
-                <div className="col-10 mt-2">
-                {pitches.map((pitch) => (
+                <div className="col-9 mt-2">
+                    {pitches.map((pitch) => (
                         <Card key={pitch.id} sx={{ display: 'flex', maxWidth: 'auto', mb: 2 }}>
                             <Typography
                                 className="text-decoration-none text-dark fs-3 fw-bold"
@@ -64,9 +62,9 @@ export default function PitchList() {
                             >
                                 <CardMedia
                                     component="img"
-                                    sx={{ maxWidth: 300 }}
-                                    image={pitch.images[0].url } // Nếu API trả về đường dẫn ảnh
-                                    alt={pitch.name}
+                                    sx={{ width: 260 }}
+                                    image={pitch.images[0].url} // Nếu API trả về đường dẫn ảnh
+                                    alt={pitch.pitchName}
                                     className="img-fluid"
                                 />
                             </Typography>
@@ -87,12 +85,6 @@ export default function PitchList() {
                                     </Typography>
 
                                     <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
-                                        <strong>Đánh Giá: </strong>
-                                        <span className="text-dark">{pitch.rating}</span>
-                                        <StarRoundedIcon sx={{ mb: 1, color: '#FFC107' }} />
-                                    </Typography>
-
-                                    <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
                                         <strong>Giá Sân: </strong>
                                         <span className="text-danger"> {formatCurrency(pitch.price)} </span>
                                     </Typography>
@@ -100,7 +92,7 @@ export default function PitchList() {
                                     <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
                                         <strong>Địa Chỉ: </strong>
                                         <span className="text-dark">
-                                            {pitch.street + (' ') +  pitch.ward + (' ') +  pitch.district + (' ') +  pitch.city}
+                                            {pitch.street + ' ' + pitch.ward + ' ' + pitch.district + ' ' + pitch.city}
                                         </span>
                                     </Typography>
 

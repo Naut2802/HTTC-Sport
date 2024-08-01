@@ -6,7 +6,7 @@ function Popup(props) {
 
     return (
         <>
-            <Dialog open={openPopup} onClose={() => setOpenPopup(false)} maxWidth="lg">
+            <Dialog open={openPopup} onClose={() => setOpenPopup(false)} maxWidth="md">
                 <DialogContent dividers>{children}</DialogContent>
             </Dialog>
         </>

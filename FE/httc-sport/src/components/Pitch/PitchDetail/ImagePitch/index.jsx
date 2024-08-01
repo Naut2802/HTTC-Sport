@@ -11,12 +11,12 @@ export default function ImagePitch({ images }) {
                         </Box>
                     </Grid>
                     <Grid item xs={5}>
-                        <Box sx={{ height: 160 }}>
+                        <Box sx={{ height: 170 }}>
                             <img src={images[1].url} alt="" style={{ width: '100%', maxHeight: '100%' }} />
                         </Box>
                     </Grid>
                     <Grid item xs={7}>
-                        <Box sx={{ height: 160 }}>
+                        <Box sx={{ height: 170 }}>
                             <img src={images[2].url} alt="" style={{ width: '100%', maxHeight: '100%' }} />
                         </Box>
                     </Grid>

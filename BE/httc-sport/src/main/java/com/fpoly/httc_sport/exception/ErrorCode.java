@@ -54,6 +54,7 @@ public enum ErrorCode {
 	RENT_INFO_EXISTED(1038, "Sân đã được đặt", HttpStatus.BAD_REQUEST),
 	RENT_INFO_NOT_EXISTED(1039, "Không tìm thấy thông tin đặt sân", HttpStatus.NOT_FOUND),
 	PAYMENT_METHOD_NOT_EXISTED(1040, "Phương thức thanh toán không hợp lệ", HttpStatus.NOT_FOUND),
+	PAYMENT_NOT_EXISTED(1040, "Thông tin thanh toán không hợp lệ", HttpStatus.NOT_FOUND),
 	UNPAID(1041, "Thông tin đặt sân này chưa được thanh toán tiền cọc", HttpStatus.NOT_ACCEPTABLE),
 	BILL_NOT_EXISTED(1042, "Không tìm thấy hóa đơn", HttpStatus.NOT_FOUND),
 	BILL_EXISTED(1043, "Hóa đơn đã tồn tại", HttpStatus.BAD_REQUEST),

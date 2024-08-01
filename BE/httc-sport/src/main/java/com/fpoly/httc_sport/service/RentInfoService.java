@@ -173,6 +173,9 @@ public class RentInfoService {
 	public RentResponse confirmRent(String code, String id, String status) {
 		var paymentInfo = paymentService.getPaymentInfo(id);
 		
+		if (paymentInfo.getData() == null)
+			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);
+			
 		var rentInfo = rentInfoRepository.findById(paymentInfo.getData().getOrderCode()).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);

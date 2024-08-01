@@ -26,6 +26,7 @@ public class PitchController {
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> createPitch(@Valid @ModelAttribute PitchRequest request) throws IOException {
 		return ApiResponse.<PitchResponse>builder()
+				.message("Thêm sân thành công")
 				.result(pitchService.createPitch(request))
 				.build();
 	}
@@ -34,6 +35,7 @@ public class PitchController {
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws Exception {
 		return ApiResponse.<PitchResponse>builder()
+				.message("Chỉnh sửa sân thành công")
 				.result(pitchService.updatePitch(id, request))
 				.build();
 	}

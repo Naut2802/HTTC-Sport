@@ -108,7 +108,7 @@ public class AuthenticationService {
 		var role = roleRepository.findByRoleName(RoleEnum.USER).orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 		
-		user.setRoles(Set.of(role));
+		user.setRoles(List.of(role));
 		userRepository.save(user);
 		String url = generateUrl(httpRequest);
 		publisher.publishEvent(new RegistrationCompleteEvent(user, url));
@@ -207,7 +207,7 @@ public class AuthenticationService {
 					.firstName(userInfo.getName())
 					.lastName(userInfo.getFamilyName())
 					.isEnabled(true)
-					.roles(new HashSet<>(List.of(role)))
+					.roles(List.of(role))
 					.build());
 			publisher.publishEvent(new OutboundCompleteEvent(user, password));
 		} else

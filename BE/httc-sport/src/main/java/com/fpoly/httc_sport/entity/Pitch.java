@@ -1,6 +1,7 @@
 package com.fpoly.httc_sport.entity;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -36,11 +37,11 @@ public class Pitch implements Serializable {
 	Address address;
 	
 	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-	Set<Image> images;
+	List<Image> images;
 	
 	@OneToMany(mappedBy = "pitch", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-	Set<Review> reviews;
+	List<Review> reviews;
 
 	@OneToMany(mappedBy = "pitch")
-	Set<Bill> bills;
+	List<Bill> bills;
 }

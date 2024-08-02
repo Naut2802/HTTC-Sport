@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import com.fpoly.httc_sport.utils.Enum.PaymentMethodEnum;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,8 +24,8 @@ public class PaymentMethod {
 	float priceRate;
 	
 	@OneToMany(mappedBy = "paymentMethod")
-	Set<RentInfo> rentInfos;
+	List<RentInfo> rentInfos;
 	
 	@OneToMany(mappedBy = "paymentMethod")
-	Set<Bill> bills;
+	List<Bill> bills;
 }

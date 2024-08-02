@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 import com.fpoly.httc_sport.dto.request.PitchRequest;
+import com.fpoly.httc_sport.dto.response.ImageResponse;
 import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
 import com.fpoly.httc_sport.dto.response.PitchResponse;
 import com.fpoly.httc_sport.entity.Image;
@@ -50,7 +51,7 @@ public class PitchService {
 		address.setPitch(pitch);
 		
 		if (request.getImages() != null)
-			pitch.setImages(new HashSet<>(imageService.saveWithPitch(request.getImages(), pitch)));
+			pitch.setImages(imageService.saveWithPitch(request.getImages(), pitch));
 		
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}
@@ -111,11 +112,6 @@ public class PitchService {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
-		if (pitch.getImages() != null || !pitch.getImages().isEmpty()) {
-			Set<Image> images = new HashSet<>(pitch.getImages()
-					.stream().sorted(Comparator.comparingInt(o -> Math.toIntExact(o.getId()))).toList());
-			pitch.setImages(images);
-		}
 		return pitchMapper.toPitchDetailsResponse(pitch);
 	}
 	
@@ -154,16 +150,17 @@ public class PitchService {
 				.and(type != null ? PitchSpecification.hasType(type) : null);
 		
 		Page<Pitch> pitches = pitchRepository.findAll(spec, pageable);
-		Set<Optional<Image>> images = new HashSet<>(pitches.stream().map(pitch -> pitch.getImages()
-				.stream().min(Comparator.comparingInt(value -> Math.toIntExact(value.getId())))).toList());
+		List<Optional<Image>> images = new ArrayList<>(pitches
+				.stream().map(pitch -> pitch.getImages()
+						.stream().findFirst()).toList());
 		
 		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
 		
 		int index = 0;
 		for(Optional<Image> image: images) {
 			if (image.isPresent())
-				responses.get(index).setImages(new HashSet<>(List.of(imageMapper.toImageResponse(image.get()))));
-				
+				responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+			
 			index++;
 		}
 		
@@ -204,15 +201,16 @@ public class PitchService {
 				.and(type != null ? PitchSpecification.hasType(type) : null);
 		
 		Page<Pitch> pitches = pitchRepository.findAll(spec, pageable);
-		Set<Optional<Image>> images = new HashSet<>(pitches.stream().map(pitch -> pitch.getImages()
-				.stream().min(Comparator.comparingInt(value -> Math.toIntExact(value.getId())))).toList());
+		List<Optional<Image>> images = new ArrayList<>(pitches
+				.stream().map(pitch -> pitch.getImages()
+						.stream().findFirst()).toList());
 		
 		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
 		
 		int index = 0;
 		for(Optional<Image> image: images) {
 			if (image.isPresent())
-				responses.get(index).setImages(new HashSet<>(List.of(imageMapper.toImageResponse(image.get()))));
+				responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
 			
 			index++;
 		}

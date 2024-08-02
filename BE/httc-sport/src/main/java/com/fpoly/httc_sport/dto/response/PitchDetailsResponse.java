@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
+import java.util.List;
 
 @Builder
 @Getter
@@ -25,6 +25,6 @@ public class PitchDetailsResponse {
 	String type;
 	int total;
 	int remaining;
-	Set<ImageResponse> images;
-	Set<CommentResponse> reviews;
+	List<ImageResponse> images;
+	List<CommentResponse> reviews;
 }

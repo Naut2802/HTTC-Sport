@@ -167,7 +167,7 @@ public class UserService {
 		
 		List<Role> roles = roleRepository.findByRoleNameIn(request.getRoles().stream().map(RoleEnum::valueOf).toList());
 		
-		user.setRoles(new HashSet<>(roles));
+		user.setRoles(roles);
 		return userMapper.toUserResponse(userRepository.save(user));
 	}
 	

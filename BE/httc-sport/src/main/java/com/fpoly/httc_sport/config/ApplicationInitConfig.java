@@ -56,8 +56,7 @@ public class ApplicationInitConfig {
 						.description("Admin role")
 						.build());
 				
-				var roles = new HashSet<Role>();
-				roles.add(adminRole);
+				var roles = List.of(adminRole);
 				
 				User user = User.builder()
 						.username(ADMIN_USER_NAME)

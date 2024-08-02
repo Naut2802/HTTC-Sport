@@ -1,10 +1,9 @@
 package com.fpoly.httc_sport.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import com.fpoly.httc_sport.utils.Enum.PaymentMethodEnum;
 
 import java.util.Set;
 
@@ -17,7 +16,10 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentMethod {
 	@Id
-	String method;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	int id;
+	@Enumerated(EnumType.STRING)
+	PaymentMethodEnum method;
 	float priceRate;
 	
 	@OneToMany(mappedBy = "paymentMethod")

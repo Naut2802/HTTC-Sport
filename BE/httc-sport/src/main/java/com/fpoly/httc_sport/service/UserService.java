@@ -6,7 +6,6 @@ import com.fpoly.httc_sport.dto.response.UserResponse;
 import com.fpoly.httc_sport.entity.ForgotPasswordToken;
 import com.fpoly.httc_sport.entity.Role;
 import com.fpoly.httc_sport.entity.User;
-import com.fpoly.httc_sport.entity.VerificationToken;
 import com.fpoly.httc_sport.event.ForgotPasswordEvent;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
@@ -14,7 +13,7 @@ import com.fpoly.httc_sport.mapper.UserMapper;
 import com.fpoly.httc_sport.repository.ForgotPasswordTokenRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
-import com.fpoly.httc_sport.repository.VerificationTokenRepository;
+import com.fpoly.httc_sport.utils.Enum.RoleEnum;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -25,7 +24,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -167,7 +165,7 @@ public class UserService {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
-		List<Role> roles = roleRepository.findAllById(request.getRoles());
+		List<Role> roles = roleRepository.findByRoleNameIn(request.getRoles().stream().map(RoleEnum::valueOf).toList());
 		
 		user.setRoles(new HashSet<>(roles));
 		return userMapper.toUserResponse(userRepository.save(user));

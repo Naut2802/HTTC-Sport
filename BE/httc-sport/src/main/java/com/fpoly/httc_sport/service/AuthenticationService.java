@@ -21,6 +21,8 @@ import com.fpoly.httc_sport.repository.httpclient.FacebookOutboundUserInfoClient
 import com.fpoly.httc_sport.repository.httpclient.GoogleOutboundExchangeTokenClient;
 import com.fpoly.httc_sport.repository.httpclient.GoogleOutboundUserInfoClient;
 import com.fpoly.httc_sport.security.jwt.KeyUtils;
+import com.fpoly.httc_sport.utils.Enum;
+import com.fpoly.httc_sport.utils.Enum.RoleEnum;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -103,10 +105,10 @@ public class AuthenticationService {
 		user.setPassword(encodePassword(user.getUsername(), user.getPassword()));
 		user.setIsEnabled(false);
 		
-		var role = roleRepository.findById("USER").orElseThrow(() ->
+		var role = roleRepository.findByRoleName(RoleEnum.USER).orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 		
-		user.setRoles(new HashSet<>(List.of(role)));
+		user.setRoles(Set.of(role));
 		userRepository.save(user);
 		String url = generateUrl(httpRequest);
 		publisher.publishEvent(new RegistrationCompleteEvent(user, url));
@@ -190,7 +192,7 @@ public class AuthenticationService {
 		
 		var userInfo = googleOutboundUserInfoClient.getUserInfo("json", tokenExchanged.getAccessToken());
 		
-		var role = roleRepository.findById("USER").orElseThrow(() ->
+		var role = roleRepository.findByRoleName(RoleEnum.USER).orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
 		
 		String password = generateRandomPassword();

@@ -24,28 +24,6 @@ import java.util.List;
 public class RoleController {
 	RoleService roleService;
 	
-	@PostMapping
-	public ApiResponse<RoleResponse> createRole(@Valid @RequestBody RoleRequest request) {
-		return ApiResponse.<RoleResponse>builder()
-				.result(roleService.createRole(request))
-				.build();
-	}
-	
-	@PutMapping("/{id}")
-	public ApiResponse<RoleResponse> updateRole(@PathVariable String id, @RequestBody RoleUpdateRequest request) {
-		return ApiResponse.<RoleResponse>builder()
-				.result(roleService.updateRole(id, request))
-				.build();
-	}
-	
-	@DeleteMapping("/{id}")
-	public ApiResponse<String> deleteRole(@PathVariable String id) {
-		roleService.deleteRole(id);
-		return ApiResponse.<String>builder()
-				.result("Role has been deleted.")
-				.build();
-	}
-	
 	@GetMapping
 	public ApiResponse<List<RoleResponse>> getRoles() {
 		return ApiResponse.<List<RoleResponse>>builder()

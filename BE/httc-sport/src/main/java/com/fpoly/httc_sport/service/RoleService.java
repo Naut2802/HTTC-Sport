@@ -7,11 +7,12 @@ import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.mapper.RoleMapper;
 import com.fpoly.httc_sport.repository.RoleRepository;
+import com.fpoly.httc_sport.utils.Enum;
+import com.fpoly.httc_sport.utils.Enum.RoleEnum;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -24,39 +25,7 @@ import java.util.Set;
 @Slf4j
 public class RoleService {
 	RoleMapper roleMapper;
-	//	PermissionRepository permissionRepository;
 	RoleRepository roleRepository;
-	
-	public RoleResponse createRole(RoleRequest request) {
-		if (roleRepository.existsById(request.getRoleName()))
-			throw new AppException(ErrorCode.EXISTED);
-		
-		var role = roleMapper.toRole(request);
-
-//		var permissions = permissionRepository.findAllByPermissionNameIn(request.getPermissions());
-//		role.setPermissions(new HashSet<>(permissions));
-		
-		roleRepository.save(role);
-		return roleMapper.toRoleResponse(role);
-	}
-	
-	public RoleResponse updateRole(String id, RoleUpdateRequest request) {
-		var role = roleRepository.findById(id).orElseThrow(() ->
-				new AppException(ErrorCode.ROLE_NOT_EXISTED));
-
-//		List<Permission> permissions = permissionRepository.findAllByPermissionNameIn(request.getPermissions());
-//		role.setPermissions(new HashSet<>(permissions));
-		
-		roleMapper.updateRole(role, request);
-		return roleMapper.toRoleResponse(roleRepository.save(role));
-	}
-	
-	public void deleteRole(String id) {
-		if (!roleRepository.existsById(id))
-			throw new AppException(ErrorCode.ROLE_NOT_EXISTED);
-		
-		roleRepository.deleteById(id);
-	}
 	
 	public List<RoleResponse> getRoles() {
 		return roleRepository.findAll().stream().map(roleMapper::toRoleResponse).toList();

@@ -67,12 +67,12 @@ public class PitchController {
 	
 	@GetMapping
 	ApiResponse<List<PitchResponse>> getPitches(
-			@RequestParam(value = "rates", required = false) String rates,
-			@RequestParam(value = "district", required = false) String district,
-			@RequestParam(value = "city", required = false) String city,
-			@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "price", required = false) String price,
-			@RequestParam(value = "type", required = false) String type,
+			@RequestParam(required = false) String rates,
+			@RequestParam(required = false) String district,
+			@RequestParam(required = false) String city,
+			@RequestParam(required = false) String name,
+			@RequestParam(required = false) String price,
+			@RequestParam(required = false) String type,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<PitchResponse>>builder()
@@ -83,12 +83,12 @@ public class PitchController {
 	@GetMapping("admin")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<PitchResponse>> getPitchesByAdmin(
-			@RequestParam(value = "rates", required = false) String rates,
-			@RequestParam(value = "district", required = false) String district,
-			@RequestParam(value = "city", required = false) String city,
-			@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "price", required = false) String price,
-			@RequestParam(value = "type", required = false) String type,
+			@RequestParam(required = false) String rates,
+			@RequestParam(required = false) String district,
+			@RequestParam(required = false) String city,
+			@RequestParam(required = false) String name,
+			@RequestParam(required = false) String price,
+			@RequestParam(required = false) String type,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<PitchResponse>>builder()

@@ -6,6 +6,8 @@ import com.fpoly.httc_sport.entity.User;
 import com.fpoly.httc_sport.repository.PaymentMethodRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
+import com.fpoly.httc_sport.utils.Enum;
+import com.fpoly.httc_sport.utils.Enum.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,7 +33,7 @@ public class ApplicationInitConfig {
 	@NonFinal
 	static final String ADMIN_PASSWORD = "admin";
 	@NonFinal
-	static final Map<String, Float> paymentMethodMap = new HashMap<>();
+	static final Map<PaymentMethodEnum, Float> paymentMethodMap = new HashMap<>();
 	
 	@Bean
 	@ConditionalOnProperty(
@@ -45,12 +47,12 @@ public class ApplicationInitConfig {
 		return args -> {
 			if (!userRepository.existsByUsername(ADMIN_USER_NAME)) {
 				roleRepository.save(Role.builder()
-						.roleName("USER")
+						.roleName(RoleEnum.USER)
 						.description("User role")
 						.build());
 				
 				Role adminRole = roleRepository.save(Role.builder()
-						.roleName("ADMIN")
+						.roleName(RoleEnum.ADMIN)
 						.description("Admin role")
 						.build());
 				
@@ -69,17 +71,16 @@ public class ApplicationInitConfig {
 				log.warn("Admin user has been created with default information: \"admin\". Please change it!");
 			}
 			
-			paymentMethodMap.put("QR", 1.05f);
-			paymentMethodMap.put("Wallet", 1f);
+			paymentMethodMap.put(PaymentMethodEnum.QR, 1.05f);
+			paymentMethodMap.put(PaymentMethodEnum.WALLET, 1f);
 			
 			paymentMethodMap.forEach((key, value) -> {
-				if (!paymentMethodRepository.existsById(key))
+				if (!paymentMethodRepository.existsByMethod(key))
 					paymentMethodRepository.save(PaymentMethod.builder()
 									.method(key)
 									.priceRate(value)
 							.build());
 			});
-			
 			
 			log.info("Application initialization completed ...........");
 		};

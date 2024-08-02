@@ -1,7 +1,6 @@
 package com.fpoly.httc_sport.entity;
 
-import java.util.List;
-
+import com.fpoly.httc_sport.utils.Enum.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,6 +14,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Role {
 	@Id
-	String roleName;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	int id;
+	@Enumerated(EnumType.STRING)
+	RoleEnum roleName;
 	String description;
 }

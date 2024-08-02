@@ -10,9 +10,5 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
-	Role toRole(RoleRequest request);
-	
 	RoleResponse toRoleResponse(Role role);
-	
-	void updateRole(@MappingTarget Role role, RoleUpdateRequest request);
 }

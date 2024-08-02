@@ -127,39 +127,4 @@ public class UserController {
 				.result(userService.getUsers(page, size))
 				.build();
 	}
-	
-//	@GetMapping("bill")
-//	public String bill(Model model) {
-//		User user = (User) session.getAttribute("user");
-//		List<HoaDon> hoadon = userService.findbyId(user.getUsername());
-//		model.addAttribute("bill",hoadon);
-//		System.out.println(hoadon.size());
-//		session.setAttribute("rq", "user/bill.html");
-//		return "index";
-//	}
-//
-//	@GetMapping("bill/rate")
-//	public String rate(Model model, @RequestParam("maHd") Integer maHd, @RequestParam("rate") Integer rate) {
-//		User user = (User) session.getAttribute("user");
-//		HoaDon hoadon = hoaDonService.findById(maHd);
-//		San san = hoadon.getSan();
-//		String nhanXet = request.getParameter("nhanXet"+hoadon.getMaHd());
-//		DanhGia danhGia = new DanhGia(null, rate, nhanXet, san, user);
-//		hoadon.setIsRate(true);
-//		hoaDonService.save(hoadon);
-//		danhGiaService.save(danhGia);
-//
-//		toastUtil.setAlertMsg(true, "danhGiaSuccess", "Gửi đánh giá thành công");
-//		return "redirect:/user/bill";
-//	}
-//
-//	@GetMapping("ttDatSanUser")
-//	public String ttDatSanUser() {
-//		User user = (User) session.getAttribute("user");
-//		List<ThongTinDatSan> ttDatSan = userService.findByUser(user.getUsername());
-//		System.out.println(ttDatSan.size());
-//		session.setAttribute("ttDatSan", ttDatSan);
-//		session.setAttribute("rq", "user/ttDatSanUser.html");
-//		return "index";
-//	}
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.fpoly.httc_sport.utils.Enum.BillStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -35,6 +36,7 @@ public class Bill implements Serializable {
 	Integer typePitch;
 	@Builder.Default
 	Boolean isRate = false;
+	String billStatus;
 	
 	@OneToOne(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	Review review;

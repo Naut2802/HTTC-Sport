@@ -1,5 +1,6 @@
 package com.fpoly.httc_sport.entity;
 
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -32,14 +33,14 @@ public class User {
 	Vip vip;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-	Set<RentInfo> rentInfos;
+	List<RentInfo> rentInfos;
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-	Set<Review> reviews;
+	List<Review> reviews;
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-	Set<Bill> bills;
+	List<Bill> bills;
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	Set<RefreshTokenWhiteList> tokens;
+	List<RefreshTokenWhiteList> tokens;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	Set<Role> roles;
+	List<Role> roles;
 }

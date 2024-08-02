@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
+import com.fpoly.httc_sport.utils.Enum.BillStatusEnum;
+import com.fpoly.httc_sport.utils.Enum.PaymentMethodEnum;
 import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
@@ -49,7 +49,7 @@ public class RentInfoService {
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED)
 		);
 		
-		var paymentMethod = paymentMethodRepository.findById(request.getPaymentMethod()).orElseThrow(
+		var paymentMethod = paymentMethodRepository.findByMethod(PaymentMethodEnum.valueOf(request.getPaymentMethod())).orElseThrow(
 				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
 		);
 		
@@ -173,6 +173,9 @@ public class RentInfoService {
 	public RentResponse confirmRent(String code, String id, String status) {
 		var paymentInfo = paymentService.getPaymentInfo(id);
 		
+		if (paymentInfo.getData() == null)
+			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);
+			
 		var rentInfo = rentInfoRepository.findById(paymentInfo.getData().getOrderCode()).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
@@ -363,6 +366,7 @@ public class RentInfoService {
 				.startTime(rentInfo.getStartTime())
 				.endTime(rentInfo.getEndTime())
 				.total(rentInfo.getTotal())
+				.billStatus(BillStatusEnum.DONE.getValue())
 				.typePitch(rentInfo.getTypePitch())
 				.pitch(rentInfo.getPitch())
 				.user(rentInfo.getUser())

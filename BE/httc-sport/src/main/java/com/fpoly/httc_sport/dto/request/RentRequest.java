@@ -40,5 +40,7 @@ public class RentRequest {
 	@NotNull(message = "RENT_INFO_TYPE_PITCH_NULL")
 	int typePitch;
 	String note;
+	@NotBlank(message = "RENT_INFO_EMAIL_NULL")
+	@NotNull(message = "RENT_INFO_PAYMENT_METHOD_NULL")
 	String paymentMethod;
 }

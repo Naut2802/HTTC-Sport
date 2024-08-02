@@ -1,7 +1,12 @@
 package com.fpoly.httc_sport.repository;
 
 import com.fpoly.httc_sport.entity.PaymentMethod;
+import com.fpoly.httc_sport.utils.Enum.PaymentMethodEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, String> {
+import java.util.Optional;
+
+public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Integer> {
+	Optional<PaymentMethod> findByMethod(PaymentMethodEnum method);
+	boolean existsByMethod(PaymentMethodEnum method);
 }

@@ -10,6 +10,7 @@ import com.fpoly.httc_sport.entity.Image;
 import com.fpoly.httc_sport.entity.Pitch;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
+import com.fpoly.httc_sport.mapper.ImageMapper;
 import com.fpoly.httc_sport.mapper.PitchMapper;
 import com.fpoly.httc_sport.repository.AddressRepository;
 import com.fpoly.httc_sport.repository.ImageRepository;
@@ -19,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -35,6 +37,7 @@ public class PitchService {
 	PitchRepository pitchRepository;
 	AddressRepository addressRepository;
 	PitchMapper pitchMapper;
+	ImageMapper imageMapper;
 	ImageService imageService;
 	
 	public PitchResponse createPitch(PitchRequest request) throws IOException {
@@ -108,6 +111,11 @@ public class PitchService {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
+		if (pitch.getImages() != null || !pitch.getImages().isEmpty()) {
+			Set<Image> images = new HashSet<>(pitch.getImages()
+					.stream().sorted(Comparator.comparingInt(o -> Math.toIntExact(o.getId()))).toList());
+			pitch.setImages(images);
+		}
 		return pitchMapper.toPitchDetailsResponse(pitch);
 	}
 	
@@ -145,7 +153,21 @@ public class PitchService {
 				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null)
 				.and(type != null ? PitchSpecification.hasType(type) : null);
 		
-		return pitchRepository.findAll(spec, pageable).stream().map(pitchMapper::toPitchResponse).toList();
+		Page<Pitch> pitches = pitchRepository.findAll(spec, pageable);
+		Set<Optional<Image>> images = new HashSet<>(pitches.stream().map(pitch -> pitch.getImages()
+				.stream().min(Comparator.comparingInt(value -> Math.toIntExact(value.getId())))).toList());
+		
+		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
+		
+		int index = 0;
+		for(Optional<Image> image: images) {
+			if (image.isPresent())
+				responses.get(index).setImages(new HashSet<>(List.of(imageMapper.toImageResponse(image.get()))));
+				
+			index++;
+		}
+		
+		return responses;
 	}
 	
 	public List<PitchResponse> getPitchesByAdmin(String rates, String district, String city,
@@ -181,6 +203,20 @@ public class PitchService {
 				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null)
 				.and(type != null ? PitchSpecification.hasType(type) : null);
 		
-		return pitchRepository.findAll(spec, pageable).stream().map(pitchMapper::toPitchResponse).toList();
+		Page<Pitch> pitches = pitchRepository.findAll(spec, pageable);
+		Set<Optional<Image>> images = new HashSet<>(pitches.stream().map(pitch -> pitch.getImages()
+				.stream().min(Comparator.comparingInt(value -> Math.toIntExact(value.getId())))).toList());
+		
+		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
+		
+		int index = 0;
+		for(Optional<Image> image: images) {
+			if (image.isPresent())
+				responses.get(index).setImages(new HashSet<>(List.of(imageMapper.toImageResponse(image.get()))));
+			
+			index++;
+		}
+		
+		return responses;
 	}
 }

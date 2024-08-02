@@ -3,8 +3,8 @@ import { Box, Card, CardContent, TextField, Typography } from '@mui/material';
 
 export default function Comments() {
     return (
-        <Box className="my-3">
-            <Card sx={{ width: '70%' }}>
+        <Box>
+            <Card sx={{ width: '100%' }}>
                 <CardContent sx={{ px: 5 }}>
                     <Typography variant="h6" className="my-2 text-center">
                         Đánh Giá

@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { handleLogInAPI } from '~/apis';
-// import fb from '~/components/Images/facebook-logo.png';
 import gg from '~/components/Images/google-logo.jpg';
 import logo from '~/components/Images/logo.png';
 import { OAuthConfigGoogle } from '~/utils/constants';
@@ -20,6 +19,7 @@ export default function Login() {
         const res = await handleLogInAPI(data);
         localStorage.setItem('accessToken', res.data.result.accessToken);
         localStorage.setItem('userId', res.data.result.userId);
+        console.log(res.data);
         const checkRole = res.data.result.roles[0].roleName;
         localStorage.setItem('role', checkRole);
         if (checkRole === 'ADMIN') {
@@ -44,20 +44,6 @@ export default function Login() {
 
         window.location.href = targetUrl;
     };
-
-    // const handleLoginWithFB = () => {
-    //     const callbackUrl = OAuthConfigFacebook.redirectUri;
-    //     const authUrl = OAuthConfigFacebook.authUri;
-    //     const facebookClientId = OAuthConfigFacebook.clientId;
-
-    //     const targetUrl = `${authUrl}?client_id=${facebookClientId}&redirect_uri=${encodeURIComponent(
-    //         callbackUrl,
-    //     )}&state=httcsport123512514`;
-
-    //     console.log(targetUrl);
-
-    //     window.location.href = targetUrl;
-    // };
 
     const handleCheckboxChange = (event) => {
         setRememberAccount(event.target.checked);
@@ -117,22 +103,6 @@ export default function Login() {
                                 <Avatar sx={{ width: 24, height: 24, mr: 1 }} alt="Avatar 1" src={gg} />
                                 Đăng nhập với tài khoản Google
                             </Button>
-                            {/* <Button
-                                    sx={{
-                                        width: '100%',
-                                        my: 1,
-                                        border: 1,
-                                        borderRadius: '8px',
-                                        '&:hover': {
-                                            color: 'white',
-                                            backgroundColor: 'navy',
-                                        },
-                                    }}
-                                    onClick={handleLoginWithFB}
-                                >
-                                    <Avatar sx={{ width: 24, height: 24, mr: 1 }} alt="Avatar 2" src={fb} />
-                                    Đăng nhập với tài khoản Facebook
-                                </Button> */}
                             <Typography sx={{ fontSize: '15px' }} variant="subtitle2">
                                 <a href="/forgot-password">Quên Mật Khẩu ?</a>
                             </Typography>

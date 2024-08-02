@@ -23,9 +23,11 @@ import AdminHomePage from './pages/AdminHomePage';
 import UserHomePage from './pages/UserHomePage';
 
 //PITCH
+import Payment from './components/Pitch/Payment';
+import PaymentError from './components/Pitch/Payment/PaymentError';
+import PaymentSuccess from './components/Pitch/Payment/PaymentSuccess';
 import PitchDetail from './components/Pitch/PitchDetail';
 import PitchList from './components/Pitch/PitchList';
-import PitchRent from './components/Pitch/PitchRent';
 
 //USER
 import UserBills from './components/User/UserBills';
@@ -60,15 +62,17 @@ function App() {
             <Route path="/forgot-password-verify-error" element={<FPVerifyError />} />
             <Route path="/forgot-password-verify-success" element={<FPVerifySuccess />} />
             <Route path="/forgot-password/reset-password" element={<ResetPassword />} />
+            <Route path="/payment/rent/success" element={<PaymentSuccess />} />
+            <Route path="/payment/rent/error" element={<PaymentError />} />
             <Route element={<UserHomePage />}>
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/trang-chu" element={<UserHome />} />
-                <Route path="/san-bong" element={<PitchList />} />
                 <Route path="/tin-tuc" element={<News />} />
                 <Route path="/lien-he" element={<Contact />} />
-                <Route path="/chi-tiet-san" element={<PitchDetail />} />
-                <Route path="/dat-san" element={<PitchRent />} />
+                <Route path="/san-bong" element={<PitchList />} />
+                <Route path="/chi-tiet-san/:id" element={<PitchDetail />} />
+                <Route path="/thanh-toan" element={<Payment />} />
             </Route>
 
             <Route element={<ProtectedRoute />}>

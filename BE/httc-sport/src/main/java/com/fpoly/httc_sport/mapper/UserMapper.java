@@ -13,6 +13,7 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
 	User toUser(RegisterRequest request);
 	
+	@Mapping(target = "vip", source = "vip.level")
 	UserResponse toUserResponse(User user);
 	
 	void updateUser(@MappingTarget User user, UserUpdateRequest request);

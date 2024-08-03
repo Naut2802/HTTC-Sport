@@ -1,10 +1,12 @@
 package com.fpoly.httc_sport.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fpoly.httc_sport.utils.Enum.VipEnum;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -15,8 +17,18 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Vip {
 	@Id
-	Integer level;
-	Double min;
-	Double max;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Integer id;
+	@Column(unique = true, nullable = false)
+	@Enumerated(EnumType.STRING)
+	VipEnum level;
+	@Column(nullable = false)
+	int min;
+	@Column(nullable = false)
+	int max;
+	@Column(nullable = false)
 	Float discountRate;
+	
+	@OneToMany(mappedBy = "vip", fetch = FetchType.EAGER)
+	List<User> users = new ArrayList<>();
 }

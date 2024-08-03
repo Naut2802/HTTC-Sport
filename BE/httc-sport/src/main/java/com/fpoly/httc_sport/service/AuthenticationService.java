@@ -2,27 +2,19 @@ package com.fpoly.httc_sport.service;
 
 import com.fpoly.httc_sport.dto.request.*;
 import com.fpoly.httc_sport.dto.response.AuthenticationResponse;
-import com.fpoly.httc_sport.entity.MailInfo;
-import com.fpoly.httc_sport.entity.RefreshTokenWhiteList;
-import com.fpoly.httc_sport.entity.User;
-import com.fpoly.httc_sport.entity.VerificationToken;
+import com.fpoly.httc_sport.entity.*;
 import com.fpoly.httc_sport.event.OutboundCompleteEvent;
 import com.fpoly.httc_sport.event.RegistrationCompleteEvent;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.mapper.RoleMapper;
 import com.fpoly.httc_sport.mapper.UserMapper;
-import com.fpoly.httc_sport.repository.RefreshTokenRepository;
-import com.fpoly.httc_sport.repository.RoleRepository;
-import com.fpoly.httc_sport.repository.UserRepository;
-import com.fpoly.httc_sport.repository.VerificationTokenRepository;
-import com.fpoly.httc_sport.repository.httpclient.FacebookOutboundExchangeTokenClient;
-import com.fpoly.httc_sport.repository.httpclient.FacebookOutboundUserInfoClient;
+import com.fpoly.httc_sport.repository.*;
 import com.fpoly.httc_sport.repository.httpclient.GoogleOutboundExchangeTokenClient;
 import com.fpoly.httc_sport.repository.httpclient.GoogleOutboundUserInfoClient;
 import com.fpoly.httc_sport.security.jwt.KeyUtils;
-import com.fpoly.httc_sport.utils.Enum;
 import com.fpoly.httc_sport.utils.Enum.RoleEnum;
+import com.fpoly.httc_sport.utils.Enum.VipEnum;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -54,11 +46,10 @@ public class AuthenticationService {
 	UserRepository userRepository;
 	RefreshTokenRepository refreshTokenRepository;
 	RoleRepository roleRepository;
+	VipRepository vipRepository;
 	VerificationTokenRepository verificationTokenRepository;
 	GoogleOutboundExchangeTokenClient googleOutboundExchangeTokenClient;
 	GoogleOutboundUserInfoClient googleOutboundUserInfoClient;
-//	FacebookOutboundExchangeTokenClient facebookOutboundExchangeTokenClient;
-//	FacebookOutboundUserInfoClient facebookOutboundUserInfoClient;
 	UserMapper userMapper;
 	RoleMapper roleMapper;
 	PasswordEncoder passwordEncoder;
@@ -83,14 +74,6 @@ public class AuthenticationService {
 	@Value("${oauth2.google.redirect-uri}")
 	String REDIRECT_URI;
 	
-//	@NonFinal
-//	@Value("${oauth2.facebook.client-id}")
-//	String FACEBOOK_CLIENT_ID;
-//
-//	@NonFinal
-//	@Value("${oauth2.facebook.client-secret}")
-//	String FACEBOOK_CLIENT_SECRET;
-	
 	@NonFinal
 	final String GRANT_TYPE = "authorization_code";
 	
@@ -107,8 +90,12 @@ public class AuthenticationService {
 		
 		var role = roleRepository.findByRoleName(RoleEnum.USER).orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
+		var vip = vipRepository.findByLevel(VipEnum.VIP_0).orElseThrow(() ->
+				new AppException(ErrorCode.VIP_NOT_EXISTED));
+		
 		
 		user.setRoles(List.of(role));
+		user.setVip(vip);
 		userRepository.save(user);
 		String url = generateUrl(httpRequest);
 		publisher.publishEvent(new RegistrationCompleteEvent(user, url));
@@ -194,6 +181,8 @@ public class AuthenticationService {
 		
 		var role = roleRepository.findByRoleName(RoleEnum.USER).orElseThrow(() ->
 				new AppException(ErrorCode.ROLE_NOT_EXISTED));
+		var vip = vipRepository.findByLevel(VipEnum.VIP_0).orElseThrow(() ->
+				new AppException(ErrorCode.VIP_NOT_EXISTED));
 		
 		String password = generateRandomPassword();
 		Optional<User> _user = userRepository.findByEmail(userInfo.getEmail());
@@ -208,6 +197,7 @@ public class AuthenticationService {
 					.lastName(userInfo.getFamilyName())
 					.isEnabled(true)
 					.roles(List.of(role))
+					.vip(vip)
 					.build());
 			publisher.publishEvent(new OutboundCompleteEvent(user, password));
 		} else
@@ -233,61 +223,6 @@ public class AuthenticationService {
 				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}
-	
-	//Login with Facebook
-//	public AuthenticationResponse facebookOutboundAuthenticate(String code, HttpServletResponse response) throws NoSuchAlgorithmException {
-//		var tokenExchanged = facebookOutboundExchangeTokenClient.exchangeToken(FacebookExchangeTokenRequest.builder()
-//				.clientId(FACEBOOK_CLIENT_ID)
-//				.clientSecret(FACEBOOK_CLIENT_SECRET)
-//				.redirectUri(REDIRECT_URI)
-//				.code(code)
-//				.build());
-//
-//		log.info("Facebook token exchanged {}", tokenExchanged);
-//
-//		String fields = "id,email,first_name,last_name";
-//		var userInfo = facebookOutboundUserInfoClient.getUserInfo(fields, tokenExchanged.getAccessToken());
-//
-//		var role = roleRepository.findByRoleName("USER").orElseThrow(() ->
-//				new AppException(ErrorCode.ROLE_NOT_EXISTED));
-//
-//		String password = generateRandomPassword();
-//		User user = null;
-//
-//		if (!userRepository.existsByEmail(userInfo.getEmail())) {
-//			user = userRepository.save(User.builder()
-//					.username(userInfo.getEmail())
-//					.password(passwordEncoder.encode(userInfo.getEmail()+password))
-//					.email(userInfo.getEmail())
-//					.firstName(userInfo.getFirstName())
-//					.lastName(userInfo.getLastName())
-//					.isEnabled(true)
-//					.roles(new HashSet<>(List.of(role)))
-//					.build());
-//			publisher.publishEvent(new OutboundCompleteEvent(user, password));
-//		} else
-//			user = userRepository.findByEmail(userInfo.getEmail()).get();
-//
-//
-//		if (!user.getIsEnabled())
-//			user.setIsEnabled(true);
-//
-//		KeyPair keyPair = keyUtils.generateKeyPair();
-//		var accessToken = jwtService.generateAccessToken(user, keyPair);
-//		String jti = accessToken.substring(accessToken.length()-10);
-//		var refreshToken = jwtService.generateRefreshToken(user, jti, keyPair);
-//		String publicKey = keyUtils.exchangeRSAPublicKeyToString((RSAPublicKey) keyPair.getPublic());
-//
-//		saveRefreshToken(user, refreshToken, publicKey);
-//
-//		createRefreshTokenCookie(response, jti);
-//
-//		return AuthenticationResponse.builder()
-//				.accessToken(accessToken)
-//				.userId(user.getId())
-//				.authenticated(true)
-//				.build();
-//	}
 	
 	@Transactional
 	public AuthenticationResponse refreshToken(HttpServletRequest request, HttpServletResponse response, RefreshRequest refreshRequest) throws NoSuchAlgorithmException {

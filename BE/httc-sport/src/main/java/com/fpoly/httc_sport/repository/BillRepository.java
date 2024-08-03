@@ -15,6 +15,7 @@ import com.fpoly.httc_sport.entity.ReportForYear;
 
 
 public interface BillRepository extends JpaRepository<Bill, Long> {
+	List<Bill> findByUserId(String userId);
 	Page<Bill> findByUserId(String userId, Pageable pageable);
 	Page<Bill> findByPitchId(int pitchId, Pageable pageable);
 	Page<Bill> findByRentedAtBetween(LocalDate date1, LocalDate date2, Pageable pageable);

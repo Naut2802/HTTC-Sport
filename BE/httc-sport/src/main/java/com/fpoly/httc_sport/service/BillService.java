@@ -1,10 +1,11 @@
 package com.fpoly.httc_sport.service;
 
-import com.fpoly.httc_sport.dto.request.ReviewsRequest;
 import com.fpoly.httc_sport.dto.response.BillResponse;
 import com.fpoly.httc_sport.entity.Bill;
 import com.fpoly.httc_sport.mapper.BillMapper;
 import com.fpoly.httc_sport.repository.BillRepository;
+import com.fpoly.httc_sport.repository.UserRepository;
+import com.fpoly.httc_sport.repository.VipRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,16 +15,32 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BillService {
+	UserRepository userRepository;
+	VipRepository vipRepository;
 	BillRepository billRepository;
 	BillMapper billMapper;
 	
 	public void createBill(Bill bill) {
+		var user = bill.getUser();
+		var bills = billRepository.findByUserId(user.getId());
+		var vips = vipRepository.findAll();
+		
+		int total = bills.stream().mapToInt(Bill::getTotal).sum() + bill.getTotal();
+		
+		vips.forEach(vip -> {
+			if (total >= vip.getMin() && total <= vip.getMax()) {
+				user.setVip(vip);
+			}
+		});
+		
+		userRepository.save(user);
 		billRepository.save(bill);
 	}
 	

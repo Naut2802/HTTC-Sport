@@ -29,6 +29,7 @@ public class Cronjob {
 		Date date = Date.from(Instant.now());
 		var tokens = invalidatedTokenRepository.findByExpiryTimeLessThan(date);
 		
+		log.info("========================================================");
 		log.info("Started Cronjob: check and delete Invalidated Access Token");
 		invalidatedTokenRepository.deleteAll(tokens);
 		log.info("Deleted {} invalidated tokens from database", tokens.size());
@@ -38,6 +39,7 @@ public class Cronjob {
 		Date date = Date.from(Instant.now());
 		var tokens = refreshTokenRepository.findByExpiryTimeLessThan(date);
 		
+		log.info("========================================================");
 		log.info("Started Cronjob: check and delete expired Refresh Token");
 		refreshTokenRepository.deleteAll(tokens);
 		log.info("Deleted {} expired tokens from database", tokens.size());
@@ -47,6 +49,7 @@ public class Cronjob {
 		LocalDate localDate = LocalDate.now();
 		var rentInfos = rentInfoRepository.findByRentedAtLessThanAndPaymentStatusFalse(localDate);
 		
+		log.info("========================================================");
 		log.info("Started Cronjob: check and delete expired Rent infos");
 		rentInfoRepository.deleteAll(rentInfos);
 		log.info("Deleted {} expired Rent infos from database", rentInfos.size());

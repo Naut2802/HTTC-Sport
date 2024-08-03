@@ -1,5 +1,6 @@
 package com.fpoly.httc_sport.dto.response;
 
+import com.fpoly.httc_sport.utils.Enum.VipEnum;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +20,5 @@ public class UserResponse {
 	String phoneNumber;
 	Boolean isEnabled;
 	Set<RoleResponse> roles;
+	VipEnum vip;
 }

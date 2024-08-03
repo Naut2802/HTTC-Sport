@@ -16,4 +16,5 @@ public interface RentInfoRepository extends JpaRepository<RentInfo, Integer> {
 	List<RentInfo> findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(Integer pitchId, LocalDate date, LocalTime time, LocalTime time2);
 	List<RentInfo> findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(Integer pitchId, LocalDate date, LocalTime time, LocalTime time2);
 	List<RentInfo> findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(Integer pitchId, LocalDate date, LocalTime time, LocalTime time2);
+	List<RentInfo> findByRentedAtLessThanAndPaymentStatusFalse(LocalDate date);
 }

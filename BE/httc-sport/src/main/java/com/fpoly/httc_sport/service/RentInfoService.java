@@ -154,10 +154,12 @@ public class RentInfoService {
 		rentInfo.setStartTime(startTime);
 		rentInfo.setEndTime(endTime);
 		float discountRate = user != null ? user.getVip().getDiscountRate() : 1;
-		int price = (int) (((float) request.getRentTime() / 60) * (pitch.getPrice() * paymentMethod.getPriceRate()));
-		int total = rentInfo.getTypePitch() == 5 ? (int) (price * discountRate)
-				: (int) (rentInfo.getTypePitch() == 7 ? (price * 3) * discountRate
-				: rentInfo.getTypePitch() == 11 ? (price * 9) * discountRate : (int) (price * discountRate));
+		int price = (int) (((float) request.getRentTime() / 60) * pitch.getPrice());
+		int total = rentInfo.getTypePitch() == 5 ? price
+				: rentInfo.getTypePitch() == 7 ? price * 3
+				: rentInfo.getTypePitch() == 11 ? price * 9 : price;
+		
+		total = (int) (total * paymentMethod.getPriceRate() * discountRate);
 		
 		rentInfo.setTotal(total);
 		rentInfo.setPaymentMethod(paymentMethod);

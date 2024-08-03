@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.fpoly.httc_sport.repository.*;
 import com.fpoly.httc_sport.utils.Enum.BillStatusEnum;
 import com.fpoly.httc_sport.utils.Enum.PaymentMethodEnum;
 import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
@@ -16,10 +18,6 @@ import com.fpoly.httc_sport.entity.MailInfo;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.mapper.RentInfoMapper;
-import com.fpoly.httc_sport.repository.PaymentMethodRepository;
-import com.fpoly.httc_sport.repository.PitchRepository;
-import com.fpoly.httc_sport.repository.RentInfoRepository;
-import com.fpoly.httc_sport.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -155,10 +153,15 @@ public class RentInfoService {
 		rentInfo.setUser(user);
 		rentInfo.setStartTime(startTime);
 		rentInfo.setEndTime(endTime);
-		int total = (int) (((float) request.getRentTime() / 60) * (pitch.getPrice() * paymentMethod.getPriceRate()));
-		rentInfo.setTotal(rentInfo.getTypePitch() == 5 ? total
-				: rentInfo.getTypePitch() == 7 ? total * 3
-				: rentInfo.getTypePitch() == 11 ? total * 9 : total);
+		float discountRate = user != null ? user.getVip().getDiscountRate() : 1;
+		int price = (int) (((float) request.getRentTime() / 60) * pitch.getPrice());
+		int total = rentInfo.getTypePitch() == 5 ? price
+				: rentInfo.getTypePitch() == 7 ? price * 3
+				: rentInfo.getTypePitch() == 11 ? price * 9 : price;
+		
+		total = (int) (total * paymentMethod.getPriceRate() * discountRate);
+		
+		rentInfo.setTotal(total);
 		rentInfo.setPaymentMethod(paymentMethod);
 		
 		rentInfo = rentInfoRepository.save(rentInfo);

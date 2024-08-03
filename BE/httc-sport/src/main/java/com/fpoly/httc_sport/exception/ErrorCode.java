@@ -63,6 +63,7 @@ public enum ErrorCode {
 	REVIEW_RATE_MAX(1046, "Đánh giá cao nhất 5 sao", HttpStatus.BAD_REQUEST),
 	REVIEW_NOT_EXISTED(1047, "Không tìm thấy nhận xét", HttpStatus.NOT_FOUND),
 	REVIEW_EXISTED(1048, "Đã gửi đánh giá hóa đơn này", HttpStatus.BAD_REQUEST),
+	VIP_NOT_EXISTED(1049, "Không tìm thấy bậc vip này", HttpStatus.NOT_FOUND),
 	
 	
 	NOT_EXISTED(1096, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),

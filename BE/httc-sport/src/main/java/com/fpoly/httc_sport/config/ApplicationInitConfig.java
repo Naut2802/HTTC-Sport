@@ -3,10 +3,11 @@ package com.fpoly.httc_sport.config;
 import com.fpoly.httc_sport.entity.PaymentMethod;
 import com.fpoly.httc_sport.entity.Role;
 import com.fpoly.httc_sport.entity.User;
+import com.fpoly.httc_sport.entity.Vip;
 import com.fpoly.httc_sport.repository.PaymentMethodRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
-import com.fpoly.httc_sport.utils.Enum;
+import com.fpoly.httc_sport.repository.VipRepository;
 import com.fpoly.httc_sport.utils.Enum.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class ApplicationInitConfig {
 			havingValue = "com.mysql.cj.jdbc.Driver")
 	ApplicationRunner applicationRunner(UserRepository userRepository,
 	                                    RoleRepository roleRepository,
+										VipRepository vipRepository,
 	                                    PaymentMethodRepository paymentMethodRepository) {
 		log.info("Initializing application............");
 		return args -> {
@@ -70,14 +72,29 @@ public class ApplicationInitConfig {
 				log.warn("Admin user has been created with default information: \"admin\". Please change it!");
 			}
 			
+			if (vipRepository.findAll().isEmpty()) {
+				int totalLevel = 4;
+				
+				for (int level = 0; level < totalLevel; level++) {
+					VipEnum vip = VipEnum.valueOf("VIP_" + level);
+					
+					vipRepository.save(Vip.builder()
+							.level(vip)
+							.min(vip.getMin())
+							.max(vip.getMax())
+							.discountRate(vip.getDiscountRate())
+							.build());
+				}
+			}
+			
 			paymentMethodMap.put(PaymentMethodEnum.QR, 1.05f);
 			paymentMethodMap.put(PaymentMethodEnum.WALLET, 1f);
 			
 			paymentMethodMap.forEach((key, value) -> {
 				if (!paymentMethodRepository.existsByMethod(key))
 					paymentMethodRepository.save(PaymentMethod.builder()
-									.method(key)
-									.priceRate(value)
+							.method(key)
+							.priceRate(value)
 							.build());
 			});
 			

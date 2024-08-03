@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.*;
 
 import com.fpoly.httc_sport.dto.request.PitchRequest;
-import com.fpoly.httc_sport.dto.response.ImageResponse;
 import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
 import com.fpoly.httc_sport.dto.response.PitchResponse;
 import com.fpoly.httc_sport.entity.Image;

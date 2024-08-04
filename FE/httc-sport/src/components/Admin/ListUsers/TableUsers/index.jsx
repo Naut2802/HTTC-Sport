@@ -87,3 +87,83 @@ export default function TableUsers() {
         </div>
     );
 }
+// import { Button, Tooltip } from '@mui/material';
+// import { DataGrid } from '@mui/x-data-grid';
+// import { useEffect, useState } from 'react';
+// import CreateIcon from '@mui/icons-material/Create';
+// import DeleteIcon from '@mui/icons-material/Delete';
+// import { handleGetMyInfoAPI } from '~/apis';
+
+// export default function TableUsers() {
+//     const [users, setUsers] = useState([]);
+
+//     useEffect(() => {
+//         const fetchData = async () => {
+//             try {
+//                 const response = await handleGetMyInfoAPI();
+//                 const dataWithId = response.data.result.map((item, index) => ({
+//                     ...item,
+//                     id: item.id || index,
+//                 }));
+//                 setUsers(dataWithId);
+//                 console.log(dataWithId);
+
+//                 if (Array.isArray(dataWithId)) {
+//                     setUsers(dataWithId);
+//                 } else {
+//                     console.error('Dữ liệu trả về không phải là mảng:', dataWithId);
+//                 }
+//             } catch (error) {
+//                 console.error('Error fetching user data:', error);
+//             }
+//         };
+//         fetchData();
+//     }, []);
+
+//     const columns = [
+//         { field: 'id', headerName: 'ID', width: 200 },
+//         { field: 'email', headerName: 'Email', width: 250 },
+//         { field: 'username', headerName: 'Tên TK', width: 200 },
+//         { field: 'lastName', headerName: 'Họ', width: 100 },
+//         { field: 'firstName', headerName: 'Tên', width: 100 },
+//         { field: 'phoneNumber', headerName: 'Số Điện Thoại', width: 150 },
+//         {
+//             field: 'isEnabled',
+//             headerName: 'Trạng Thái',
+//             width: 120,
+//             renderCell: (params) => (params.value ? 'Hoạt Động' : 'Không Hoạt Động'),
+//         },
+//         {
+//             field: 'orther',
+//             headerName: 'Khác',
+//             sortable: false,
+//             width: 150,
+//             renderCell: () => (
+//                 <div>
+//                     <Tooltip title="Chỉnh Sửa" variant="solid">
+//                         <Button sx={{ color: 'green' }}>
+//                             <CreateIcon />
+//                         </Button>
+//                     </Tooltip>
+//                     <Tooltip title="Xóa" variant="solid">
+//                         <Button sx={{ color: 'red' }}>
+//                             <DeleteIcon />
+//                         </Button>
+//                     </Tooltip>
+//                 </div>
+//             ),
+//         },
+//     ];
+
+//     return (
+//         <div className="w-100 my-2">
+//             <DataGrid
+//                 rows={users}
+//                 columns={columns}
+//                 pageSize={5}
+//                 rowsPerPageOptions={[5, 10, 20, 50, 100]}
+//                 getRowId={(row) => row.id}
+//             />
+//         </div>
+//     );
+// }

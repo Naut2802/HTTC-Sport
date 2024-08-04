@@ -122,7 +122,7 @@ public class PitchService {
 		int price1 = -1;
 		int price2 = -1;
 		
-		if (rates != null) {
+		if (rates != null && !rates.isBlank()) {
 			try {
 				var r = Arrays.stream(rates.replace(" ", "").split("-")).map(Integer::parseInt).toList();
 				rate1 = r.getFirst();
@@ -131,7 +131,7 @@ public class PitchService {
 				log.error(e.getMessage());
 			}
 		}
-		if (price != null) {
+		if (price != null && !price.isBlank()) {
 			try {
 				var p = Arrays.stream(price.replace(" ", "").split("-")).map(Integer::parseInt).toList();
 				price1 = p.getFirst();
@@ -143,9 +143,9 @@ public class PitchService {
 		
 		Specification<Pitch> spec = PitchSpecification.hasEnabled()
 				.and(rate1 >= 0 && rate2 > rate1 ? PitchSpecification.hasRateIn(rate1, rate2) : null)
-				.and(district != null && city != null ? PitchSpecification.hasAddress(district, city) : null)
+				.and((district != null && city != null) && (!district.isBlank() && !city.isBlank()) ? PitchSpecification.hasAddress(district, city) : null)
 				.and(price1 >= 0 && price2 > price1 ? PitchSpecification.hasPriceBetween(price1, price2) : null)
-				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null);
+				.and(name != null && !name.isBlank() ? PitchSpecification.hasPitchNameContaining(name) : null);
 		
 		Page<Pitch> pitches = pitchRepository.findAll(spec, pageable);
 		List<Optional<Image>> images = new ArrayList<>(pitches
@@ -183,7 +183,7 @@ public class PitchService {
 		int price1 = -1;
 		int price2 = -1;
 		
-		if (rates != null) {
+		if (rates != null && !rates.isBlank()) {
 			try {
 				var r = Arrays.stream(rates.replace(" ", "").split("-")).map(Integer::parseInt).toList();
 				rate1 = r.getFirst();
@@ -192,7 +192,7 @@ public class PitchService {
 				log.error(e.getMessage());
 			}
 		}
-		if (price != null) {
+		if (price != null && !price.isBlank()) {
 			try {
 				var p = Arrays.stream(price.replace(" ", "").split("-")).map(Integer::parseInt).toList();
 				price1 = p.getFirst();
@@ -203,9 +203,9 @@ public class PitchService {
 		}
 		
 		Specification<Pitch> spec = (rate1 > 0 && rate2 > rate1 ? PitchSpecification.hasRateIn(rate1, rate2) : PitchSpecification.hasRateIn(0, 5))
-				.and(district != null && city != null ? PitchSpecification.hasAddress(district, city) : null)
+				.and((district != null && city != null) && (!district.isBlank() && !city.isBlank()) ? PitchSpecification.hasAddress(district, city) : null)
 				.and(price1 >= 0 && price2 > price1 ? PitchSpecification.hasPriceBetween(price1, price2) : null)
-				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null);
+				.and(name != null && !name.isBlank() ? PitchSpecification.hasPitchNameContaining(name) : null);
 		
 		Page<Pitch> pitches = pitchRepository.findAll(spec, pageable);
 		List<Optional<Image>> images = new ArrayList<>(pitches

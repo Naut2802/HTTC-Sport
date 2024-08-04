@@ -17,13 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import {
-    handleCreatePitch,
-    handleDelImgs,
-    // handleGetPitchAdmin,
-    handleProvinces,
-    handleUpdatePitch,
-} from '~/apis';
+import { handleCreatePitch, handleDelImgs, handleGetPitchAdmin, handleProvinces, handleUpdatePitch } from '~/apis';
 
 const ValidationTextField = styled(TextField)({
     width: '100%',
@@ -119,20 +113,28 @@ export default function FormAddPitch({ selectedPitch }) {
     };
 
     // Xóa ảnh
-    const handleDeleteImage = async (images, index) => {
+    const handleDeleteImage = async (index) => {
         const pitchId = selectedPitch.id;
-        const publicId = images.publicId;
-        // const re = await handleGetPitchAdmin(pitchId);
-        // const dataAPI = re.data.result;
-        // const dataImage = dataAPI.images;
-        // const publicId = dataImage.map((image) => image.publicId);
-        // console.log(publicId);
-
         try {
+            const re = await handleGetPitchAdmin(pitchId);
+            const dataAPI = re.data.result;
+            const dataImage = dataAPI.images;
+            //Kiểm tra đảm bảo dataImage là một mảng và index hợp lệ.
+            if (!Array.isArray(dataImage) || index < 0 || index >= dataImage.length) {
+                toast.error('Index không hợp lệ hoặc dataImage không hợp lệ');
+                return;
+            }
+            // Lấy publicId của hình ảnh tại vị trí index
+            const publicId = dataImage[index].publicId;
+            console.log(publicId);
+
             const response = await handleDelImgs(pitchId, publicId);
+
             if (response.data.message === 'Xóa ảnh thành công') {
                 setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
                 toast.success('Hình ảnh đã được xóa thành công!');
+            } else {
+                toast.error('Xóa hình ảnh thất bại!');
             }
         } catch (error) {
             console.error('Failed to delete image:', error);

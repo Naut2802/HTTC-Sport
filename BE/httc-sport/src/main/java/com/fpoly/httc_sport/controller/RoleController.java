@@ -3,6 +3,7 @@ package com.fpoly.httc_sport.controller;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.RoleResponse;
 import com.fpoly.httc_sport.service.RoleService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,6 +19,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "Role Controller")
 public class RoleController {
 	RoleService roleService;
 	

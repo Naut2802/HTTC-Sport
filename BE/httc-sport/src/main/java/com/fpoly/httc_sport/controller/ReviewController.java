@@ -6,6 +6,8 @@ import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
 import com.fpoly.httc_sport.dto.response.ReviewResponse;
 import com.fpoly.httc_sport.service.BillService;
 import com.fpoly.httc_sport.service.ReviewService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +21,11 @@ import java.util.List;
 @RequestMapping("api/v1/review")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Review Controller", description = "Controller have apis to use after rent pitch")
 public class ReviewController {
 	ReviewService reviewService;
 	
+	@Operation(summary = "Api review a pitch", description = "Api use for review a pitch after rent")
 	@PostMapping("{billId}")
 	ApiResponse<?> reviewsPitch(@PathVariable long billId, @Valid @RequestBody ReviewsRequest request) {
 		reviewService.reviewsPitch(billId, request);
@@ -31,6 +35,7 @@ public class ReviewController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get a review by bill-id")
 	@GetMapping("{billId}")
 	ApiResponse<ReviewResponse> getReviewByBill(@PathVariable long billId) {
 		return ApiResponse.<ReviewResponse>builder()
@@ -38,6 +43,7 @@ public class ReviewController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get a review by user-id")
 	@GetMapping("/get-all-by-user/{userId}")
 	ApiResponse<List<ReviewResponse>> getAllReviewByUser(@PathVariable String userId,
 	                                                     @RequestParam(defaultValue = "0") int page,

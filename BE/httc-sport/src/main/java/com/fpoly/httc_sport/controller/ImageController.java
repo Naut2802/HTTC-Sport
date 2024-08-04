@@ -4,6 +4,7 @@ import com.fpoly.httc_sport.dto.request.ImageRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.ImageResponse;
 import com.fpoly.httc_sport.service.ImageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "Image Controller", description = "Controller have apis for admin")
 public class ImageController {
 	ImageService imageService;
 	

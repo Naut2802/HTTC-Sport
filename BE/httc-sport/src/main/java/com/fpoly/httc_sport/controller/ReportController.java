@@ -5,6 +5,8 @@ import com.fpoly.httc_sport.dto.response.ReportResponse;
 import com.fpoly.httc_sport.dto.response.RoleResponse;
 import com.fpoly.httc_sport.service.ReportService;
 import com.fpoly.httc_sport.service.RoleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,9 +27,11 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "Report Controller")
 public class ReportController {
 	ReportService reportService;
 	
+	@Operation(summary = "Api use for statistics", description = "Admin use this api")
 	@GetMapping
 	public ApiResponse<ReportResponse> getReportByDate(@RequestParam LocalDate fromDate,
 	                                                   @RequestParam LocalDate toDate,

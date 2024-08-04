@@ -81,7 +81,7 @@ export default function FormAddPitch({ selectedPitch }) {
                 handleCityChange({ target: { value: city } });
             }
             if (district) {
-                handleDistrictChange({ target: { value: district } });
+                setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
             }
         } else {
             if (savedPitch) {
@@ -100,12 +100,12 @@ export default function FormAddPitch({ selectedPitch }) {
                 const city = savedPitch.city;
                 const district = savedPitch.district;
 
-                // Update city and district if they exist
+                //Cập nhật thành phố và quận nếu chúng tồn tại
                 if (city) {
                     handleCityChange({ target: { value: city } });
                 }
                 if (district) {
-                    // Use setTimeout to ensure that districts are updated before calling this function
+                    // Sử dụng setTimeout để đảm bảo rằng các quận được cập nhật trước khi gọi hàm này
                     setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
                 }
             }

@@ -29,6 +29,9 @@ public class User {
 	String phoneNumber;
 	Boolean isEnabled;
 	
+	@OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+	Wallet wallet;
+	
 	@ManyToOne @JoinColumn(name = "vip")
 	Vip vip;
 	

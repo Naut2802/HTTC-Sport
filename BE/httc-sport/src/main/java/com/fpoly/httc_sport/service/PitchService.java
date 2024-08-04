@@ -124,7 +124,7 @@ public class PitchService {
 		
 		if (rates != null) {
 			try {
-				var r = Arrays.stream(rates.split("-")).map(Integer::parseInt).toList();
+				var r = Arrays.stream(rates.replace(" ", "").split("-")).map(Integer::parseInt).toList();
 				rate1 = r.getFirst();
 				rate2 = r.getLast();
 			} catch (Exception e) {
@@ -133,7 +133,7 @@ public class PitchService {
 		}
 		if (price != null) {
 			try {
-				var p = Arrays.stream(price.split("-")).map(Integer::parseInt).toList();
+				var p = Arrays.stream(price.replace(" ", "").split("-")).map(Integer::parseInt).toList();
 				price1 = p.getFirst();
 				price2 = p.getLast();
 			} catch (Exception e) {
@@ -145,15 +145,24 @@ public class PitchService {
 				.and(rate1 >= 0 && rate2 > rate1 ? PitchSpecification.hasRateIn(rate1, rate2) : null)
 				.and(district != null && city != null ? PitchSpecification.hasAddress(district, city) : null)
 				.and(price1 >= 0 && price2 > price1 ? PitchSpecification.hasPriceBetween(price1, price2) : null)
-				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null)
-				.and(type != null ? PitchSpecification.hasType(type) : null);
+				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null);
 		
 		Page<Pitch> pitches = pitchRepository.findAll(spec, pageable);
 		List<Optional<Image>> images = new ArrayList<>(pitches
 				.stream().map(pitch -> pitch.getImages()
 						.stream().findFirst()).toList());
 		
-		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
+		var responses = pitches.stream().filter(pitch -> {
+			if (type != null) {
+					if (type.equals("7"))
+						return pitch.getTotal() >= 3;
+					else if (type.equals("11")) {
+						return pitch.getTotal() >= 9;
+					} else
+						return true;
+			}
+			return true;
+		}).map(pitchMapper::toPitchResponse).toList();
 		
 		int index = 0;
 		for(Optional<Image> image: images) {
@@ -176,7 +185,7 @@ public class PitchService {
 		
 		if (rates != null) {
 			try {
-				var r = Arrays.stream(rates.split("-")).map(Integer::parseInt).toList();
+				var r = Arrays.stream(rates.replace(" ", "").split("-")).map(Integer::parseInt).toList();
 				rate1 = r.getFirst();
 				rate2 = r.getLast();
 			} catch (Exception e) {
@@ -185,7 +194,7 @@ public class PitchService {
 		}
 		if (price != null) {
 			try {
-				var p = Arrays.stream(price.split("-")).map(Integer::parseInt).toList();
+				var p = Arrays.stream(price.replace(" ", "").split("-")).map(Integer::parseInt).toList();
 				price1 = p.getFirst();
 				price2 = p.getLast();
 			} catch (Exception e) {
@@ -196,15 +205,24 @@ public class PitchService {
 		Specification<Pitch> spec = (rate1 > 0 && rate2 > rate1 ? PitchSpecification.hasRateIn(rate1, rate2) : PitchSpecification.hasRateIn(0, 5))
 				.and(district != null && city != null ? PitchSpecification.hasAddress(district, city) : null)
 				.and(price1 >= 0 && price2 > price1 ? PitchSpecification.hasPriceBetween(price1, price2) : null)
-				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null)
-				.and(type != null ? PitchSpecification.hasType(type) : null);
+				.and(name != null ? PitchSpecification.hasPitchNameContaining(name) : null);
 		
 		Page<Pitch> pitches = pitchRepository.findAll(spec, pageable);
 		List<Optional<Image>> images = new ArrayList<>(pitches
 				.stream().map(pitch -> pitch.getImages()
 						.stream().findFirst()).toList());
 		
-		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
+		var responses = pitches.stream().filter(pitch -> {
+			if (type != null) {
+				if (type.equals("7"))
+					return pitch.getTotal() >= 3;
+				else if (type.equals("11")) {
+					return pitch.getTotal() >= 9;
+				} else
+					return true;
+			}
+			return true;
+		}).map(pitchMapper::toPitchResponse).toList();
 		
 		int index = 0;
 		for(Optional<Image> image: images) {

@@ -35,14 +35,14 @@ const ValidationTextField = styled(TextField)({
 });
 //
 export default function FormAddPitch({ selectedPitch }) {
+    const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
     const { register, handleSubmit, control, setValue, reset } = useForm();
-    // const navigate = useNavigate();
+
     const [dataCity, setDataCity] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
     const [fileNames, setFileNames] = useState([]);
-    const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
 
     //Dữ liệu API Thành phố HCM
     useEffect(() => {
@@ -112,6 +112,7 @@ export default function FormAddPitch({ selectedPitch }) {
         }
     }, [selectedPitch, setValue, dataCity, districts]);
 
+    //Khi Thay đổi Thành phố lấy Quận theo TP
     const handleCityChange = (event) => {
         const cityId = event.target.value;
         const selectedCity = dataCity.find((city) => city.Name === cityId);
@@ -119,12 +120,14 @@ export default function FormAddPitch({ selectedPitch }) {
         setWards([]);
     };
 
+    //Khi Thay đổi Quận lấy Phường theo Quận
     const handleDistrictChange = (event) => {
         const districtId = event.target.value;
         const selectedDistrict = districts.find((district) => district.Name === districtId);
         setWards(selectedDistrict ? selectedDistrict.Wards : []);
     };
 
+    //Khi chọn thay đổi Image fill Image và tạo url tạm thời cho Images
     const handleImageChange = (event) => {
         const files = event.target.files;
         console.log('Files selected:', files);
@@ -138,6 +141,7 @@ export default function FormAddPitch({ selectedPitch }) {
         setSelectedImages((prevImages) => [...prevImages, ...newImageUrls]);
     };
 
+    // Xóa image khi click vào hình
     const handleDeleteImage = async (image, index) => {
         const pitchId = selectedPitch.id;
         const publicId = image.publicId;
@@ -159,6 +163,7 @@ export default function FormAddPitch({ selectedPitch }) {
         }
     };
 
+    //Thêm Sân
     const submitAddPitch = async (data) => {
         const formData = new FormData();
         formData.append('pitchName', data.pitchName);
@@ -186,8 +191,10 @@ export default function FormAddPitch({ selectedPitch }) {
         }
     };
 
+    //Cập Nhật Sân
     const submitUpdatePitch = async (data) => {
-        console.log(savedPitch.id);
+        console.log(savedPitch?.id);
+        console.log(selectedPitch?.id);
         try {
             const pitchId = selectedPitch?.id || savedPitch?.id;
             const res = await handleUpdatePitch(pitchId, data);
@@ -204,6 +211,7 @@ export default function FormAddPitch({ selectedPitch }) {
         }
     };
 
+    //Reset Form Sân
     const submitReset = () => {
         reset({
             id: '',
@@ -224,6 +232,7 @@ export default function FormAddPitch({ selectedPitch }) {
         sessionStorage.removeItem('selectedPitch');
     };
 
+    //Điều khiện submit button
     const onSubmit = async (data) => {
         console.log('Data to be submitted:', data);
         if (selectedPitch || savedPitch) {
@@ -241,20 +250,23 @@ export default function FormAddPitch({ selectedPitch }) {
                         Hình Ảnh Sân
                     </Typography>
                     <div className="row">
-                        <Typography className="card-body  fs-3 " variant="h6" component="div">
-                            {selectedImages.length > 0 ? (
-                                selectedImages.map((image, index) => (
-                                    <img
-                                        key={index}
-                                        src={image.url || image}
-                                        alt={`Hình ảnh ${index}`}
-                                        style={{ width: '45%', height: 'auto', marginLeft: '20px', marginBottom: '20px' }}
-                                        onClick={() => handleDeleteImage(image, index)}
-                                    />
-                                ))
-                            ) : (
-                                <p>Chưa có hình</p>
-                            )}
+                        <Typography className="card-body fs-3" variant="h6" component="div">
+                            <div className="m-2">
+                                {selectedImages.length > 0 ? (
+                                    selectedImages.map((image, index) => (
+                                        <img
+                                            key={index}
+                                            src={image.url || image}
+                                            alt={`Hình ảnh ${index}`}
+                                            style={{ width: '190px', minHeight: '190px' }}
+                                            onClick={() => handleDeleteImage(image, index)}
+                                            className="m-1 rounded items-algin-center"
+                                        />
+                                    ))
+                                ) : (
+                                    <p>Chưa có hình</p>
+                                )}
+                            </div>
                         </Typography>
                     </div>
                 </Box>
@@ -438,10 +450,7 @@ export default function FormAddPitch({ selectedPitch }) {
                     </Typography>
                     <Typography component="div" className="d-flex w-100 align-items-center my-2 card-footer">
                         <Button variant="outlined" color="success" className="text-capitalize mx-1" type="submit">
-                            Thêm
-                        </Button>
-                        <Button variant="outlined" color="success" className="text-capitalize mx-2" type="submit">
-                            Cập Nhật
+                            {selectedPitch?.id || savedPitch?.id ? 'Cập Nhật' : 'Thêm'}
                         </Button>
                         <Button variant="outlined" color="inherit" type="button" onClick={submitReset}>
                             Làm Mới

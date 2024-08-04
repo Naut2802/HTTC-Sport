@@ -35,6 +35,7 @@ export default function PitchDetail() {
             try {
                 const res = await handleGetPitch(id);
                 setPitch(res.data.result);
+                console.log(res.data.result);
             } catch (error) {
                 console.error(error);
             }
@@ -97,9 +98,14 @@ export default function PitchDetail() {
                         </div>
                         <div className="col-md-6 text-end">
                             <Typography sx={{ fontSize: 17 }} variant="subtitle2" color="text.secondary">
-                                Đánh Giá: 4/5
-                                {/* {pitch.reviews.rate} */}
-                                <StarRoundedIcon sx={{ mb: 1, color: '#FFC107' }} />
+                                Đánh Giá:
+                                {pitch.rate === 0 ? (
+                                    ' Chưa có'
+                                ) : (
+                                    <>
+                                        {pitch.rate}/5 <StarRoundedIcon sx={{ mb: 1, color: '#FFC107' }} />
+                                    </>
+                                )}
                             </Typography>
                         </div>
                     </div>

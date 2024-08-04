@@ -200,7 +200,7 @@ export default function Header() {
                             );
                         })}
                     </Box>
-                    <Box>
+                    {/* <Box>
                         <Search>
                             <SearchIconWrapper>
                                 <SearchIcon
@@ -212,7 +212,7 @@ export default function Header() {
                             </SearchIconWrapper>
                             <StyledInputBase placeholder="Tìm kiếm..." inputProps={{ 'aria-label': 'search' }} />
                         </Search>
-                    </Box>
+                    </Box> */}
 
                     {!checkUser ? (
                         <Button

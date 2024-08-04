@@ -33,8 +33,8 @@ public class PitchController {
 	
 	@PutMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<PitchResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws Exception {
-		return ApiResponse.<PitchResponse>builder()
+	ApiResponse<PitchDetailsResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws Exception {
+		return ApiResponse.<PitchDetailsResponse>builder()
 				.message("Chỉnh sửa sân thành công")
 				.result(pitchService.updatePitch(id, request))
 				.build();

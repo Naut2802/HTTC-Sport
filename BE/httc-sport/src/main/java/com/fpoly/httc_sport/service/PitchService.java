@@ -56,24 +56,24 @@ public class PitchService {
 	}
 	
 	@Transactional
-	public PitchResponse updatePitch(int id, PitchRequest request) throws Exception {
+	public PitchDetailsResponse updatePitch(int id, PitchRequest request) throws Exception {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
 		pitchMapper.updatePitch(pitch, request);
 		
 		if (request.getImages() != null) {
-			if (pitch.getImages() != null) {
+			if (!pitch.getImages().isEmpty()) {
 				imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
 				pitch.getImages().clear();
+				pitchRepository.save(pitch);
 			}
-			pitchRepository.save(pitch);
 			
 			List<Image> imageResponse = imageService.saveWithPitch(request.getImages(), pitch);
 			pitch.getImages().addAll(imageResponse);
 		}
 		
-		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
+		return pitchMapper.toPitchDetailsResponse(pitchRepository.save(pitch));
 	}
 	
 	public PitchResponse deleteImageFromPitch(int id, String publicId) throws Exception {

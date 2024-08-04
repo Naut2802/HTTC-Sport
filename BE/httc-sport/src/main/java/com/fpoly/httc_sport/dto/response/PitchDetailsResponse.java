@@ -25,6 +25,7 @@ public class PitchDetailsResponse {
 	String type;
 	int total;
 	int remaining;
+	double rate;
 	List<ImageResponse> images;
-	List<CommentResponse> reviews;
+	List<ReviewResponse> reviews;
 }

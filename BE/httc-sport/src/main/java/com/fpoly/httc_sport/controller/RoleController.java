@@ -1,11 +1,8 @@
 package com.fpoly.httc_sport.controller;
 
-import com.fpoly.httc_sport.dto.request.RoleRequest;
-import com.fpoly.httc_sport.dto.request.RoleUpdateRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.RoleResponse;
 import com.fpoly.httc_sport.service.RoleService;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

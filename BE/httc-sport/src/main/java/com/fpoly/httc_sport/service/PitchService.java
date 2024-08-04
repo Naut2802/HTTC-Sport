@@ -99,7 +99,7 @@ public class PitchService {
 			return;
 		
 		pitch.setIsEnabled(false);
-		if (pitch.getImages() != null) {
+		if (!pitch.getImages().isEmpty()) {
 			imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
 			pitch.getImages().clear();
 		}

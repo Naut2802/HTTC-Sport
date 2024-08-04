@@ -17,7 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { handleCreatePitch, handleDelImgs, handleGetPitchAdmin, handleProvinces, handleUpdatePitch } from '~/apis';
+import { handleCreatePitch, handleDelImgs, handleGetPitch, handleProvinces, handleUpdatePitch } from '~/apis';
 
 const ValidationTextField = styled(TextField)({
     width: '100%',
@@ -116,7 +116,7 @@ export default function FormAddPitch({ selectedPitch }) {
     const handleDeleteImage = async (index) => {
         const pitchId = selectedPitch.id;
         try {
-            const re = await handleGetPitchAdmin(pitchId);
+            const re = await handleGetPitch(pitchId);
             const dataAPI = re.data.result;
             const dataImage = dataAPI.images;
             //Kiểm tra đảm bảo dataImage là một mảng và index hợp lệ.

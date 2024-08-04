@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { handleGetPitchesAdmin, handleGetPitchAdmin } from '~/apis';
+import { handleGetPitch, handleGetPitchesAdmin } from '~/apis';
 
 export default function TableListPitch({ onRowClick }) {
     const [pitch, setPitch] = useState([]);
@@ -31,8 +31,8 @@ export default function TableListPitch({ onRowClick }) {
 
     const handleEditPitch = async (params) => {
         try {
-            const pitchId = params.row.id; // Lấy ID từ params
-            const response = await handleGetPitchAdmin(pitchId);
+            const id = params.row.id; // Lấy ID từ params
+            const response = await handleGetPitch(id);
             const Data = response.data.result;
             console.log(Data);
             // Gọi onRowClick với dữ liệu trả về từ API

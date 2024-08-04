@@ -60,6 +60,14 @@ export const handleGetPitches = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch`);
 };
 
+export const handleGetPitchesAdmin = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/admin`);
+};
+
+export const handleGetPitchAdmin = async (pitchId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${pitchId}`);
+};
+
 export const handleGetPitch = async (id) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${id}`);
 };

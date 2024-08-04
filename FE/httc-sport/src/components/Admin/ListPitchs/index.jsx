@@ -12,6 +12,7 @@ export default function ListPitchs() {
             try {
                 const re = await handleGetPitches();
                 console.log(re.data.result);
+
                 setPitch(re.data.result);
             } catch (error) {
                 console.error(error);
@@ -29,7 +30,6 @@ export default function ListPitchs() {
 
     const handleDelClick = async (pitch) => {
         console.log(pitch);
-
         const pitchId = pitch;
         if (pitchId === undefined) {
             toast.error('Không thấy ID');
@@ -67,7 +67,7 @@ export default function ListPitchs() {
                     <div className="row">
                         <Typography className="col-4 " component="div">
                             <img
-                                src={pitch.images[0].url}
+                                src={pitch.image.url}
                                 alt={pitch.pitchName}
                                 style={{
                                     width: '100%',
@@ -78,14 +78,17 @@ export default function ListPitchs() {
                         </Typography>
                         <Typography className="col-8 mt-2" component="div">
                             <div className="d-flex justify-content-end mx-4">
-                                <span> Trạng Thái: {pitch.status ? 'Ngưng Hoạt Động' : 'Hoạt Động'}</span>
+                                Trạng Thái:
+                                <span className={`fw-bold mx-2 ${pitch.status ? 'text-danger' : 'text-success'}`}>
+                                    {pitch.status ? 'Ngưng Hoạt Động' : 'Hoạt Động'}
+                                </span>
                             </div>
                             <div className="fs-3 fw-bold">{pitch.pitchName}</div>
                             <div className="my-1">
                                 <span>Loại Sân: {pitch.type}</span>
                             </div>
                             <div className="my-1">
-                                <span>Giá: {pitch.price}</span>
+                                <span className="text-danger fs-5 fw-bold">Giá: {pitch.price} VNĐ</span>
                             </div>
                             <div className="my-1">
                                 <span>Địa Chỉ: {`${pitch.street}, ${pitch.ward}, ${pitch.city}`}</span>

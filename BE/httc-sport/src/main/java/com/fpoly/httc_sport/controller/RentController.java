@@ -6,6 +6,8 @@ import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
 import com.fpoly.httc_sport.dto.response.RentResponse;
 import com.fpoly.httc_sport.service.RentInfoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,11 @@ import java.util.List;
 @RequestMapping("api/v1/rent-pitch")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Rent Controller")
 public class RentController {
 	RentInfoService rentInfoService;
 	
+	@Operation(summary = "Api rent a pitch")
 	@PostMapping
 	ApiResponse<RentResponse> rentPitch(@Valid @RequestBody RentRequest request) throws IOException {
 		return ApiResponse.<RentResponse>builder()
@@ -30,6 +34,7 @@ public class RentController {
 				.build();
 	}
 	
+	@Operation(summary = "Api confirm rent-info", description = "Api use to confirm rent-info after payment with payment link")
 	@PostMapping("confirm-rent")
 	ApiResponse<RentResponse> confirmRent(@RequestParam("code") String code, @RequestParam("id") String id, @RequestParam("status") String status) {
 		return ApiResponse.<RentResponse>builder()
@@ -37,6 +42,7 @@ public class RentController {
 				.build();
 	}
 	
+	@Operation(summary = "Api exchange rent-info to bill", description = "Admin use this api to exchange a rent-info to bill")
 	@PostMapping("/rent-info-to-bill/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<?> exchangeRentInfoToBill(@PathVariable int id) {
@@ -47,6 +53,7 @@ public class RentController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get rent-info with id")
 	@GetMapping("{id}")
 	ApiResponse<RentInfoResponse> getRentInfo(@PathVariable int id) {
 		return ApiResponse.<RentInfoResponse>builder()
@@ -54,6 +61,7 @@ public class RentController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get all rent-info with user-id")
 	@GetMapping("/get-all-by-user/{userId}")
 	ApiResponse<List<RentInfoResponse>> getAllRentInfoByUser(@PathVariable String userId,
 				@RequestParam(defaultValue = "0") int page,
@@ -63,6 +71,7 @@ public class RentController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get all rent-info", description = "Admin use this api")
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<RentInfoResponse>> getAllRentInfo(
@@ -73,6 +82,7 @@ public class RentController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get all rent-info by pitch-id", description = "Admin use this api")
 	@GetMapping("/get-all-by-pitch/{pitchId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<RentInfoResponse>> getAllRentInfoByPitch(@PathVariable int pitchId,
@@ -83,6 +93,7 @@ public class RentController {
 				.build();
 	}
 	
+	@Operation(summary = "Api update rent-info", description = "Admin use this api")
 	@PutMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<RentInfoResponse> updateRentInfo(@PathVariable int id, @Valid @RequestBody RentInfoUpdateRequest request) {
@@ -91,13 +102,12 @@ public class RentController {
 				.build();
 	}
 	
+	@Operation(summary = "Api delete rent-info if paymentStatus false")
 	@DeleteMapping("{id}")
-	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<?> deleteRentInfo(@PathVariable int id) {
-		rentInfoService.deleteRentInfo(id);
 		
 		return ApiResponse.builder()
-				.message("Đã xóa thông tin đặt sân")
+				.message(rentInfoService.deleteRentInfo(id))
 				.build();
 	}
 	

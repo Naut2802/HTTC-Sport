@@ -5,6 +5,8 @@ import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
 import com.fpoly.httc_sport.dto.response.PitchResponse;
 import com.fpoly.httc_sport.service.PitchService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +21,11 @@ import java.util.List;
 @RequestMapping("api/v1/pitch")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Pitch Controller")
 public class PitchController {
 	PitchService pitchService;
 	
+	@Operation(summary = "Api add new pitch", description = "Admin use this api to add a pitch")
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> createPitch(@Valid @ModelAttribute PitchRequest request) throws IOException {
@@ -31,15 +35,17 @@ public class PitchController {
 				.build();
 	}
 	
+	@Operation(summary = "Api update pitch", description = "Admin use this api to update a pitch")
 	@PutMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<PitchResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws Exception {
-		return ApiResponse.<PitchResponse>builder()
+	ApiResponse<PitchDetailsResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws Exception {
+		return ApiResponse.<PitchDetailsResponse>builder()
 				.message("Chỉnh sửa sân thành công")
 				.result(pitchService.updatePitch(id, request))
 				.build();
 	}
 	
+	@Operation(summary = "Api deactivate pitch", description = "Admin use this api to deactivate a pitch")
 	@DeleteMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> deletePitch(@PathVariable int id) throws Exception {
@@ -49,6 +55,7 @@ public class PitchController {
 				.build();
 	}
 	
+	@Operation(summary = "Api delete image", description = "Admin use this api delete a image from a pitch")
 	@PatchMapping("{id}/{publicId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> deleteImageFromPitch(@PathVariable int id, @PathVariable String publicId) throws Exception {
@@ -58,6 +65,7 @@ public class PitchController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get a pitch", description = "Api use to get a pitch with pitch-id")
 	@GetMapping("{id}")
 	ApiResponse<PitchDetailsResponse> getPitch(@PathVariable int id) {
 		return ApiResponse.<PitchDetailsResponse>builder()
@@ -65,6 +73,7 @@ public class PitchController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get all active pitches")
 	@GetMapping
 	ApiResponse<List<PitchResponse>> getPitches(
 			@RequestParam(required = false) String rates,
@@ -80,6 +89,7 @@ public class PitchController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get all pitches", description = "Admin use this api to get all pitches")
 	@GetMapping("admin")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<PitchResponse>> getPitchesByAdmin(

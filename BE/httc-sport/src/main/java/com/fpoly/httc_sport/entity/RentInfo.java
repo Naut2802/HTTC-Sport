@@ -51,11 +51,13 @@ public class RentInfo {
 	@JoinColumn(name = "payment_method")
 	PaymentMethod paymentMethod;
 	
+	@OneToOne
+	@JoinColumn(name = "transaction_id")
+	Transaction transaction;
+	
 	@PrePersist
 	void generateId() {
 		String uuid = UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 6);
 		this.id = Integer.parseInt(uuid);
 	}
-	
-	
 }

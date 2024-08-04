@@ -1,10 +1,10 @@
 package com.fpoly.httc_sport.controller;
 
-import com.fpoly.httc_sport.dto.request.ReviewsRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.BillResponse;
 import com.fpoly.httc_sport.service.BillService;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,9 +17,11 @@ import java.util.List;
 @RequestMapping("api/v1/bill")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Bill Controller")
 public class BillController {
 	BillService billService;
 	
+	@Operation(summary = "Get all bill with user-id")
 	@GetMapping("/get-all-by-user/{userId}")
 	ApiResponse<List<BillResponse>> getAllBillByUser(@PathVariable String userId,
 	                              @RequestParam(defaultValue = "0") int page,
@@ -29,6 +31,7 @@ public class BillController {
 				.build();
 	}
 	
+	@Operation(summary = "Get all bill for admin")
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<BillResponse>> getAllBill(
@@ -39,6 +42,7 @@ public class BillController {
 				.build();
 	}
 	
+	@Operation(summary = "Get all bill with pitch-id", description = "Api for admin")
 	@GetMapping("/get-all-by-pitch/{pitchId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<BillResponse>> getAllBillByPitch(@PathVariable int pitchId,

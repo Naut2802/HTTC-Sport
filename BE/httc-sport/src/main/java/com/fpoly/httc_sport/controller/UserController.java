@@ -8,6 +8,8 @@ import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.ChangePasswordResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
 import com.fpoly.httc_sport.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -21,9 +23,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/user")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "User Controller")
 public class UserController {
 	UserService userService;
 	
+	@Operation(summary = "Api change password")
 	@PatchMapping("change-password/{userId}")
 	ApiResponse<ChangePasswordResponse> changePassword(@PathVariable String userId, @Valid @RequestBody ChangePasswordRequest request) {
 		ChangePasswordResponse response = userService.changePassword(userId, request);
@@ -48,6 +52,7 @@ public class UserController {
 				.build();
 	}
 	
+	@Operation(summary = "Api forgot password (step 1)", description = "Api use for send a verify token when email valid")
 	@GetMapping("forgot-password")
 	ApiResponse<?> checkEmail(@RequestParam("email") String email, HttpServletRequest request) {
 		String response = userService.sendForgotPasswordEmail(email, request);
@@ -57,6 +62,7 @@ public class UserController {
 				.build();
 	}
 	
+	@Operation(summary = "Api forgot password (step 2)", description = "Api use for verify token has sent to email from 'step 1'")
 	@GetMapping("forgot-password/verify-token")
 	ApiResponse<?> validateToken(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
 		String result = userService.validateForgotPasswordToken(token);
@@ -75,6 +81,7 @@ public class UserController {
 				.build();
 	}
 	
+	@Operation(summary = "Api forgot password (step 3)", description = "Api use for reset password with verify token from 'step 2'")
 	@PostMapping("forgot-password/reset-password")
 	ApiResponse<ChangePasswordResponse> resetPassword(@RequestParam("token") String token, @Valid @RequestBody ResetPasswordRequest request) {
 		ChangePasswordResponse response = userService.resetPassword(token, request);
@@ -85,6 +92,7 @@ public class UserController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get a user by user-id", description = "Admin use this api")
 	@GetMapping("{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<UserResponse> getUser(@PathVariable String userId) {
@@ -93,6 +101,7 @@ public class UserController {
 				.build();
 	}
 	
+	@Operation(summary = "Api update a user by user-id", description = "Admin use this api")
 	@PutMapping("{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<UserResponse> updateUser(@PathVariable String userId, @Valid @RequestBody UserUpdateRequest request) {
@@ -101,6 +110,7 @@ public class UserController {
 				.build();
 	}
 	
+	@Operation(summary = "Api authority a user by user-id", description = "Admin use this api")
 	@PutMapping("authorize/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<UserResponse> authorizeUser(@PathVariable String userId, @Valid @RequestBody AuthorizeUserRequest request) {
@@ -109,6 +119,7 @@ public class UserController {
 				.build();
 	}
 	
+	@Operation(summary = "Api deactivate a user by user-id", description = "Admin use this api")
 	@DeleteMapping("{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<String> deleteUser(@PathVariable String userId) {
@@ -118,6 +129,7 @@ public class UserController {
 				.build();
 	}
 	
+	@Operation(summary = "Api get users", description = "Admin use this api")
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<UserResponse>> getUsers(

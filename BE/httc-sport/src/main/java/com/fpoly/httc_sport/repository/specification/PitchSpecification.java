@@ -36,8 +36,4 @@ public class PitchSpecification {
 	public static Specification<Pitch> hasPitchNameContaining(String pitchName) {
 		return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("pitchName"), "%" + pitchName + "%");
 	}
-	
-	public static Specification<Pitch> hasType(String type) {
-		return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("type"), type);
-	}
 }

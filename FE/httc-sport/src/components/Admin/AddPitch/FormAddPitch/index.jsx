@@ -84,7 +84,7 @@ export default function FormAddPitch({ selectedPitch }) {
                 setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
             }
         }
-    }, [selectedPitch, savedPitch, setValue]);
+    }, [selectedPitch, dataCity, districts]);
 
     // Thay đổi Thành Phố
     const handleCityChange = (event) => {
@@ -119,15 +119,17 @@ export default function FormAddPitch({ selectedPitch }) {
             const re = await handleGetPitch(pitchId);
             const dataAPI = re.data.result;
             const dataImage = dataAPI.images;
-            //Kiểm tra đảm bảo dataImage là một mảng và index hợp lệ.
+
+            // Kiểm tra đảm bảo dataImage là một mảng và index hợp lệ
             if (!Array.isArray(dataImage) || index < 0 || index >= dataImage.length) {
                 toast.error('Index không hợp lệ hoặc dataImage không hợp lệ');
                 return;
             }
-            // Lấy publicId của hình ảnh tại vị trí index
-            const publicId = dataImage[index].publicId;
-            console.log(publicId);
+            console.log('Data Image:', dataImage);
+            console.log('Index:', index);
 
+            // Lấy publicId của hình ảnh tại vị trí index
+            const publicId = index.publicId;
             const response = await handleDelImgs(pitchId, publicId);
 
             if (response.data.message === 'Xóa ảnh thành công') {
@@ -235,7 +237,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                             title={`Xóa hình ảnh ${index + 1}`}
                                             className="image-thumbnail m-1 rounded cursor-pointer img-fluid"
                                             style={{ width: '190px', minHeight: '190px' }}
-                                            onClick={() => handleDeleteImage({ publicId: index }, index)}
+                                            onClick={() => handleDeleteImage(image, index)}
                                         />
                                     ))
                                 ) : (

@@ -70,8 +70,8 @@ export const handleGetPitchesWithFilter = async (data) => {
     );
 };
 
-export const handleGetPitch = async (id) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${id}`);
+export const handleGetPitch = async (pitchId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${pitchId}`);
 };
 
 export const handleChangePitchInfo = async (pitchId, data) => {

@@ -1,9 +1,9 @@
+import { Box, Button, TextField, Typography } from '@mui/material';
 import React from 'react';
-import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { handleChangePasswordUser, handleLogoutAPI } from '~/apis';
-import { Box, Button, TextField, Typography } from '@mui/material';
 
 import logo from '~/components/Images/logo.png';
 
@@ -22,7 +22,7 @@ export default function ChangePassword() {
             localStorage.removeItem('userId');
             localStorage.removeItem('token');
             localStorage.removeItem('role');
-            navigate('/login');
+            navigate('/');
         } else toast.error(res.data?.message);
     };
     return (

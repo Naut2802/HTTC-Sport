@@ -23,6 +23,7 @@ export default function PitchList() {
         const fetchData = async () => {
             try {
                 const res = await handleGetPitches();
+                console.log(res.data);
                 setPitches(res.data.result);
             } catch (error) {
                 console.error(error);
@@ -63,7 +64,7 @@ export default function PitchList() {
                                 <CardMedia
                                     component="img"
                                     sx={{ width: 260 }}
-                                    image={pitch.images[0].url} // Nếu API trả về đường dẫn ảnh
+                                    image={pitch.image.url} // Nếu API trả về đường dẫn ảnh
                                     alt={pitch.pitchName}
                                     className="img-fluid"
                                 />

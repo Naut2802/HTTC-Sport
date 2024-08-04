@@ -25,7 +25,7 @@ export default function Login() {
         if (checkRole === 'ADMIN') {
             navigate('/admin/trang-chu');
         } else {
-            navigate('/trang-chu');
+            navigate('/');
         }
 
         toast.success('Đăng nhập thành công');

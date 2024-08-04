@@ -215,7 +215,6 @@ export default function Header() {
                     </Box>
 
                     {!checkUser ? (
-                        // <Typography component={Link} to="/login" variant="">
                         <Button
                             onClick={() => setOpenPopup(true)}
                             sx={{ ml: 1, color: 'teal' }}

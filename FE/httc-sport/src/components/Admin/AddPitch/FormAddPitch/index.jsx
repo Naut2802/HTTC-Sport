@@ -140,12 +140,13 @@ export default function FormAddPitch({ selectedPitch }) {
 
     const handleDeleteImage = async (image, index) => {
         const pitchId = selectedPitch.id;
+        const publicId = image.publicId;
 
         try {
             console.log('Xóa image:', image.publicId);
             console.log('Xóa image:', pitchId);
 
-            const response = await handleDelImgs(pitchId, image.publicId);
+            const response = await handleDelImgs(pitchId, publicId);
             console.log(response);
 
             if (response.data.message === 'Xóa ảnh thành công') {
@@ -178,7 +179,7 @@ export default function FormAddPitch({ selectedPitch }) {
 
         try {
             const res = await handleCreatePitch(formData);
-            toast.success(res.data.message);
+            toast.success('Thêm sân thành công!');
             console.log('Pitch added successfully');
         } catch (error) {
             console.error('Failed to add pitch:', error);

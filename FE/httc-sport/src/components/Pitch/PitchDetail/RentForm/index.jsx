@@ -61,6 +61,7 @@ export default function RentForm({ id }) {
             setDataPayment(data);
             const res = await handleRentPitch(data);
             setResPayment(res.data.result);
+            toast.info('Đã nhận thông tin đặt sân. Vui lòng hoàn tất thanh toán!');
             setOpenPopup(true);
         } else {
             toast.error('Vui lòng chọn ngày và giờ hợp lệ!');

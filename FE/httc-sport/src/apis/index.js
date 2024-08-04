@@ -113,3 +113,11 @@ export const handleConfirmRent = async (code, id, status) => {
         `${API_ROOT}/api/v1/rent-pitch/confirm-rent?code=${code}&id=${id}&status=${status}`,
     );
 };
+
+export const handleGetRentInfoById = async (id) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/${id}`);
+};
+
+export const handleGetAllRentInfoByUser = async (userId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/get-all-by-user/${userId}`);
+};

@@ -83,7 +83,7 @@ export default function AccordionAdmin() {
                 <p className="m-2">Khác</p>
                 <Typography
                     component={Link}
-                    to="/admin/dat-san"
+                    to="/san-bong"
                     className="mx-4 my-2 text-decoration-none"
                     sx={{ color: '#595C5F', '&:hover': { color: 'blue' } }}
                 >

@@ -425,7 +425,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                 render={({ field }) => (
                                     <RadioGroup {...field} aria-labelledby="demo-radio-buttons-group-label">
                                         <Typography component="div" className="d-flex">
-                                            <FormControlLabel value="Sân 5" control={<Radio />} label="Sân 5" />
+                                            <FormControlLabel value="5" control={<Radio />} label="Sân 5" />
                                         </Typography>
                                     </RadioGroup>
                                 )}

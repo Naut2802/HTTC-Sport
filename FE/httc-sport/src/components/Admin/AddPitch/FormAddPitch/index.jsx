@@ -17,7 +17,14 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { handleCreatePitch, handleDelImgs, handleProvinces, handleUpdatePitch } from '~/apis';
+import {
+    handleCreatePitch,
+    handleDelImgs,
+    // handleGetPitchAdmin,
+    handleProvinces,
+    handleUpdatePitch,
+} from '~/apis';
+
 const ValidationTextField = styled(TextField)({
     width: '100%',
     '& input:valid + fieldset': {
@@ -33,7 +40,7 @@ const ValidationTextField = styled(TextField)({
         padding: '4px !important',
     },
 });
-//
+
 export default function FormAddPitch({ selectedPitch }) {
     const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
     const { register, handleSubmit, control, setValue, reset } = useForm();
@@ -44,7 +51,6 @@ export default function FormAddPitch({ selectedPitch }) {
     const [selectedImages, setSelectedImages] = useState([]);
     const [fileNames, setFileNames] = useState([]);
 
-    //Dữ liệu API Thành phố HCM
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -52,30 +58,30 @@ export default function FormAddPitch({ selectedPitch }) {
                 const hcmCity = response.data[49]; // Lấy thành phố Hồ Chí Minh từ vị trí thứ 49
                 setDataCity(hcmCity ? [hcmCity] : []);
             } catch (error) {
-                console.error('Error fetching data: ', error);
+                console.error('Lỗi đỗ dữ liệu: ', error);
                 setDataCity([]);
             }
         };
-
         fetchData();
     }, []);
 
-    //Edit fill thông tin
     useEffect(() => {
-        if (selectedPitch) {
-            setValue('pitchName', selectedPitch.pitchName);
-            setValue('price', selectedPitch.price);
-            setValue('street', selectedPitch.street);
-            setValue('city', selectedPitch.city);
-            setValue('district', selectedPitch.district);
-            setValue('ward', selectedPitch.ward);
-            setValue('description', selectedPitch.description);
-            setValue('type', selectedPitch.type);
-            setValue('total', selectedPitch.total);
-            setValue('images', selectedPitch.images);
-            setSelectedImages(selectedPitch.images || []);
-            const city = selectedPitch.city;
-            const district = selectedPitch.district;
+        if (selectedPitch || savedPitch) {
+            const pitch = selectedPitch || savedPitch;
+            setValue('pitchName', pitch.pitchName);
+            setValue('price', pitch.price);
+            setValue('street', pitch.street);
+            setValue('city', pitch.city);
+            setValue('district', pitch.district);
+            setValue('ward', pitch.ward);
+            setValue('description', pitch.description);
+            setValue('type', pitch.type);
+            setValue('total', pitch.total);
+            setValue('images', pitch.images);
+
+            setSelectedImages(pitch.images || []);
+            const city = pitch.city;
+            const district = pitch.district;
 
             if (city) {
                 handleCityChange({ target: { value: city } });
@@ -83,36 +89,10 @@ export default function FormAddPitch({ selectedPitch }) {
             if (district) {
                 setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
             }
-        } else {
-            if (savedPitch) {
-                setValue('pitchName', savedPitch.pitchName);
-                setValue('price', savedPitch.price);
-                setValue('street', savedPitch.street);
-                setValue('city', savedPitch.city);
-                setValue('district', savedPitch.district);
-                setValue('ward', savedPitch.ward);
-                setValue('description', savedPitch.description);
-                setValue('type', savedPitch.type);
-                setValue('total', savedPitch.total);
-                setValue('images', savedPitch.images);
-                setSelectedImages(savedPitch.images || []);
-
-                const city = savedPitch.city;
-                const district = savedPitch.district;
-
-                //Cập nhật thành phố và quận nếu chúng tồn tại
-                if (city) {
-                    handleCityChange({ target: { value: city } });
-                }
-                if (district) {
-                    // Sử dụng setTimeout để đảm bảo rằng các quận được cập nhật trước khi gọi hàm này
-                    setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
-                }
-            }
         }
-    }, [selectedPitch, setValue, dataCity, districts]);
+    }, [selectedPitch, savedPitch, setValue]);
 
-    //Khi Thay đổi Thành phố lấy Quận theo TP
+    // Thay đổi Thành Phố
     const handleCityChange = (event) => {
         const cityId = event.target.value;
         const selectedCity = dataCity.find((city) => city.Name === cityId);
@@ -120,39 +100,36 @@ export default function FormAddPitch({ selectedPitch }) {
         setWards([]);
     };
 
-    //Khi Thay đổi Quận lấy Phường theo Quận
+    //Thay đổi Quận
     const handleDistrictChange = (event) => {
         const districtId = event.target.value;
         const selectedDistrict = districts.find((district) => district.Name === districtId);
         setWards(selectedDistrict ? selectedDistrict.Wards : []);
     };
 
-    //Khi chọn thay đổi Image fill Image và tạo url tạm thời cho Images
     const handleImageChange = (event) => {
         const files = event.target.files;
-        console.log('Files selected:', files);
         const fileArray = Array.from(files);
         const fileNamesList = fileArray.map((file) => file.name);
-        console.log('File names:', fileNamesList);
+
         setFileNames(fileNamesList);
 
-        // Tạo URL tạm thời cho hình ảnh mới
         const newImageUrls = fileArray.map((file) => URL.createObjectURL(file));
         setSelectedImages((prevImages) => [...prevImages, ...newImageUrls]);
     };
 
-    // Xóa image khi click vào hình
-    const handleDeleteImage = async (image, index) => {
+    // Xóa ảnh
+    const handleDeleteImage = async (images, index) => {
         const pitchId = selectedPitch.id;
-        const publicId = image.publicId;
+        const publicId = images.publicId;
+        // const re = await handleGetPitchAdmin(pitchId);
+        // const dataAPI = re.data.result;
+        // const dataImage = dataAPI.images;
+        // const publicId = dataImage.map((image) => image.publicId);
+        // console.log(publicId);
 
         try {
-            console.log('Xóa image:', image.publicId);
-            console.log('Xóa image:', pitchId);
-
             const response = await handleDelImgs(pitchId, publicId);
-            console.log(response);
-
             if (response.data.message === 'Xóa ảnh thành công') {
                 setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
                 toast.success('Hình ảnh đã được xóa thành công!');
@@ -163,7 +140,7 @@ export default function FormAddPitch({ selectedPitch }) {
         }
     };
 
-    //Thêm Sân
+    // Handle form submission for adding a pitch
     const submitAddPitch = async (data) => {
         const formData = new FormData();
         formData.append('pitchName', data.pitchName);
@@ -185,33 +162,30 @@ export default function FormAddPitch({ selectedPitch }) {
         try {
             const res = await handleCreatePitch(formData);
             toast.success('Thêm sân thành công!');
-            console.log('Pitch added successfully');
         } catch (error) {
             console.error('Failed to add pitch:', error);
+            toast.error('Không thể thêm sân!');
         }
+        window.location.reload();
     };
 
-    //Cập Nhật Sân
+    // Handle form submission for updating a pitch
     const submitUpdatePitch = async (data) => {
-        console.log(savedPitch?.id);
-        console.log(selectedPitch?.id);
         try {
             const pitchId = selectedPitch?.id || savedPitch?.id;
-            const res = await handleUpdatePitch(pitchId, data);
+            if (!pitchId) return;
 
-            if (res && res.data) {
-                toast.success(res.data.message || 'Cập nhật sân thành công!');
-                sessionStorage.removeItem('selectedPitch');
-            } else {
-                toast.error('Cập nhật sân thất bại!');
-            }
+            const res = await handleUpdatePitch(pitchId, data);
+            toast.success(res?.data?.message || 'Cập nhật sân thành công!');
+            sessionStorage.removeItem('selectedPitch');
         } catch (error) {
             console.error('Error updating pitch:', error);
             toast.error('Cập nhật sân thất bại!');
         }
+        window.location.reload();
     };
 
-    //Reset Form Sân
+    // Reset form
     const submitReset = () => {
         reset({
             id: '',
@@ -228,13 +202,11 @@ export default function FormAddPitch({ selectedPitch }) {
         });
         setSelectedImages([]);
         setFileNames([]);
-
         sessionStorage.removeItem('selectedPitch');
     };
 
-    //Điều khiện submit button
+    // Handle form submission
     const onSubmit = async (data) => {
-        console.log('Data to be submitted:', data);
         if (selectedPitch || savedPitch) {
             await submitUpdatePitch(data);
         } else {
@@ -252,15 +224,16 @@ export default function FormAddPitch({ selectedPitch }) {
                     <div className="row">
                         <Typography className="card-body fs-3" variant="h6" component="div">
                             <div className="m-2">
-                                {selectedImages.length > 0 ? (
+                                {Array.isArray(selectedImages) && selectedImages.length > 0 ? (
                                     selectedImages.map((image, index) => (
                                         <img
                                             key={index}
-                                            src={image.url || image}
-                                            alt={`Hình ảnh ${index}`}
+                                            src={image?.url || image}
+                                            alt={`Hình ảnh ${index + 1}`}
+                                            title={`Xóa hình ảnh ${index + 1}`}
+                                            className="image-thumbnail m-1 rounded cursor-pointer img-fluid"
                                             style={{ width: '190px', minHeight: '190px' }}
-                                            onClick={() => handleDeleteImage(image, index)}
-                                            className="m-1 rounded items-algin-center"
+                                            onClick={() => handleDeleteImage({ publicId: index }, index)}
                                         />
                                     ))
                                 ) : (

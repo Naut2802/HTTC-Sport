@@ -2,16 +2,24 @@ import { Breadcrumbs, Button, Card, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { handleDeletePitch, handleGetPitches } from '~/apis';
+import { handleDeletePitch, handleGetPitchesAdmin, handleGetPitchAdmin } from '~/apis';
+
+function formatCurrency(amount) {
+    return amount.toLocaleString('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+}
 
 export default function ListPitchs() {
     const [pitches, setPitch] = useState([]);
+    const [selectedPitch, setSelectedPitch] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const re = await handleGetPitches();
-                console.log(re.data.result);
+                const re = await handleGetPitchesAdmin();
+                // console.log(re.data.result);
 
                 setPitch(re.data.result);
             } catch (error) {
@@ -22,10 +30,19 @@ export default function ListPitchs() {
         fetchData();
     }, []);
 
-    const handleEditClick = (data) => {
-        console.log(data);
-        sessionStorage.setItem('selectedPitch', JSON.stringify(data));
-        window.location.href = '/admin/them-san';
+    const handleEditClick = async (data) => {
+        const pitchId = data.id;
+        console.log(pitchId);
+        try {
+            const re = await handleGetPitchAdmin(pitchId);
+            // console.log(re.data.result);
+            const dataPitch = re.data.result;
+            setSelectedPitch(dataPitch);
+            sessionStorage.setItem('selectedPitch', JSON.stringify(dataPitch));
+            window.location.href = '/admin/them-san';
+        } catch (error) {
+            console.error('Lỗi: ', error);
+        }
     };
 
     const handleDelClick = async (pitch) => {
@@ -49,6 +66,7 @@ export default function ListPitchs() {
             console.error('Lỗi xóa Sân:', error);
             toast.error('Xóa sân thất bại!');
         }
+        window.location.reload();
     };
 
     return (
@@ -67,11 +85,11 @@ export default function ListPitchs() {
                     <div className="row">
                         <Typography className="col-4 " component="div">
                             <img
-                                src={pitch.image.url}
-                                alt={pitch.pitchName}
+                                src={pitch.image && pitch.image.url ? pitch.image.url : 'default-image-url.jpg'}
+                                alt={pitch.image ? pitch.pitchName : 'Sân Ngưng Hoạt Động'}
                                 style={{
                                     width: '100%',
-                                    height: 'auto',
+                                    minHeightt: '50%',
                                 }}
                                 className="rounded m-2"
                             />
@@ -79,8 +97,8 @@ export default function ListPitchs() {
                         <Typography className="col-8 mt-2" component="div">
                             <div className="d-flex justify-content-end mx-4">
                                 Trạng Thái:
-                                <span className={`fw-bold mx-2 ${pitch.status ? 'text-danger' : 'text-success'}`}>
-                                    {pitch.status ? 'Ngưng Hoạt Động' : 'Hoạt Động'}
+                                <span className={`fw-bold mx-2 ${pitch.isEnabled ? 'text-success' : 'text-danger'}`}>
+                                    {pitch.isEnabled ? 'Hoạt Động' : 'Ngưng Hoạt Động'}
                                 </span>
                             </div>
                             <div className="fs-3 fw-bold">{pitch.pitchName}</div>
@@ -88,7 +106,8 @@ export default function ListPitchs() {
                                 <span>Loại Sân: {pitch.type}</span>
                             </div>
                             <div className="my-1">
-                                <span className="text-danger fs-5 fw-bold">Giá: {pitch.price} VNĐ</span>
+                                Giá:
+                                <span className="fw-bolder mx-1">{formatCurrency(pitch.price)}</span>
                             </div>
                             <div className="my-1">
                                 <span>Địa Chỉ: {`${pitch.street}, ${pitch.ward}, ${pitch.city}`}</span>
@@ -97,13 +116,26 @@ export default function ListPitchs() {
                                 <span>Mô Tả: {pitch.description}</span>
                             </div>
                             <div className="d-flex justify-content-end">
-                                <Tooltip title="Chỉnh Sửa">
-                                    <Button variant="contained" className="my-2" onClick={() => handleEditClick(pitch)}>
-                                        Chỉnh Sửa
-                                    </Button>
+                                <Tooltip title={pitch.isEnabled ? 'Chỉnh Sửa' : 'Sân không khả dụng'}>
+                                    <span>
+                                        <Button
+                                            variant="contained"
+                                            className="my-2"
+                                            onClick={() => handleEditClick(pitch)}
+                                            disabled={!pitch.isEnabled}
+                                        >
+                                            Chỉnh Sửa
+                                        </Button>
+                                    </span>
                                 </Tooltip>
-                                <Tooltip title="Xóa">
-                                    <Button variant="contained" className="my-2 mx-2" onClick={() => handleDelClick(pitch.id)}>
+
+                                <Tooltip title={pitch.isEnabled ? 'Xóa' : 'Sân không khả dụng'}>
+                                    <Button
+                                        variant="contained"
+                                        className="my-2 mx-2"
+                                        onClick={() => handleDelClick(pitch.id)}
+                                        disabled={!pitch.isEnabled}
+                                    >
                                         Xóa
                                     </Button>
                                 </Tooltip>

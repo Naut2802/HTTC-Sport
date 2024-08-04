@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { handleGetPitches } from '~/apis';
+import { handleGetPitchesAdmin, handleGetPitchAdmin } from '~/apis';
 
 export default function TableListPitch({ onRowClick }) {
     const [pitch, setPitch] = useState([]);
@@ -11,12 +11,15 @@ export default function TableListPitch({ onRowClick }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const re = await handleGetPitches();
-                const dataWithId = re.data.result.map((item, index) => ({
-                    ...item,
-                    id: item.id || index,
-                    address: `${item.street || ''}, ${item.ward || ''}, ${item.district || ''}, ${item.city || ''}`,
-                }));
+                const response = await handleGetPitchesAdmin();
+                // Lọc dữ liệu giữ các sân có trạng thái === true
+                const dataWithId = response.data.result
+                    .filter((item) => item.isEnabled)
+                    .map((item, index) => ({
+                        ...item,
+                        id: item.id || index,
+                        address: `${item.street || ''}, ${item.ward || ''}, ${item.district || ''}, ${item.city || ''}`,
+                    }));
                 setPitch(dataWithId);
             } catch (error) {
                 console.error(error);
@@ -25,6 +28,20 @@ export default function TableListPitch({ onRowClick }) {
         };
         fetchData();
     }, []);
+
+    const handleEditPitch = async (params) => {
+        try {
+            const pitchId = params.row.id; // Lấy ID từ params
+            const response = await handleGetPitchAdmin(pitchId);
+            const Data = response.data.result;
+            console.log(Data);
+            // Gọi onRowClick với dữ liệu trả về từ API
+            onRowClick(Data);
+        } catch (error) {
+            console.error('Error fetching pitch:', error);
+            toast.error('Failed to fetch pitch details');
+        }
+    };
 
     const columns = [
         { field: 'pitchName', headerName: 'Tên Sân', width: 150 },
@@ -38,7 +55,7 @@ export default function TableListPitch({ onRowClick }) {
             width: 100,
             renderCell: (params) => (
                 <Tooltip title="Chỉnh Sửa" variant="solid">
-                    <Button onClick={() => onRowClick(params.row)} sx={{ color: 'green' }}>
+                    <Button onClick={() => handleEditPitch(params)} sx={{ color: 'green' }}>
                         <CreateIcon />
                     </Button>
                 </Tooltip>

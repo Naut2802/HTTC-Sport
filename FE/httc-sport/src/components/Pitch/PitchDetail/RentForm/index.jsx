@@ -93,7 +93,6 @@ export default function RentForm({ id }) {
                         </FormControl>
                     </Grid>
                 </Grid>
-                <Typography variant="subtitle2" color="text.dark"></Typography>
                 <Box
                     component="form"
                     onSubmit={handleSubmit(submitRentPitch)}

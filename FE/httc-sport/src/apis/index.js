@@ -56,16 +56,18 @@ export const handleResetPasswordUser = async (token, data) => {
 
 // ----------------------------------PITCH API--------------------------------------
 
-export const handleGetPitches = async () => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch`);
-};
-
 export const handleGetPitchesAdmin = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/admin`);
 };
 
-export const handleGetPitchAdmin = async (pitchId) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${pitchId}`);
+export const handleGetPitches = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch`);
+};
+
+export const handleGetPitchesWithFilter = async (data) => {
+    return await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/v1/pitch?rates=${data.rates}&district=${data.district}&city=${data.city}&name=${data.name}&price=${data.price}&type=${data.type}`,
+    );
 };
 
 export const handleGetPitch = async (id) => {

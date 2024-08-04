@@ -2,7 +2,7 @@ import { Breadcrumbs, Button, Card, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { handleDeletePitch, handleGetPitchesAdmin, handleGetPitchAdmin } from '~/apis';
+import { handleDeletePitch, handleGetPitch, handleGetPitchesAdmin } from '~/apis';
 
 function formatCurrency(amount) {
     return amount.toLocaleString('vi-VN', {
@@ -31,10 +31,10 @@ export default function ListPitchs() {
     }, []);
 
     const handleEditClick = async (data) => {
-        const pitchId = data.id;
-        console.log(pitchId);
+        const id = data.id;
+        console.log(id);
         try {
-            const re = await handleGetPitchAdmin(pitchId);
+            const re = await handleGetPitch(id);
             // console.log(re.data.result);
             const dataPitch = re.data.result;
             setSelectedPitch(dataPitch);

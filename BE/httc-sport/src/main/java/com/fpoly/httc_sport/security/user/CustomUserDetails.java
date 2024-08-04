@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.StringJoiner;
 
-@Data
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CustomUserDetails implements UserDetails {

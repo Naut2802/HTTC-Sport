@@ -2,9 +2,7 @@ package com.fpoly.httc_sport.controller;
 
 import com.fpoly.httc_sport.dto.request.ReviewsRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
-import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
 import com.fpoly.httc_sport.dto.response.ReviewResponse;
-import com.fpoly.httc_sport.service.BillService;
 import com.fpoly.httc_sport.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -341,11 +341,17 @@ public class RentInfoService {
 		return rentInfoMapper.toRentInfoResponse(rentInfoRepository.save(rentInfo));
 	}
 	
-	public void deleteRentInfo(int id) {
-		if (!rentInfoRepository.existsById(id))
-			throw new AppException(ErrorCode.RENT_INFO_NOT_EXISTED);
+	public String deleteRentInfo(int id) {
+		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
+		);
 		
-		rentInfoRepository.deleteById(id);
+		if (rentInfo.getPaymentStatus())
+			return "Không thể xóa thông tin đặt sân này (Đã thanh toán cọc)";
+		else {
+			rentInfoRepository.delete(rentInfo);
+			return "Xóa thông tin đặt sân thành công";
+		}
 	}
 
 	public void exchangeRentInfoToBill(int id) {

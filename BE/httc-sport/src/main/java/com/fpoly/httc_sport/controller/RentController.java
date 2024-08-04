@@ -105,10 +105,9 @@ public class RentController {
 	@Operation(summary = "Api delete rent-info if paymentStatus false")
 	@DeleteMapping("{id}")
 	ApiResponse<?> deleteRentInfo(@PathVariable int id) {
-		rentInfoService.deleteRentInfo(id);
 		
 		return ApiResponse.builder()
-				.message("Đã xóa thông tin đặt sân")
+				.message(rentInfoService.deleteRentInfo(id))
 				.build();
 	}
 	

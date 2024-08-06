@@ -3,6 +3,7 @@ package com.fpoly.httc_sport.entity;
 import java.util.List;
 import java.util.Set;
 
+import com.fpoly.httc_sport.event.listener.UserListener;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -14,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@EntityListeners(UserListener.class)
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
@@ -29,7 +31,7 @@ public class User {
 	String phoneNumber;
 	Boolean isEnabled;
 	
-	@OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	Wallet wallet;
 	
 	@ManyToOne @JoinColumn(name = "vip")

@@ -47,6 +47,6 @@ jobs:
       - name: Create .env file from secret
         run: echo "${{ secrets.ENV }}" >> /home/linux/app/.env
       - name: Run docker container
-        run: docker run --env-file /home/linux/app/.env \
-            --restart unless-stopped -d -p 8082:8082 \
+        run: docker run --env-file /home/linux/app/.env
+            --restart unless-stopped -d -p 8082:8082
             --name httc-sport-container naut2802/httc-sport:latest

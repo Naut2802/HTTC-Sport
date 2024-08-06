@@ -25,16 +25,16 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker Image
-        run: docker build -t httc-sport BE/httc-sport
+        run: docker build -t naut2802/httc-sport BE/httc-sport
       - name: Publish image to Docker Hub
-        run: docker image push httc-sport:latest
+        run: docker image push naut2802/httc-sport:latest
   deploy:
     needs: build
     runs-on: [ip-172-31-25-218]
     steps:
       - name: Pull Image from Docker Hub
-        run: docker pull httc-sport:latest
+        run: docker pull naut2802/httc-sport:latest
       - name: Delete old container
-        run: docker rm -f httc-sport-container
+        run: docker rm -f naut2802/httc-sport-container
       - name: Run docker container
-        run: docker run -d -p 8082:8082 --name httc-sport-container httc-sport
+        run: docker run -d -p 8082:8082 --name httc-sport-container naut2802/httc-sport:latest

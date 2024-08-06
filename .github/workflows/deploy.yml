@@ -43,7 +43,7 @@ jobs:
         run: docker rm -f httc-sport-container
       - name: Create .env file from secret
         run: |
-          mkdir -p /home/linux/app/.env
+          mkdir -p /home/linux/app
           echo "${{ secrets.ENV }}" >> /home/linux/app/.env
       - name: Run docker container
         run: docker run --env-file /home/linux/app/.env -d -p 8082:8082 --name httc-sport-container naut2802/httc-sport:latest

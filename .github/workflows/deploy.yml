@@ -30,7 +30,7 @@ jobs:
         run: docker image push naut2802/httc-sport:latest
   deploy:
     needs: build
-    runs-on: [ip-172-31-25-218]
+    runs-on: [aws-ec2]
     steps:
       - name: Pull Image from Docker Hub
         run: docker pull naut2802/httc-sport:latest

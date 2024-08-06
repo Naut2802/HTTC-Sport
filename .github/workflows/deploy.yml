@@ -3,7 +3,7 @@ name: CICD
 on:
   push:
     branches:
-      - deploy-be
+      - main
 
 jobs:
   build:

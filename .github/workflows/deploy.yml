@@ -25,7 +25,7 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker Image
-        run: docker build -t httc-sport .
+        run: docker build -t httc-sport BE/httc-sport
       - name: Publish image to Docker Hub
         run: docker push httc-sport
   deploy:

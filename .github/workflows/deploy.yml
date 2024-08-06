@@ -27,7 +27,7 @@ jobs:
       - name: Build Docker Image
         run: docker build -t httc-sport BE/httc-sport
       - name: Publish image to Docker Hub
-        run: docker push httc-sport:latest
+        run: docker image push httc-sport:latest
   deploy:
     needs: build
     runs-on: [ip-172-31-25-218]

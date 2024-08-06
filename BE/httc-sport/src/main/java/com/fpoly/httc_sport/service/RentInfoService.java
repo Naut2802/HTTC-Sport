@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.fpoly.httc_sport.entity.RentInfo;
+import com.fpoly.httc_sport.entity.User;
 import com.fpoly.httc_sport.repository.*;
 import com.fpoly.httc_sport.utils.Enum.BillStatusEnum;
 import com.fpoly.httc_sport.utils.Enum.PaymentMethodEnum;
@@ -149,20 +151,14 @@ public class RentInfoService {
 				.orElse(userRepository.findByEmail(request.getEmail()).orElse(null));
 		
 		var rentInfo = rentInfoMapper.toRentInfo(request);
+		
 		rentInfo.setPitch(pitch);
 		rentInfo.setUser(user);
 		rentInfo.setStartTime(startTime);
 		rentInfo.setEndTime(endTime);
-		float discountRate = user != null ? user.getVip().getDiscountRate() : 1;
-		int price = (int) (((float) request.getRentTime() / 60) * pitch.getPrice());
-		int total = rentInfo.getTypePitch() == 5 ? price
-				: rentInfo.getTypePitch() == 7 ? price * 3
-				: rentInfo.getTypePitch() == 11 ? price * 9 : price;
-		
-		total = (int) (total * paymentMethod.getPriceRate() * discountRate);
-		
-		rentInfo.setTotal(total);
 		rentInfo.setPaymentMethod(paymentMethod);
+		int total = getTotal(request.getRentTime(), user, rentInfo);
+		rentInfo.setTotal(total);
 		
 		rentInfo = rentInfoRepository.save(rentInfo);
 		
@@ -183,7 +179,7 @@ public class RentInfoService {
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
 		
-		if (code.equals("01") || !status.equals("PAID")) {
+		if (!code.equals("00") || !status.equals("PAID")) {
 			rentInfoRepository.delete(rentInfo);
 			return RentResponse.builder().message("Thanh toán đặt cọc thất bại").build();
 		}
@@ -330,15 +326,33 @@ public class RentInfoService {
 		else if ( countByStartTimeBetween.get() > rentInfo.getPitch().getTotal() || countByEndTimeBetween.get() > rentInfo.getPitch().getTotal() )
 			throw new DateTimeException("Đặt sân thất bại, không còn sân trống trong khoảng thời gian này");
 		
+		var user = rentInfo.getUser();
 		rentInfoMapper.updateRentInfo(rentInfo, request);
+		
+		int total = getTotal(request.getRentTime(), user, rentInfo);
+		
 		rentInfo.setStartTime(startTime);
 		rentInfo.setEndTime(endTime);
-		int total = (int) (((float) request.getRentTime() / 60) * (rentInfo.getPitch().getPrice() * rentInfo.getPaymentMethod().getPriceRate()));
-		rentInfo.setTotal(rentInfo.getTypePitch() == 5 ? total
-				: rentInfo.getTypePitch() == 7 ? total * 3
-				: rentInfo.getTypePitch() == 11 ? total * 9 : total);
+		rentInfo.setTotal(total);
 		
 		return rentInfoMapper.toRentInfoResponse(rentInfoRepository.save(rentInfo));
+	}
+	
+	private int getTotal(int rentTime, User user, RentInfo rentInfo) {
+		float discountRate = user != null ? user.getVip().getDiscountRate() : 1;
+		int price = (int) (((float) rentTime / 60) * rentInfo.getPitch().getPrice());
+		int total = rentInfo.getTypePitch() == 5 ? price
+				: rentInfo.getTypePitch() == 7 ? price * 3
+				: rentInfo.getTypePitch() == 11 ? price * 9 : price;
+		total = (int) (total * rentInfo.getPaymentMethod().getPriceRate() * discountRate);
+		
+		if (rentInfo.getPaymentMethod().getMethod().equals(PaymentMethodEnum.WALLET)) {
+			if (user == null)
+				throw new AppException(ErrorCode.PAYMENT_METHOD_INVALID);
+			else if (user.getWallet().getMoney() < total)
+				throw new AppException(ErrorCode.WALLET_NOT_ENOUGH);
+		}
+		return total;
 	}
 	
 	public String deleteRentInfo(int id) {

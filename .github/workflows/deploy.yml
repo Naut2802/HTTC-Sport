@@ -18,10 +18,10 @@ jobs:
           java-version: '21'
       - name: Create application.properties from secret
         run: |
-          mkdir -p src/main/resources
-          echo "${{ secrets.ENV }}" >> src/main/resources/application.properties
+          mkdir -p BE/httc-sport/src/main/resources
+          echo "${{ secrets.ENV }}" >> BE/httc-sport/src/main/resources/application.properties
       - name: Build Project
-        run: mvn clean package -DskipTests
+        run: mvn -f BE/httc-sport/pom.xml clean package -DskipTests
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker Image

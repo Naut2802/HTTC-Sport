@@ -65,8 +65,7 @@ public enum ErrorCode {
 	REVIEW_EXISTED(1048, "Đã gửi đánh giá hóa đơn này", HttpStatus.BAD_REQUEST),
 	VIP_NOT_EXISTED(1049, "Không tìm thấy bậc vip này", HttpStatus.NOT_FOUND),
 	WALLET_NOT_ENOUGH(1050, "Số dư trong ví không đủ để thanh toán", HttpStatus.BAD_REQUEST),
-	PAYMENT_METHOD_INVALID(1040, "Phương thức thanh toán không hợp lệ, " +
-			"vui lòng đăng nhập hoặc nhập đúng email đã đăng ký tài khoản để thanh toán thông qua ví", HttpStatus.BAD_REQUEST),
+	PAYMENT_METHOD_INVALID(1040, "Vui lòng đăng nhập hoặc nhập đúng email đã đăng ký tài khoản để thanh toán thông qua ví", HttpStatus.BAD_REQUEST),
 	
 	
 	NOT_EXISTED(1096, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),

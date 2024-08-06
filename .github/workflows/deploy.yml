@@ -33,8 +33,11 @@ jobs:
           sudo yum update -y
           sudo amazon-linux-extras install docker -y
           sudo service docker start
+          sudo systemctl enable docker
           sudo usermod -a -G docker $USER
           newgrp docker
+      - name: Verify Docker is running
+        run: sudo systemctl status docker
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Pull Image from Docker Hub
@@ -44,4 +47,6 @@ jobs:
       - name: Create .env file from secret
         run: echo "${{ secrets.ENV }}" >> /home/linux/app/.env
       - name: Run docker container
-        run: docker run --env-file /home/linux/app/.env -d -p 8082:8082 --name httc-sport-container naut2802/httc-sport:latest
+        run: docker run --env-file /home/linux/app/.env \
+            --restart unless-stopped -d -p 8082:8082 \
+            --name httc-sport-container naut2802/httc-sport:latest

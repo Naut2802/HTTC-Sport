@@ -32,6 +32,13 @@ jobs:
     needs: build
     runs-on: [aws-ec2]
     steps:
+      - name: Set up Docker on EC2
+        run: |
+          sudo yum update -y
+          sudo amazon-linux-extras install docker -y
+          sudo service docker start
+          sudo usermod -a -G docker $USER
+          newgrp docker
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Pull Image from Docker Hub

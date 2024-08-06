@@ -32,11 +32,6 @@ jobs:
     needs: build
     runs-on: [aws-ec2]
     steps:
-      - name: Set up Docker on EC2
-        run: |
-          sudo apt update
-          sudo apt install docker.io -y
-          sudo systemctl start docker
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Pull Image from Docker Hub

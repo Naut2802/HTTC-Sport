@@ -1,8 +1,0 @@
-name: CICD FE Pipeline
-
-on:
-  pull_request:
-    branches: [main]
-    types: [closed]
-    paths: 
-      - 'FE/httc-sport/**'

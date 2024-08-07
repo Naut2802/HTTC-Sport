@@ -1,14 +1,13 @@
-name: CICD
+name: CICD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - '**/cicd.yml'
   pull_request:
-    branches:
-      - main
+    branches: [main]
+    types: [closed]
     paths:
       - 'BE/httc-sport/**'
 

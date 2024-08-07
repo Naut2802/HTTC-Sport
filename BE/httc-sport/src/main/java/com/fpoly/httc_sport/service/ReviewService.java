@@ -1,9 +1,7 @@
 package com.fpoly.httc_sport.service;
 
 import com.fpoly.httc_sport.dto.request.ReviewsRequest;
-import com.fpoly.httc_sport.dto.response.PitchDetailsResponse;
 import com.fpoly.httc_sport.dto.response.ReviewResponse;
-import com.fpoly.httc_sport.entity.Bill;
 import com.fpoly.httc_sport.entity.Review;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;

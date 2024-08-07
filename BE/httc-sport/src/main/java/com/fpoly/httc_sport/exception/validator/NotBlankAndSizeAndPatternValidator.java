@@ -5,7 +5,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;
 
-public class NotBlankAndSizeValidator implements ConstraintValidator<NotBlankAndSizeAndPattern, String> {
+public class NotBlankAndSizeAndPatternValidator implements ConstraintValidator<NotBlankAndSizeAndPattern, String> {
 	private int min;
 	private String message;
 	private String regexp;

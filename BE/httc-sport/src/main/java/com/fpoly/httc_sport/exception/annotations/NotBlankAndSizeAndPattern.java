@@ -1,6 +1,6 @@
 package com.fpoly.httc_sport.exception.annotations;
 
-import com.fpoly.httc_sport.exception.validator.NotBlankAndSizeValidator;
+import com.fpoly.httc_sport.exception.validator.NotBlankAndSizeAndPatternValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = NotBlankAndSizeValidator.class)
+@Constraint(validatedBy = NotBlankAndSizeAndPatternValidator.class)
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NotBlankAndSizeAndPattern {

@@ -14,6 +14,6 @@ import lombok.experimental.FieldDefaults;
 public class UserUpdateProfileRequest {
 	String firstName;
 	String lastName;
-	@Pattern(regexp = "^([0-9]{8})$", message = "PHONE_NUMBER_INVALID")
+	@Pattern(regexp = "^([0-9]{10,11})$", message = "PHONE_NUMBER_INVALID")
 	String phoneNumber;
 }

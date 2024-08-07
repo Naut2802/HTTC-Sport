@@ -28,7 +28,7 @@ jobs:
         run: docker image push naut2802/httc-sport:latest
   deploy:
     needs: build
-    runs-on: [self-hosted, aws-ec2]
+    runs-on: [httc-sport-ec2]
     steps:
       - name: Set up Docker on EC2
         run: |

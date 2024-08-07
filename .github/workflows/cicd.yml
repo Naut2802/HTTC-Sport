@@ -1,6 +1,11 @@
 name: CICD
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/cicd.yml'
   pull_request:
     branches:
       - main
@@ -47,7 +52,9 @@ jobs:
       - name: Delete old container
         run: docker rm -f httc-sport-container
       - name: Create .env file from secret
-        run: echo "${{ secrets.ENV }}" >> /home/linux/app/.env
+        run: |
+          mkdir -p /home/linux/app
+          echo "${{ secrets.ENV }}" >> /home/linux/app/.env
       - name: Run docker container
         run: docker run --env-file /home/linux/app/.env
             --restart unless-stopped -d -p 8082:8082

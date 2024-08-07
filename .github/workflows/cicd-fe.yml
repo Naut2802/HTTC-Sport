@@ -1,4 +1,4 @@
-name: deploy fe to github-pages
+name: CICD FE
 
 on:
   pull_request:

@@ -45,14 +45,6 @@ public class AuthenticationController {
 				.build();
 	}
 	
-	//Login with Facebook
-//	@PostMapping("outbound/facebook/authenticate")
-//	ApiResponse<AuthenticationResponse> facebookOutboundAuthenticate(@RequestParam("code") String code, HttpServletResponse response) throws NoSuchAlgorithmException {
-//		return ApiResponse.<AuthenticationResponse>builder()
-//				.result(authenticationService.facebookOutboundAuthenticate(code, response))
-//				.build();
-//	}
-	
 	@Operation(summary = "Sign-up", description = "API sign-up new account")
 	@PostMapping("sign-up")
 	ApiResponse<String> signUp(@Valid @RequestBody RegisterRequest request, HttpServletRequest httpRequest) {

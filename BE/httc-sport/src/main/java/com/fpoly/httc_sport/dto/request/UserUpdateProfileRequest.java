@@ -1,5 +1,6 @@
 package com.fpoly.httc_sport.dto.request;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,5 +14,6 @@ import lombok.experimental.FieldDefaults;
 public class UserUpdateProfileRequest {
 	String firstName;
 	String lastName;
+	@Pattern(regexp = "^([0-9]{8})$", message = "PHONE_NUMBER_INVALID")
 	String phoneNumber;
 }

@@ -1,0 +1,8 @@
+name: deploy fe to github-pages
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+    paths: 
+      - 'FE/httc-sport/**'

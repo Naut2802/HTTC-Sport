@@ -5,6 +5,8 @@ import com.fpoly.httc_sport.dto.response.PayOSResponse;
 import com.fpoly.httc_sport.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,12 +23,20 @@ import java.security.NoSuchAlgorithmException;
 public class PaymentController {
 	PaymentService paymentService;
 	
-	@Operation(summary = "Create payment link", description = "Api use to create a payment link for rent pitch")
+	@Operation(summary = "Create rent pitch payment link", description = "Api use to create a payment link for rent pitch")
 	@PostMapping("rent-pitch/{id}")
 	ApiResponse<PayOSResponse> createRentPaymentLink(@PathVariable int id, @RequestParam("deposit") float deposit)
 			throws NoSuchAlgorithmException, InvalidKeyException {
 		return ApiResponse.<PayOSResponse>builder()
 				.result(paymentService.createRentPaymentLink(id, deposit))
+				.build();
+	}
+	
+	@Operation(summary = "Create top up to wallet payment link", description = "User use this api for top up to wallet")
+	@PostMapping("user-deposit/{id}")
+	ApiResponse<PayOSResponse> createDepositPaymentLink(@PathVariable int transactionId) {
+		return ApiResponse.<PayOSResponse>builder()
+				
 				.build();
 	}
 }

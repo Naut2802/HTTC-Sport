@@ -6,6 +6,7 @@ import com.fpoly.httc_sport.dto.response.PayOSResponse;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.repository.RentInfoRepository;
+import com.fpoly.httc_sport.repository.TransactionRepository;
 import com.fpoly.httc_sport.repository.httpclient.PayOSClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.TreeMap;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PaymentService {
 	RentInfoRepository rentInfoRepository;
+	TransactionRepository transactionRepository;
 	PayOSClient payOSClient;
 	
 	@NonFinal
@@ -53,7 +55,7 @@ public class PaymentService {
 				.cancelUrl("http://localhost:3000/payment/rent/error")
 				.buyerEmail(rentInfo.getEmail())
 				.buyerName(rentInfo.getLastName() + " " + rentInfo.getFirstName())
-				.description("THANH TOAN DAT SAN " + rentInfo.getPitch().getId())
+				.description("THANH TOAN DAT SAN: " + rentInfo.getPitch().getPitchName())
 				.buyerPhone(rentInfo.getPhoneNumber())
 				.amount((int) (rentInfo.getTotal() * deposit))
 				.build();
@@ -71,6 +73,35 @@ public class PaymentService {
 		request.setSignature(signature);
 		
 		return payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
+	}
+	
+	public PayOSResponse createDepositPaymentLink(int transactionId) throws NoSuchAlgorithmException, InvalidKeyException {
+		var transaction = transactionRepository.findById(transactionId).orElseThrow(
+				() -> new AppException(ErrorCode.TRANSACTION_NOT_EXISTED)
+		);
+		
+		PayOSRequest request = PayOSRequest.builder()
+				.returnUrl("http://localhost:3000/payment/deposit/success")
+				.cancelUrl("http://localhost:3000/payment/deposit/error")
+				.orderCode(transaction.getId())
+				.amount(transaction.getPaymentAmount())
+				.description("THANH TOAN NAP TIEN VAO VI KHACH HANG: " + transaction.getWallet().getUser().getUsername())
+				.build();
+		
+		
+		Map<String, String> params = new TreeMap<>();
+		params.put("amount", String.valueOf(request.getAmount()));
+		params.put("cancelUrl", request.getCancelUrl());
+		params.put("description", request.getDescription());
+		params.put("orderCode", String.valueOf(request.getOrderCode()));
+		params.put("returnUrl", request.getReturnUrl());
+		
+		String data = generateData(params);
+		String signature = generateSignature(PAYOS_CHECKSUM_KEY, data);
+		
+		request.setSignature(signature);
+		
+        return payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
 	}
 	
 	public PayOSPaymentResponse getPaymentInfo(String id) {

@@ -42,7 +42,7 @@ public enum ErrorCode {
 	PITCH_TYPE_NULL(1024, "Loại sân không được trống", HttpStatus.BAD_REQUEST),
 	PITCH_TYPE_NAME_NULL(1025, "Loại sân không được trống", HttpStatus.BAD_REQUEST),
 	PITCH_TOTAL_NULL(1026, "Tổng sân không được để trống", HttpStatus.BAD_REQUEST),
-	PITCH_PRICE_NULL(1027, "Giá sân yêu cầu tối thiểu 30000 VNĐ", HttpStatus.BAD_REQUEST),
+	PITCH_PRICE_NULL(1027, "Giá sân không được để trống và yêu cầu tối thiểu 30000 VNĐ", HttpStatus.BAD_REQUEST),
 	PITCH_MIN_PRICE(1028, "Giá sân yêu cầu tối thiểu 300000 VNĐ", HttpStatus.BAD_REQUEST),
 	PITCH_EXISTED(1029, "Đã có sân ở địa chỉ này", HttpStatus.BAD_REQUEST),
 	PITCH_NOT_EXISTED(1030, "Sân không tồn tại", HttpStatus.NOT_FOUND),
@@ -71,6 +71,10 @@ public enum ErrorCode {
 	REVIEW_EXISTED(1050, "Đã gửi đánh giá hóa đơn này", HttpStatus.BAD_REQUEST),
 	VIP_NOT_EXISTED(1051, "Không tìm thấy bậc vip này", HttpStatus.NOT_FOUND),
 	WALLET_NOT_ENOUGH(1052, "Số dư trong ví không đủ để thanh toán", HttpStatus.BAD_REQUEST),
+	WALLET_NOT_EXISTED(1053, "Mã ví không hợp lệ", HttpStatus.BAD_REQUEST),
+	PAYMENT_AMOUNT_MIN(1054, "Số tiền nạp vào ít nhất 2.000 VNĐ", HttpStatus.BAD_REQUEST),
+	PAYMENT_AMOUNT_MAX(1055, "Số tiền nạp vào nhiều nhất 500.000 VNĐ", HttpStatus.BAD_REQUEST),
+	TRANSACTION_NOT_EXISTED(1056, "Không tìm thấy giao dịch", HttpStatus.BAD_REQUEST),
 	
 	
 	NOT_EXISTED(1096, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),

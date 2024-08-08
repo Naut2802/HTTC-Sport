@@ -96,6 +96,16 @@ public class MailerService {
 				+ "<h4> Cảm ơn đã đặt sân của chúng tôi, chúc quý khách có một trải nghiệm thật tốt !";
 	}
 	
+	public String generateDepositBody(String email, String username, int paymentAmount, int total) {
+		return "<h2>Thực hiện thanh toán nạp tiền vào ví HTTC-Wallet thành công</h2>"
+				+ "<h4>Đây là thông tin giao dịch</h4>"
+				+ "<p>Email: <strong>" + email + "</strong></p>\r\n"
+				+ "<p>Tên tài khoản: <strong>" + username + "</strong></p>\r\n"
+				+ "<p>Số tiền giao dịch: <strong>" + paymentAmount + "</strong></p>\r\n"
+				+ "<p>Số dư trong ví hiện tại: <strong>" + total + "</strong></p>\r\n"
+				+ "<p><br> Cảm ơn đã sử dụng dịch vụ của HTTC-Sport !";
+	}
+	
 	@Scheduled(fixedDelay = 1000)
 	public void run() {
 		while(!list.isEmpty()) {

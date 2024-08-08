@@ -26,12 +26,12 @@ public class NotBlankAndSizeAndPatternValidator implements ConstraintValidator<N
 		}
 		if (value.length() < min) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate(message + "_INVALID_1").addConstraintViolation();
+			context.buildConstraintViolationWithTemplate(message + "_INVALID_BLANK").addConstraintViolation();
 			return false;
 		}
 		if (!value.matches(regexp)) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate(message + "_INVALID_2").addConstraintViolation();
+			context.buildConstraintViolationWithTemplate(message + "_INVALID").addConstraintViolation();
 			return false;
 		}
 		return true;

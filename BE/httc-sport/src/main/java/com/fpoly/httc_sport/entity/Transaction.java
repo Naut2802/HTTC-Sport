@@ -2,6 +2,7 @@ package com.fpoly.httc_sport.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fpoly.httc_sport.utils.Enum.TransactionTypeEnum;
 
 import java.util.Date;
 
@@ -17,7 +18,7 @@ public class Transaction {
 	String id;
 	long total;
 	Date createdAt;
-	String transactionType;
+	TransactionTypeEnum transactionType;
 	boolean paymentStatus;
 	
 	@ManyToOne

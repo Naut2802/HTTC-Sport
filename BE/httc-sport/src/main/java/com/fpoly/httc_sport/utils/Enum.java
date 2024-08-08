@@ -35,4 +35,8 @@ public final class Enum {
 		private final int max;
 		private final float discountRate;
 	}
+	public enum TransactionTypeEnum {
+		DEPOSIT,
+		PAY
+	}
 }

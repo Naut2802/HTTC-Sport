@@ -46,7 +46,7 @@ public class UserController {
 	}
 	
 	@PatchMapping("{userId}")
-	ApiResponse<UserResponse> updateProfileUser(@PathVariable String userId, @RequestBody UserUpdateProfileRequest request) {
+	ApiResponse<UserResponse> updateProfileUser(@PathVariable String userId, @Valid @RequestBody UserUpdateProfileRequest request) {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.updateProfileUser(userId, request))
 				.build();

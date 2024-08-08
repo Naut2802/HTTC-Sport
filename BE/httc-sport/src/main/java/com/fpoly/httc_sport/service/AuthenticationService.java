@@ -273,6 +273,7 @@ public class AuthenticationService {
 	private void createRefreshTokenCookie(HttpServletResponse response, String jti) {
 		Cookie refreshTokenCookie = new Cookie("rti", jti);
 		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
 		refreshTokenCookie.setMaxAge((int) REFRESH_TOKEN_VALID_DURATION + (60 * 60 * 48)); // in seconds
 		response.addCookie(refreshTokenCookie);

@@ -53,6 +53,7 @@ public class LogoutHandler implements org.springframework.security.web.authentic
 			
 			Cookie cookie = new Cookie("rti", null);
 			cookie.setHttpOnly(true);
+			cookie.setSecure(true);
 			cookie.setPath("/");
 			cookie.setMaxAge(0);
 			response.addCookie(cookie);

@@ -5,7 +5,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;
 
-public class NotBlankAndSizeValidator implements ConstraintValidator<NotBlankAndSizeAndPattern, String> {
+public class NotBlankAndSizeAndPatternValidator implements ConstraintValidator<NotBlankAndSizeAndPattern, String> {
 	private int min;
 	private String message;
 	private String regexp;
@@ -26,12 +26,12 @@ public class NotBlankAndSizeValidator implements ConstraintValidator<NotBlankAnd
 		}
 		if (value.length() < min) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate(message + "_INVALID_1").addConstraintViolation();
+			context.buildConstraintViolationWithTemplate(message + "_INVALID_BLANK").addConstraintViolation();
 			return false;
 		}
 		if (!value.matches(regexp)) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate(message + "_INVALID_2").addConstraintViolation();
+			context.buildConstraintViolationWithTemplate(message + "_INVALID").addConstraintViolation();
 			return false;
 		}
 		return true;

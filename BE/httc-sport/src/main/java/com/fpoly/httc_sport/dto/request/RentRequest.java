@@ -31,9 +31,9 @@ public class RentRequest {
 	@Pattern(regexp = "^([0-9]{10,11})$", message = "PHONE_NUMBER_INVALID")
 	String phoneNumber;
 	@NotNull(message = "RENT_INFO_FIRST_NAME_NULL")
-	@NotBlankAndSizeAndPattern(regexp = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĂĐĨŨƠƯàáâãèéêìíòóôõùúýăđĩũơưẠ-ỹ\\s]+$", message = "RENT_INFO_FIRST_NAME")
+	@NotBlankAndSizeAndPattern(regexp = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĂĐĨŨƠƯàáâãèéêìíòóôõùúýăđĩũơưẠ-ỹ\\s]+$", message = "FIRST_NAME")
 	String firstName;
-	@NotBlankAndSizeAndPattern(regexp = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĂĐĨŨƠƯàáâãèéêìíòóôõùúýăđĩũơưẠ-ỹ\\s]+$", message = "RENT_INFO_LAST_NAME")
+	@NotBlankAndSizeAndPattern(regexp = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĂĐĨŨƠƯàáâãèéêìíòóôõùúýăđĩũơưẠ-ỹ\\s]+$", message = "LAST_NAME")
 	String lastName;
 	@NotNull(message = "RENT_INFO_RENT_DATE_NULL")
 	LocalDate rentedAt;

@@ -17,7 +17,7 @@ public class Wallet {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	String id;
-	long money;
+	int money;
 	
 	@OneToOne
 	@JoinColumn(name = "user_id")

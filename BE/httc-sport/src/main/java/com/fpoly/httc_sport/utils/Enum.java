@@ -35,8 +35,13 @@ public final class Enum {
 		private final int max;
 		private final float discountRate;
 	}
+	@Getter
+	@AllArgsConstructor
 	public enum TransactionTypeEnum {
-		DEPOSIT,
-		PAY
+		ADMIN_DEPOSIT("Admin nạp tiền vào ví"),
+		DEPOSIT("Nạp tiền vào ví"),
+		PAY("Thanh toán đặt sân");
+		
+		private final String value;
 	}
 }

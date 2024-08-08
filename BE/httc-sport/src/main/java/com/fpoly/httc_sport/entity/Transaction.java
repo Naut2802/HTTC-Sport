@@ -2,9 +2,9 @@ package com.fpoly.httc_sport.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import com.fpoly.httc_sport.utils.Enum.TransactionTypeEnum;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Builder
 @Getter
@@ -14,16 +14,22 @@ import java.util.Date;
 @Entity
 public class Transaction {
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	String id;
-	long total;
+	Integer id;
+	int paymentAmount;
 	Date createdAt;
-	TransactionTypeEnum transactionType;
-	boolean paymentStatus;
+	String transactionType;
+	@Builder.Default
+	boolean paymentStatus = false;
 	
 	@ManyToOne
 	@JoinColumn(name = "wallet_id")
 	Wallet wallet;
 	@OneToOne(mappedBy = "transaction", fetch = FetchType.EAGER)
 	RentInfo rentInfo;
+	
+	@PrePersist
+	void generateId() {
+		String uuid = UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 6);
+		this.id = Integer.parseInt(uuid);
+	}
 }

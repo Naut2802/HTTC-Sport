@@ -29,7 +29,7 @@ public class RentInfo {
 	LocalTime startTime;
 	@Temporal(TemporalType.TIME)
 	LocalTime endTime;
-	Integer total;
+	int total;
 	@Builder.Default
 	Integer deposit = 0;
 	String note;

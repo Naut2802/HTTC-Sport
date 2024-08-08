@@ -34,15 +34,19 @@ public class RentController {
 				.build();
 	}
 	
-	@Operation(summary = "Api confirm rent-info", description = "Api use to confirm rent-info after payment with payment link")
+	@Operation(summary = "Api confirm rent-info",
+			description = "Api use to confirm rent-info after payment with payment link")
 	@PostMapping("confirm-rent")
-	ApiResponse<RentResponse> confirmRent(@RequestParam("code") String code, @RequestParam("id") String id, @RequestParam("status") String status) {
+	ApiResponse<RentResponse> confirmRent(@RequestParam("code") String code,
+	                                      @RequestParam("id") String id,
+	                                      @RequestParam("status") String status) {
 		return ApiResponse.<RentResponse>builder()
 				.result(rentInfoService.confirmRent(code, id, status))
 				.build();
 	}
 	
-	@Operation(summary = "Api exchange rent-info to bill", description = "Admin use this api to exchange a rent-info to bill")
+	@Operation(summary = "Api exchange rent-info to bill",
+			description = "Admin use this api to exchange a rent-info to bill")
 	@PostMapping("/rent-info-to-bill/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<?> exchangeRentInfoToBill(@PathVariable int id) {

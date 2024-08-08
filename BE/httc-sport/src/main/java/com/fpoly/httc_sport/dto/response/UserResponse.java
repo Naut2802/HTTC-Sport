@@ -20,5 +20,6 @@ public class UserResponse {
 	String phoneNumber;
 	Boolean isEnabled;
 	Set<RoleResponse> roles;
+	WalletResponse wallet;
 	VipEnum vip;
 }

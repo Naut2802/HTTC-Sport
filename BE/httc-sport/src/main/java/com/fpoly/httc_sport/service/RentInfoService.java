@@ -28,6 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +44,9 @@ public class RentInfoService {
 	PaymentService paymentService;
 	MailerService mailerService;
 	BillService billService;
+	WalletService walletService;
 	
+	@Transactional
 	public RentResponse rentPitch(RentRequest request) {
 		var pitch = pitchRepository.findById(request.getPitchId()).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED)
@@ -159,6 +162,15 @@ public class RentInfoService {
 		rentInfo.setPaymentMethod(paymentMethod);
 		int total = getTotal(request.getRentTime(), user, rentInfo);
 		rentInfo.setTotal(total);
+		
+		if (rentInfo.getPaymentMethod().getMethod().equals(PaymentMethodEnum.WALLET)) {
+			if (user == null)
+				throw new AppException(ErrorCode.PAYMENT_METHOD_INVALID);
+			
+			walletService.createPitchPaymentTransaction(user.getWallet(), rentInfo);
+			rentInfo.setDeposit(total);
+			rentInfo.setPaymentStatus(true);
+		}
 		
 		rentInfo = rentInfoRepository.save(rentInfo);
 		
@@ -346,12 +358,6 @@ public class RentInfoService {
 				: rentInfo.getTypePitch() == 11 ? price * 9 : price;
 		total = (int) (total * rentInfo.getPaymentMethod().getPriceRate() * discountRate);
 		
-		if (rentInfo.getPaymentMethod().getMethod().equals(PaymentMethodEnum.WALLET)) {
-			if (user == null)
-				throw new AppException(ErrorCode.PAYMENT_METHOD_INVALID);
-			else if (user.getWallet().getMoney() < total)
-				throw new AppException(ErrorCode.WALLET_NOT_ENOUGH);
-		}
 		return total;
 	}
 	

@@ -33,7 +33,7 @@ public class PaymentController {
 	}
 	
 	@Operation(summary = "Create top up to wallet payment link", description = "User use this api for top up to wallet")
-	@PostMapping("user-top-up/{id}")
+	@PostMapping("user-top-up/{transactionId}")
 	ApiResponse<PayOSResponse> createTopUpPaymentLink(@PathVariable int transactionId) throws NoSuchAlgorithmException, InvalidKeyException {
 		return ApiResponse.<PayOSResponse>builder()
 				.result(paymentService.createTopUpPaymentLink(transactionId))

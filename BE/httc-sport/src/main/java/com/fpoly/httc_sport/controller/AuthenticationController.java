@@ -80,7 +80,7 @@ public class AuthenticationController {
 		
 		response.sendRedirect("http://localhost:3000/auth-mail-success");
 		return ApiResponse.builder()
-				.message("Account is verified now")
+				.message("Email đã được xác thực. Kích hoạt tài khoản thành công")
 				.build();
 	}
 	

@@ -123,9 +123,17 @@ public class UserController {
 	@DeleteMapping("{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<String> deleteUser(@PathVariable String userId) {
-		userService.deleteUser(userId);
 		return ApiResponse.<String>builder()
-				.result("User has been deleted")
+				.result(userService.deleteUser(userId))
+				.build();
+	}
+	
+	@Operation(summary = "Api active a user by user-id", description = "Admin use this api")
+	@PatchMapping("/active/{userId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<String> activeUser(@PathVariable String userId) {
+		return ApiResponse.<String>builder()
+				.result(userService.deleteUser(userId))
 				.build();
 	}
 	

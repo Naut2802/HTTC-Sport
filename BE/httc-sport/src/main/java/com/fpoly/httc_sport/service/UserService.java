@@ -180,12 +180,28 @@ public class UserService {
 		return userRepository.findAll(pageable).stream().map(userMapper::toUserResponse).toList();
 	}
 	
-	public void deleteUser(String userId) {
+	public String deleteUser(String userId) {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
+		if (!user.getIsEnabled())
+			return "Tài khoản này đã bị hủy kích hoạt";
+		
 		user.setIsEnabled(false);
 		userRepository.save(user);
+		return "Hủy kích hoạt tài khoản thành công";
+	}
+	
+	public String activeUser(String userId) {
+		var user = userRepository.findById(userId).orElseThrow(()
+				-> new AppException(ErrorCode.USER_NOT_EXISTED));
+		
+		if (user.getIsEnabled())
+			return "Tài khoản này đang hoạt động";
+		
+		user.setIsEnabled(false);
+		userRepository.save(user);
+		return "Kích hoạt tài khoản thành công";
 	}
 	
 	public void saveForgotPasswordToken(User user, String token) {

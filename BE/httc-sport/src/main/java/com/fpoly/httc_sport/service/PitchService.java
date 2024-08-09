@@ -91,20 +91,30 @@ public class PitchService {
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}
 	
-	public void deletePitch(int id) throws Exception {
+	public String deletePitch(int id) throws Exception {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
 		if (!pitch.getIsEnabled())
-			return;
+			return "Sân này đã ngừng hoạt động";
 		
 		pitch.setIsEnabled(false);
-		if (!pitch.getImages().isEmpty()) {
-			imageService.deleteImages(pitch.getImages().stream().map(Image::getPublicId).toList());
-			pitch.getImages().clear();
-		}
 		
 		pitchRepository.save(pitch);
+		return "Ngưng hoạt động sân thành công";
+	}
+	
+	public String activePitch(int id) throws Exception {
+		var pitch = pitchRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
+		
+		if (pitch.getIsEnabled())
+			return "Sân này đang hoạt động";
+		
+		pitch.setIsEnabled(true);
+		
+		pitchRepository.save(pitch);
+		return "Kích hoạt sân thành công";
 	}
 	
 	public PitchDetailsResponse getPitch(int id) {

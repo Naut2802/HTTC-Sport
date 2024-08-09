@@ -40,7 +40,7 @@ public class ReviewController {
 				.build();
 	}
 	
-	@Operation(summary = "Api get a review by user-id")
+	@Operation(summary = "Api get reviews by user-id")
 	@GetMapping("/get-all-by-user/{userId}")
 	ApiResponse<List<ReviewResponse>> getAllReviewByUser(@PathVariable String userId,
 	                                                     @RequestParam(defaultValue = "0") int page,

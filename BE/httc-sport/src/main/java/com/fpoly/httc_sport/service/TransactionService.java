@@ -40,6 +40,12 @@ public class TransactionService {
 		var user = userRepository.findById(userId).orElseThrow(
 				() -> new AppException(ErrorCode.USER_NOT_EXISTED)
 		);
+		
+		var context = SecurityContextHolder.getContext();
+		
+		if (!user.getUsername().equals(context.getAuthentication().getName()))
+			throw new AppException(ErrorCode.USER_NOT_EXISTED);
+		
 		var transactions = user.getWallet().getTransactions();
 		
 		return transactions.stream().map(transactionMapper::toTransactionResponse).toList();

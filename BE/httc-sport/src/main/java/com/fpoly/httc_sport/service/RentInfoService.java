@@ -176,6 +176,7 @@ public class RentInfoService {
 		
 		return RentResponse.builder()
 				.id(rentInfo.getId())
+				.deposit(rentInfo.getDeposit())
 				.total(rentInfo.getTotal())
 				.message("Đặt sân thành công")
 				.build();

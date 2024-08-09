@@ -85,7 +85,7 @@ public class PaymentService {
 				.cancelUrl("http://localhost:3000/payment/deposit/error")
 				.orderCode(transaction.getId())
 				.amount(transaction.getPaymentAmount())
-				.description("THANH TOAN NAP TIEN VAO VI KHACH HANG: " + transaction.getWallet().getUser().getUsername())
+				.description("NAP TIEN VAO VI " + transaction.getId())
 				.build();
 		
 		

@@ -118,6 +118,7 @@ public class WalletService {
 				.rentInfo(rentInfo)
 				.build();
 		
+		rentInfo.setTransaction(transaction);
 		walletRepository.save(wallet);
 		transactionRepository.save(transaction);
 	}

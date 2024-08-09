@@ -1,5 +1,6 @@
 openapi:
   service:
     title: HTTC-Sport Document
-    server: http://localhost:8082
+    server: ${OPEN_API_SERVER}
     version: 1.0.0
+    description: ${OPEN_API_DESCRIPTION}

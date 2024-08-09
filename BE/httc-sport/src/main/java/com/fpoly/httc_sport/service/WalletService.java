@@ -1,7 +1,6 @@
 package com.fpoly.httc_sport.service;
 
 import com.fpoly.httc_sport.dto.request.TransactionRequest;
-import com.fpoly.httc_sport.dto.response.RentResponse;
 import com.fpoly.httc_sport.dto.response.TransactionResponse;
 import com.fpoly.httc_sport.entity.MailInfo;
 import com.fpoly.httc_sport.entity.RentInfo;

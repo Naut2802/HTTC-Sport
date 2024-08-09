@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -45,6 +47,10 @@ public class SecurityConfig {
 	LogoutHandler logoutHandler;
 	CustomUserDetailsService userDetailsService;
 	KeyService keyService;
+	
+	@NonFinal
+	@Value("${spring.security.cors.cross.origin}")
+	String CROSS_ORIGIN;
 	
 	@Order(1)
 	@Bean
@@ -116,7 +122,7 @@ public class SecurityConfig {
 	public CorsFilter corsFilter() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		
-		configuration.addAllowedOrigin("http://localhost:3000");
+		configuration.addAllowedOrigin(CROSS_ORIGIN);
 		configuration.addAllowedMethod("*");
 		configuration.addAllowedHeader("*");
 		configuration.setAllowCredentials(true);

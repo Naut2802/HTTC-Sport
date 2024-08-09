@@ -1,6 +1,5 @@
 package com.fpoly.httc_sport.security.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpoly.httc_sport.entity.InvalidatedToken;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;

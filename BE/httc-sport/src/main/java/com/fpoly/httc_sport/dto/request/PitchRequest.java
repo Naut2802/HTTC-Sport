@@ -40,5 +40,7 @@ public class PitchRequest {
 	String type;
 	@NotNull(message = "PITCH_TOTAL_NULL")
 	int total;
+	@NotNull(message = "PITCH_IMAGES_NULL")
+	@Size(min = 5, max = 10, message = "PITCH_IMAGES_SIZE")
 	List<MultipartFile> images;
 }

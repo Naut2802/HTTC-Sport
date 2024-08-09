@@ -22,7 +22,7 @@ public class WalletController {
 	WalletService walletService;
 	
 	@Operation(summary = "Api top up to wallet", description = "User use this api to top up to wallet")
-	@PostMapping
+	@PostMapping("top-up")
 	ApiResponse<TransactionResponse> topUp(@Valid @RequestBody TransactionRequest request) {
 		var response = walletService.createTopUpTransaction(request);
 		

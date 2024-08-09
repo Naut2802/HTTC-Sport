@@ -75,7 +75,7 @@ public class PaymentService {
 		return payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
 	}
 	
-	public PayOSResponse createDepositPaymentLink(int transactionId) throws NoSuchAlgorithmException, InvalidKeyException {
+	public PayOSResponse createTopUpPaymentLink(int transactionId) throws NoSuchAlgorithmException, InvalidKeyException {
 		var transaction = transactionRepository.findById(transactionId).orElseThrow(
 				() -> new AppException(ErrorCode.TRANSACTION_NOT_EXISTED)
 		);

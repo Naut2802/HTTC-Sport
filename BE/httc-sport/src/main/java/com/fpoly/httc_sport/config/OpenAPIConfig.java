@@ -19,9 +19,10 @@ public class OpenAPIConfig {
 	public OpenAPI openAPI(
 			@Value("${openapi.service.title}") String title,
 			@Value("${openapi.service.version}") String version,
-			@Value("${openapi.service.server}") String serverUrl) {
+			@Value("${openapi.service.server}") String serverUrl,
+			@Value("${openapi.service.description}") String description) {
 		return new OpenAPI()
-				.servers(List.of(new Server().url(serverUrl).description("Server Test")))
+				.servers(List.of(new Server().url(serverUrl).description(description)))
 				.info(new Info().title(title)
 						.description("API documents")
 						.version(version)

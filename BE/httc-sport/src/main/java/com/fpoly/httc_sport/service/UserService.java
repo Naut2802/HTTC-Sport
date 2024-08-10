@@ -3,9 +3,7 @@ package com.fpoly.httc_sport.service;
 import com.fpoly.httc_sport.dto.request.*;
 import com.fpoly.httc_sport.dto.response.ChangePasswordResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
-import com.fpoly.httc_sport.entity.ForgotPasswordToken;
-import com.fpoly.httc_sport.entity.Role;
-import com.fpoly.httc_sport.entity.User;
+import com.fpoly.httc_sport.entity.*;
 import com.fpoly.httc_sport.event.ForgotPasswordEvent;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
@@ -88,6 +86,22 @@ public class UserService {
 		response.setChatRooms(chatRooms);
 		
 		return response;
+	}
+	
+	public List<ChatMessage> getChatMessagesByRoom(int roomId) {
+		var context = SecurityContextHolder.getContext();
+		var user = userRepository.findByUsername(context.getAuthentication().getName()).orElseThrow(
+				() -> new AppException(ErrorCode.UNAUTHENTICATED)
+		);
+		
+		var chatRooms = chatService.findById(user.getUsername().equals("admin") ? "admin" : user.getId());
+		var roomFounded = chatRooms.stream()
+				.filter(chatRoom -> chatRoom.getId() == roomId).findFirst().orElse(null);
+		
+		if (roomFounded == null)
+			throw new AppException(ErrorCode.CHAT_ROOM_NOT_EXIST);
+		
+		return roomFounded.getMessages();
 	}
 	
 	public UserResponse updateProfileUser(String userId, UserUpdateProfileRequest request) {

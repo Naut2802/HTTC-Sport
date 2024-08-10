@@ -77,6 +77,7 @@ public enum ErrorCode {
 	WALLET_NOT_ENOUGH(1008, "Số dư trong ví không đủ để thanh toán", HttpStatus.BAD_REQUEST),
 	WALLET_NOT_EXISTED(1008, "Mã ví không hợp lệ", HttpStatus.BAD_REQUEST),
 	TRANSACTION_NOT_EXISTED(1009, "Không tìm thấy giao dịch", HttpStatus.BAD_REQUEST),
+	CHAT_ROOM_NOT_EXIST(1010, "Không tìm thấy lịch sử tin nhắn này", HttpStatus.NOT_FOUND),
 	
 	
 	NOT_EXISTED(1099, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),

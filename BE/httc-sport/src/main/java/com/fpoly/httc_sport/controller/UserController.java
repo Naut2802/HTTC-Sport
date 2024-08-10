@@ -7,6 +7,7 @@ import com.fpoly.httc_sport.dto.request.*;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.ChangePasswordResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
+import com.fpoly.httc_sport.entity.ChatMessage;
 import com.fpoly.httc_sport.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,6 +44,13 @@ public class UserController {
 	ApiResponse<UserResponse> getMyInfo() {
 		return ApiResponse.<UserResponse>builder()
 				.result(userService.getMyInfo())
+				.build();
+	}
+	
+	@GetMapping("chat-room/{roomId}")
+	ApiResponse<List<ChatMessage>> getChatMessages(@PathVariable int roomId) {
+		return ApiResponse.<List<ChatMessage>>builder()
+				.result(userService.getChatMessagesByRoom(roomId))
 				.build();
 	}
 	

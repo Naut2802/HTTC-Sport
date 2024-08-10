@@ -56,6 +56,7 @@ public class AuthenticationService {
 	ApplicationEventPublisher publisher;
 	JwtService jwtService;
 	MailerService mailerService;
+	ChatService chatService;
 	KeyUtils keyUtils;
 	
 	@NonFinal
@@ -158,10 +159,13 @@ public class AuthenticationService {
 		
 		createRefreshTokenCookie(response, jti);
 		
+		var chatRoom = chatService.findById(user.getId());
+		
 		return AuthenticationResponse.builder()
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
+				.chatRoomId(chatRoom != null ? chatRoom.getId() : null)
 				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}

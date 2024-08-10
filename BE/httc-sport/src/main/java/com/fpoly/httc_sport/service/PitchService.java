@@ -44,6 +44,12 @@ public class PitchService {
 		if (addressRepository.existsByStreetAndDistrict(request.getStreet(), request.getDistrict()))
 			throw new AppException(ErrorCode.PITCH_EXISTED);
 		
+		if (request.getImages() == null)
+			throw new AppException(ErrorCode.PITCH_IMAGES_NULL);
+		
+		if (request.getImages().size() < 5 || request.getImages().size() > 10)
+			throw new AppException(ErrorCode.PITCH_IMAGES_SIZE);
+		
 		var pitch = pitchMapper.toPitch(request);
 		var address = pitchMapper.toAddress(request);
 		pitch.setAddress(address);

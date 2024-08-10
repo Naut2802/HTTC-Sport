@@ -1,11 +1,13 @@
 package com.fpoly.httc_sport.dto.response;
 
+import com.fpoly.httc_sport.entity.ChatRoom;
 import com.fpoly.httc_sport.utils.Enum.VipEnum;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -22,4 +24,5 @@ public class UserResponse {
 	Set<RoleResponse> roles;
 	WalletResponse wallet;
 	VipEnum vip;
+	List<ChatRoom> chatRooms;
 }

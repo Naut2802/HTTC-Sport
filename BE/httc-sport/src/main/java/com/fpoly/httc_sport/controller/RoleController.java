@@ -22,7 +22,7 @@ public class RoleController {
 	RoleService roleService;
 	
 	@GetMapping
-	public ApiResponse<List<RoleResponse>> getRoles() {
+	ApiResponse<List<RoleResponse>> getRoles() {
 		return ApiResponse.<List<RoleResponse>>builder()
 				.result(roleService.getRoles())
 				.build();

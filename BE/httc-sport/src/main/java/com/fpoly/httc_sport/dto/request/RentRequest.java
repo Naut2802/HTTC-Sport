@@ -25,7 +25,7 @@ public class RentRequest {
 	int pitchId;
 	@NotBlank(message = "RENT_INFO_EMAIL_NULL")
 	@NotNull(message = "RENT_INFO_EMAIL_NULL")
-	@Pattern(regexp = "^[a-zA-Z0-9_]+@[a-z]+\\.[a-z]{2,6}$", message = "EMAIL_INVALID")
+	@Pattern(regexp = "^[a-zA-Z0-9_]+@[a-z.]+\\.[a-z]{2,6}$", message = "EMAIL_INVALID")
 	String email;
 	@NotNull(message = "RENT_INFO_PHONE_NUMBER_NULL")
 	@Pattern(regexp = "^([0-9]{10,11})$", message = "PHONE_NUMBER_INVALID")

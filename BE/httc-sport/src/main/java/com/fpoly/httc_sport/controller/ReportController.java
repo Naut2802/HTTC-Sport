@@ -1,5 +1,6 @@
 package com.fpoly.httc_sport.controller;
 
+import com.fpoly.httc_sport.dto.response.AnalyticsResponse;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.ReportResponse;
 import com.fpoly.httc_sport.service.ReportService;
@@ -25,7 +26,7 @@ import java.time.LocalDate;
 public class ReportController {
 	ReportService reportService;
 	
-	@Operation(summary = "Api use for statistics", description = "Admin use this api")
+	@Operation(summary = "Api use for statistics with date to date", description = "Admin use this api")
 	@GetMapping
 	public ApiResponse<ReportResponse> getReportByDate(@RequestParam LocalDate fromDate,
 	                                                   @RequestParam LocalDate toDate,
@@ -33,6 +34,14 @@ public class ReportController {
 	                                                   @RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<ReportResponse>builder()
 				.result(reportService.getReportByDate(fromDate, toDate, page, size))
+				.build();
+	}
+	
+	@Operation(summary = "Api use for analytics", description = "Admin use this api")
+	@GetMapping("analytics")
+	ApiResponse<AnalyticsResponse> analytics() {
+		return ApiResponse.<AnalyticsResponse>builder()
+				.result(reportService.analytics())
 				.build();
 	}
 }

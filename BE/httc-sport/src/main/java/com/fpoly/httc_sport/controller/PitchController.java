@@ -49,9 +49,17 @@ public class PitchController {
 	@DeleteMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> deletePitch(@PathVariable int id) throws Exception {
-		pitchService.deletePitch(id);
 		return ApiResponse.<PitchResponse>builder()
-				.message("Xóa sân thành công")
+				.message(pitchService.deletePitch(id))
+				.build();
+	}
+	
+	@Operation(summary = "Api active pitch", description = "Admin use this api to active a pitch")
+	@PatchMapping("/active/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<PitchResponse> activePitch(@PathVariable int id) throws Exception {
+		return ApiResponse.<PitchResponse>builder()
+				.message(pitchService.activePitch(id))
 				.build();
 	}
 	

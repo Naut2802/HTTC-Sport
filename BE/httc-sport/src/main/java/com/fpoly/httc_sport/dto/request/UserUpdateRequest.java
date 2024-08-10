@@ -20,7 +20,7 @@ import lombok.experimental.FieldDefaults;
 public class UserUpdateRequest{
 	@NotNull(message = "EMAIL_NULL")
 	@NotBlank(message = "EMAIL_NULL")
-	@Pattern(regexp = "^[a-zA-Z0-9_]+@[a-z]+\\.[a-z]{2,6}$", message = "EMAIL_INVALID")
+	@Pattern(regexp = "^[a-zA-Z0-9_]+@[a-z.]+\\.[a-z]{2,6}$", message = "EMAIL_INVALID")
 	String email;
 	@NotBlankAndSizeAndPattern(regexp = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĂĐĨŨƠƯàáâãèéêìíòóôõùúýăđĩũơưẠ-ỹ\\s]+$", message = "FIRST_NAME")
 	String firstName;

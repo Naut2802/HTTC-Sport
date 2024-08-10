@@ -3,9 +3,7 @@ package com.fpoly.httc_sport.service;
 import com.fpoly.httc_sport.dto.request.*;
 import com.fpoly.httc_sport.dto.response.ChangePasswordResponse;
 import com.fpoly.httc_sport.dto.response.UserResponse;
-import com.fpoly.httc_sport.entity.ForgotPasswordToken;
-import com.fpoly.httc_sport.entity.Role;
-import com.fpoly.httc_sport.entity.User;
+import com.fpoly.httc_sport.entity.*;
 import com.fpoly.httc_sport.event.ForgotPasswordEvent;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
@@ -44,6 +42,8 @@ public class UserService {
 	ApplicationEventPublisher publisher;
 	UserMapper userMapper;
 	
+	ChatService chatService;
+	
 	public ChangePasswordResponse changePassword(String userId, ChangePasswordRequest request) {
 		var user = userRepository.findById(userId).orElseThrow(() ->
 				new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -80,8 +80,28 @@ public class UserService {
 		var context = SecurityContextHolder.getContext();
 		String name = context.getAuthentication().getName();
 		User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+		var chatRooms = chatService.findById(user.getUsername().equals("admin") ? "admin" : user.getId());
 		
-		return userMapper.toUserResponse(user);
+		var response = userMapper.toUserResponse(user);
+		response.setChatRooms(chatRooms);
+		
+		return response;
+	}
+	
+	public List<ChatMessage> getChatMessagesByRoom(int roomId) {
+		var context = SecurityContextHolder.getContext();
+		var user = userRepository.findByUsername(context.getAuthentication().getName()).orElseThrow(
+				() -> new AppException(ErrorCode.UNAUTHENTICATED)
+		);
+		
+		var chatRooms = chatService.findById(user.getUsername().equals("admin") ? "admin" : user.getId());
+		var roomFounded = chatRooms.stream()
+				.filter(chatRoom -> chatRoom.getId() == roomId).findFirst().orElse(null);
+		
+		if (roomFounded == null)
+			throw new AppException(ErrorCode.CHAT_ROOM_NOT_EXIST);
+		
+		return roomFounded.getMessages();
 	}
 	
 	public UserResponse updateProfileUser(String userId, UserUpdateProfileRequest request) {
@@ -180,12 +200,28 @@ public class UserService {
 		return userRepository.findAll(pageable).stream().map(userMapper::toUserResponse).toList();
 	}
 	
-	public void deleteUser(String userId) {
+	public String deleteUser(String userId) {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
+		if (!user.getIsEnabled())
+			return "Tài khoản này đã bị hủy kích hoạt";
+		
 		user.setIsEnabled(false);
 		userRepository.save(user);
+		return "Hủy kích hoạt tài khoản thành công";
+	}
+	
+	public String activeUser(String userId) {
+		var user = userRepository.findById(userId).orElseThrow(()
+				-> new AppException(ErrorCode.USER_NOT_EXISTED));
+		
+		if (user.getIsEnabled())
+			return "Tài khoản này đang hoạt động";
+		
+		user.setIsEnabled(false);
+		userRepository.save(user);
+		return "Kích hoạt tài khoản thành công";
 	}
 	
 	public void saveForgotPasswordToken(User user, String token) {

@@ -1,9 +1,6 @@
 package com.fpoly.httc_sport.dto.request;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +37,5 @@ public class PitchRequest {
 	String type;
 	@NotNull(message = "PITCH_TOTAL_NULL")
 	int total;
-	@NotNull(message = "PITCH_IMAGES_NULL")
-	@Size(min = 5, max = 10, message = "PITCH_IMAGES_SIZE")
 	List<MultipartFile> images;
 }

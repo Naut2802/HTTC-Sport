@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public final class Enum {
-	@Getter
-	@AllArgsConstructor
+	
 	public enum RoleEnum {
-		USER("USER"),
-		ADMIN("ADMIN");
-		private final String value;
+		USER,
+		ADMIN
 	}
+	
 	@Getter
 	@AllArgsConstructor
 	public enum BillStatusEnum {
@@ -19,10 +18,12 @@ public final class Enum {
 		private final String value;
 		
 	}
+	
 	public enum PaymentMethodEnum {
 		QR,
 		WALLET
 	}
+	
 	@Getter
 	@AllArgsConstructor
 	public enum VipEnum {
@@ -35,6 +36,7 @@ public final class Enum {
 		private final int max;
 		private final float discountRate;
 	}
+	
 	@Getter
 	@AllArgsConstructor
 	public enum TransactionTypeEnum {
@@ -44,4 +46,5 @@ public final class Enum {
 		
 		private final String value;
 	}
+	
 }

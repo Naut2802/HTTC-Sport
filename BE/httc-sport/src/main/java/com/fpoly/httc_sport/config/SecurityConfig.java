@@ -75,8 +75,9 @@ public class SecurityConfig {
 		return httpSecurity
 				.securityMatcher(new AntPathRequestMatcher("/auth/**"))
 				.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth ->
-						auth.anyRequest().permitAll())
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("**/ws/**").authenticated()
+						.anyRequest().permitAll())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.httpBasic(AbstractHttpConfigurer::disable)
 				.build();

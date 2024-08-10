@@ -35,6 +35,9 @@ public class ChatService {
 			chatRoomRepository.save(chatRoom);
 		}
 		
+		if (message.getMessage().isEmpty())
+			return;
+		
 		var chatMessage = ChatMessage.builder()
 				.senderId(senderId)
 				.message(message.getMessage())

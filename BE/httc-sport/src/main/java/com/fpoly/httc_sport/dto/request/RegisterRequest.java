@@ -1,6 +1,7 @@
 package com.fpoly.httc_sport.dto.request;
 
 import com.fpoly.httc_sport.exception.annotations.NotBlankAndSizeAndPattern;
+import com.fpoly.httc_sport.utils.Constant;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,6 @@ public class RegisterRequest{
 	String password;
 	@NotNull(message = "EMAIL_NULL")
 	@NotBlank(message = "EMAIL_NULL")
-	@Pattern(regexp = "^[a-zA-Z0-9_]+@[a-z.]+\\.[a-z]{2,6}$", message = "EMAIL_INVALID")
+	@Pattern(regexp = Constant.EMAIL_REGEX, message = "EMAIL_INVALID")
 	String email;
 }

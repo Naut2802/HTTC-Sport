@@ -1,5 +1,6 @@
 package com.fpoly.httc_sport.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,5 +24,6 @@ public class ChatMessage {
 	
 	@ManyToOne
 	@JoinColumn(name = "room_id")
+	@JsonIgnore
 	ChatRoom chatRoom;
 }

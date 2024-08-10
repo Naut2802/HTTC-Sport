@@ -44,6 +44,8 @@ public class UserService {
 	ApplicationEventPublisher publisher;
 	UserMapper userMapper;
 	
+	ChatService chatService;
+	
 	public ChangePasswordResponse changePassword(String userId, ChangePasswordRequest request) {
 		var user = userRepository.findById(userId).orElseThrow(() ->
 				new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -80,8 +82,12 @@ public class UserService {
 		var context = SecurityContextHolder.getContext();
 		String name = context.getAuthentication().getName();
 		User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+		var chatRooms = chatService.findById(user.getUsername().equals("admin") ? "admin" : user.getId());
 		
-		return userMapper.toUserResponse(user);
+		var response = userMapper.toUserResponse(user);
+		response.setChatRooms(chatRooms);
+		
+		return response;
 	}
 	
 	public UserResponse updateProfileUser(String userId, UserUpdateProfileRequest request) {

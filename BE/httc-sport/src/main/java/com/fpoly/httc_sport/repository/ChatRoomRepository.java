@@ -3,8 +3,8 @@ package com.fpoly.httc_sport.repository;
 import com.fpoly.httc_sport.entity.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Integer> {
-	Optional<ChatRoom> findByUserIdAndAdminId(String userId, String adminId);
+	List<ChatRoom> findByUserIdAndAdminId(String userId, String adminId);
 }

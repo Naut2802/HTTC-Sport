@@ -159,13 +159,13 @@ public class AuthenticationService {
 		
 		createRefreshTokenCookie(response, jti);
 		
-		var chatRoom = chatService.findById(user.getId());
+		var chatRooms = chatService.findById(user.getUsername().equals("admin") ? "admin" : user.getId());
 		
 		return AuthenticationResponse.builder()
 				.accessToken(accessToken)
 				.userId(user.getId())
 				.authenticated(true)
-				.chatRoomId(chatRoom != null ? chatRoom.getId() : null)
+				.chatRooms(chatRooms)
 				.roles(new HashSet<>(user.getRoles().stream().map(roleMapper::toRoleResponse).toList()))
 				.build();
 	}

@@ -13,6 +13,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -24,7 +25,7 @@ public class ChatService {
 	SimpMessagingTemplate simpMessagingTemplate;
 	
 	public void processMessage(String senderId, ChatMessageRequest message) {
-		var chatRoom = chatRoomRepository.findByUserIdAndAdminId(senderId, "admin").orElse(null);
+		var chatRoom = chatRoomRepository.findByUserIdAndAdminId(senderId, "admin").getFirst();
 		
 		if (chatRoom == null) {
 			chatRoom = ChatRoom.builder()
@@ -46,7 +47,7 @@ public class ChatService {
 		simpMessagingTemplate.convertAndSendToUser(recipient, "/topic/messages", chatMessage);
 	}
 	
-	public ChatRoom findById(String userId) {
-		return chatRoomRepository.findByUserIdAndAdminId(userId, "admin").orElse(null);
+	public List<ChatRoom> findById(String userId) {
+		return userId.equals("admin") ? chatRoomRepository.findAll() : chatRoomRepository.findByUserIdAndAdminId(userId, "admin");
 	}
 }

@@ -1,6 +1,7 @@
 package com.fpoly.httc_sport.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fpoly.httc_sport.entity.ChatRoom;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,5 +19,5 @@ public class AuthenticationResponse {
 	String accessToken;
 	boolean authenticated;
 	Set<RoleResponse> roles;
-	Integer chatRoomId;
+	List<ChatRoom> chatRooms;
 }

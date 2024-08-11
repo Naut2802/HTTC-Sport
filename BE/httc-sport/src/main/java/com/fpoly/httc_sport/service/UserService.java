@@ -209,6 +209,7 @@ public class UserService {
 		
 		user.setIsEnabled(false);
 		userRepository.save(user);
+		
 		return "Hủy kích hoạt tài khoản thành công";
 	}
 	
@@ -219,8 +220,9 @@ public class UserService {
 		if (user.getIsEnabled())
 			return "Tài khoản này đang hoạt động";
 		
-		user.setIsEnabled(false);
+		user.setIsEnabled(true);
 		userRepository.save(user);
+		
 		return "Kích hoạt tài khoản thành công";
 	}
 	

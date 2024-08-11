@@ -105,8 +105,8 @@ public class PitchService {
 			return "Sân này đã ngừng hoạt động";
 		
 		pitch.setIsEnabled(false);
-		
 		pitchRepository.save(pitch);
+		
 		return "Ngưng hoạt động sân thành công";
 	}
 	
@@ -118,8 +118,8 @@ public class PitchService {
 			return "Sân này đang hoạt động";
 		
 		pitch.setIsEnabled(true);
-		
 		pitchRepository.save(pitch);
+		
 		return "Kích hoạt sân thành công";
 	}
 	

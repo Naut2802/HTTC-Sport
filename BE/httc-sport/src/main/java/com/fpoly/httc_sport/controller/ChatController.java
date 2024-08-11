@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 @Controller
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Tag(name = "Web Socket")
 public class ChatController {
 	ChatService chatService;
 	

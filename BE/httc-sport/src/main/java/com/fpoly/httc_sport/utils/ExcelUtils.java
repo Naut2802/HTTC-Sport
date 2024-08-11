@@ -1,71 +1,69 @@
 package com.fpoly.httc_sport.utils;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import org.apache.poi.xssf.usermodel.*;
+import org.springframework.stereotype.Component;
 
+@Component
+@Getter
 public class ExcelUtils {
-	private static HSSFWorkbook workbook = new HSSFWorkbook();
+	private XSSFWorkbook workbook;
 	
-	public static HSSFSheet getSheet(String nameSheet) {
-		HSSFSheet sheet = workbook.getSheet(nameSheet);
-		return sheet;
+	public void createWorkBook() {
+		this.workbook = new XSSFWorkbook();
 	}
 	
-	public static HSSFSheet createSheet(String nameSheet) {
-		HSSFSheet sheet = workbook.createSheet(nameSheet);
-		return sheet;
+	public XSSFSheet createSheet(String nameSheet) {
+		return workbook.createSheet(nameSheet);
 	}
 	
-	public static HSSFRow createRow(HSSFSheet sheet, int rowIndex) {
-		HSSFRow row = sheet.createRow(rowIndex);
-		return row;
+	public XSSFRow createRow(XSSFSheet sheet, int rowIndex) {
+		return sheet.createRow(rowIndex);
 	}
 	
-	public static void createRowHeader(HSSFRow row, int rowIndex, String nameHeader) {
-		row.createCell(rowIndex).setCellValue(nameHeader);
+	public void createRowHeader(XSSFRow row, int cellIndex, String nameHeader) {
+		row.createCell(cellIndex).setCellValue(nameHeader);
 	}
 	
-	public static void createCell(HSSFRow row, int cellIndex, Object value) {
+	public void createCell(XSSFRow row, int cellIndex, Object value) {
+		XSSFDataFormat dataFormat = workbook.createDataFormat();
+		
 		if (value instanceof String) {
             row.createCell(cellIndex).setCellValue((String) value);
-        }else if(value instanceof LocalDate) {
-        	 row.createCell(cellIndex).setCellValue((LocalDate) value);;
-        }else if(value instanceof Integer) {
-       	 	row.createCell(cellIndex).setCellValue((Integer) value);;
+        } else if (value instanceof LocalDate) {
+			XSSFCell cell  = row.createCell(cellIndex);
+			cell.setCellValue((LocalDate) value);
+			
+			XSSFCellStyle cellStyle = workbook.createCellStyle();
+			cellStyle.setDataFormat(dataFormat.getFormat("dd/mm/yyyy"));
+			cell.setCellStyle(cellStyle);
+        } else if (value instanceof LocalTime) {
+			XSSFCell cell  = row.createCell(cellIndex);
+			cell.setCellValue(value.toString());
+			
+			XSSFCellStyle cellStyle = workbook.createCellStyle();
+			cellStyle.setDataFormat(dataFormat.getFormat("hh:mm:ss AM/PM"));
+			cell.setCellStyle(cellStyle);
+		} else if(value instanceof Integer) {
+       	 	row.createCell(cellIndex).setCellValue((Integer) value);
        }
 		
 	}
 	
-	public static String saveWorkbook(String folderPath,String nameFile) throws IOException {
-		// Lưu workbook vào thư mục Downloads
-	    folderPath = System.getProperty("user.home") + "/Downloads";
-	    Path filePath = Paths.get(folderPath, nameFile);
-	    try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile())) {
-	        workbook.write(fileOut);
-	        workbook.close();
-	        fileOut.close();
-	    }
-
-	    // Tạo đường dẫn tải xuống và trả về nó
-	    String downloadPath = "Downloads/"+nameFile;
-	    return downloadPath;
-//		File src = new File(folderPath);
-//		if (!src.exists()) {
-//			src.mkdirs(); // Tạo thư mục nếu nó chưa tồn tại
-//		}
-//		FileOutputStream ops = new FileOutputStream(new File(folderPath, nameFile));
-//		workbook.write(ops);
-//		ops.close();
-//		workbook.close();
+	public void saveWorkbook(HttpServletResponse response) throws IOException {
+		ServletOutputStream ops = response.getOutputStream();
+		workbook.write(ops);
+		workbook.close();
+		ops.close();
 	}
 }

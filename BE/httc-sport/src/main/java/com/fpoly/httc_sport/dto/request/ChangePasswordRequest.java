@@ -1,5 +1,6 @@
 package com.fpoly.httc_sport.dto.request;
 
+import com.fpoly.httc_sport.exception.annotations.NotBlankAndSizeAndPattern;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,14 +15,13 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ChangePasswordRequest {
-	@NotBlank(message = "PASSWORD_NULL")
 	@NotNull(message = "PASSWORD_NULL")
+	@NotBlankAndSizeAndPattern(min = 5, regexp = "^[a-zA-Z0-9]{5,20}$", message = "PASSWORD")
 	String currentPassword;
-	@NotBlank(message = "NEW_PASSWORD_NULL")
 	@NotNull(message = "NEW_PASSWORD_NULL")
-	@Size(min = 5, message = "PASSWORD_INVALID")
+	@NotBlankAndSizeAndPattern(min = 5, regexp = "^[a-zA-Z0-9]{5,20}$", message = "PASSWORD")
 	String newPassword;
-	@NotBlank(message = "CONFIRMATION_PASSWORD_NULL")
 	@NotNull(message = "CONFIRMATION_PASSWORD_NULL")
+	@NotBlank(message = "CONFIRMATION_PASSWORD_NULL")
 	String confirmationPassword;
 }

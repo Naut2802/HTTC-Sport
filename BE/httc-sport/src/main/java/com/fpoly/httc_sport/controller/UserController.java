@@ -142,7 +142,7 @@ public class UserController {
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<String> activeUser(@PathVariable String userId) {
 		return ApiResponse.<String>builder()
-				.result(userService.deleteUser(userId))
+				.result(userService.activeUser(userId))
 				.build();
 	}
 	

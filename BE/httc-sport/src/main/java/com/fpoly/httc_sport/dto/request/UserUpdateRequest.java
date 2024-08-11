@@ -2,6 +2,7 @@ package com.fpoly.httc_sport.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fpoly.httc_sport.exception.annotations.NotBlankAndSizeAndPattern;
+import com.fpoly.httc_sport.utils.Constant;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,12 +21,12 @@ import lombok.experimental.FieldDefaults;
 public class UserUpdateRequest{
 	@NotNull(message = "EMAIL_NULL")
 	@NotBlank(message = "EMAIL_NULL")
-	@Pattern(regexp = "^[a-zA-Z0-9_]+@[a-z.]+\\.[a-z]{2,6}$", message = "EMAIL_INVALID")
+	@Pattern(regexp = Constant.EMAIL_REGEX, message = "EMAIL_INVALID")
 	String email;
-	@NotBlankAndSizeAndPattern(regexp = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĂĐĨŨƠƯàáâãèéêìíòóôõùúýăđĩũơưẠ-ỹ\\s]+$", message = "FIRST_NAME")
+	@NotBlankAndSizeAndPattern(regexp = Constant.NAME_REGEX, message = "FIRST_NAME")
 	String firstName;
-	@NotBlankAndSizeAndPattern(regexp = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĂĐĨŨƠƯàáâãèéêìíòóôõùúýăđĩũơưẠ-ỹ\\s]+$", message = "LAST_NAME")
+	@NotBlankAndSizeAndPattern(regexp = Constant.NAME_REGEX, message = "LAST_NAME")
 	String lastName;
-	@Pattern(regexp = "^([0-9]{10,11})$", message = "PHONE_NUMBER_INVALID")
+	@Pattern(regexp = Constant.PHONE_NUMBER_REGEX, message = "PHONE_NUMBER_INVALID")
 	String phoneNumber;
 }

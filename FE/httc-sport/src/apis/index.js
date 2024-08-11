@@ -54,6 +54,26 @@ export const handleResetPasswordUser = async (token, data) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/user/forgot-password/reset-password?token=${token}`, data);
 };
 
+export const handleGetUserAdmin = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user`);
+};
+
+export const handleGetUsersAdmin = async (userId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user/${userId}`);
+};
+
+export const handleDeleteUserAdmin = async (userId) => {
+    return await authorizedAxiosInstance.delete(`${API_ROOT}/api/v1/user/${userId}`);
+};
+
+export const handleUpdateUserAdmin = async (userId, data) => {
+    return await authorizedAxiosInstance.put(`${API_ROOT}/api/v1/user/${userId}`, data);
+};
+
+export const handleActiveUserAdmin = async (userId, data) => {
+    return await authorizedAxiosInstance.patch(`${API_ROOT}/api/v1/user/active/${userId}`, data);
+};
+
 // ----------------------------------PITCH API--------------------------------------
 
 export const handleGetPitchesAdmin = async () => {
@@ -106,6 +126,10 @@ export const handleProvinces = async () => {
     return await axios.get('https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json', {
         reponseType: '/json',
     });
+};
+
+export const handleActivePitch = async (pitchId, data) => {
+    return await authorizedAxiosInstance.patch(`${API_ROOT}/api/v1/pitch/active/${pitchId}`, data);
 };
 
 // -----------------------------------RENT PITCH API--------------------------------------

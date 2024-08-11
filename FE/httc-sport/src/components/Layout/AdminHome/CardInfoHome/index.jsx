@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 export default function CardInfoHome() {
     return (
         <div className="row">
-            <div className="col-2"></div>
+            <div className="col-1"></div>
             <div className="col-5">
                 <Box className="card">
                     <Typography component="div" className="card-header bg-primary text-white">

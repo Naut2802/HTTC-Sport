@@ -4,12 +4,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Box, Drawer, IconButton, Toolbar, Typography } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import { styled, useTheme } from '@mui/material/styles';
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import AccordionAccount from './AccordionAccount';
 import AccordionAdmin from './AccordionAdmin';
+import { handleGetMyInfoAPI } from '~/apis';
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
     flexGrow: 1,
@@ -53,12 +54,13 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
 }));
 
 export default function NavbarAdmin() {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [account, setAccount] = useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -67,6 +69,18 @@ export default function NavbarAdmin() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await handleGetMyInfoAPI();
+                setAccount(res.data.result);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -102,9 +116,10 @@ export default function NavbarAdmin() {
             >
                 <DrawerHeader className="bg-dark" sx={{ color: 'white' }}>
                     <Typography component="div" className="mx-4 my-2 text-decoration-none">
-                        Admin: Tôn Lê
+                        Quản Lý : {account.lastName} <br />
+                        {/* {account.username} */}
                     </Typography>
-                    <IconButton onClick={handleDrawerClose} sx={{ color: 'white' }}>
+                    <IconButton onClick={handleDrawerClose} sx={{ color: 'white', marginLeft: '25px' }}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
                 </DrawerHeader>

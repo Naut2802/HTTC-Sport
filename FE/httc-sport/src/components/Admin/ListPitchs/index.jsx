@@ -2,7 +2,7 @@ import { Breadcrumbs, Button, Card, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { handleDeletePitch, handleGetPitch, handleGetPitchesAdmin } from '~/apis';
+import { handleDeletePitch, handleGetPitch, handleGetPitchesAdmin, handleActivePitch } from '~/apis';
 
 function formatCurrency(amount) {
     return amount.toLocaleString('vi-VN', {
@@ -28,7 +28,7 @@ export default function ListPitchs() {
             }
         };
         fetchData();
-    }, []);
+    }, [selectedPitch]);
 
     const handleEditClick = async (data) => {
         const id = data.id;
@@ -66,6 +66,23 @@ export default function ListPitchs() {
             console.error('Lỗi xóa Sân:', error);
             toast.error('Xóa sân thất bại!');
         }
+        window.location.reload();
+    };
+
+    const handleActivateClick = async (pitch) => {
+        const pitchId = pitch.id;
+        const data = pitch.isEnabled;
+        console.log(pitch);
+        console.log(data);
+        try {
+            const re = await handleActivePitch(pitchId, data);
+            console.log(re.data.result);
+
+            toast.success('Kích hoạt sân thành công');
+        } catch (error) {
+            toast.error('Kích hoạt sân thất bại');
+        }
+
         window.location.reload();
     };
 
@@ -116,29 +133,43 @@ export default function ListPitchs() {
                                 <span>Mô Tả: {pitch.description}</span>
                             </div>
                             <div className="d-flex justify-content-end">
-                                <Tooltip title={pitch.isEnabled ? 'Chỉnh Sửa' : 'Sân không khả dụng'}>
-                                    <span>
+                                {pitch.isEnabled ? (
+                                    <>
+                                        <Tooltip title="Chỉnh Sửa">
+                                            <span>
+                                                <Button
+                                                    variant="contained"
+                                                    className="my-2"
+                                                    color="success"
+                                                    onClick={() => handleEditClick(pitch)}
+                                                >
+                                                    Chỉnh Sửa
+                                                </Button>
+                                            </span>
+                                        </Tooltip>
+                                        <Tooltip title="Xóa">
+                                            <Button
+                                                variant="contained"
+                                                color="error"
+                                                className="m-2"
+                                                onClick={() => handleDelClick(pitch.id)}
+                                            >
+                                                Xóa
+                                            </Button>
+                                        </Tooltip>
+                                    </>
+                                ) : (
+                                    <Tooltip title="Kích Hoạt">
                                         <Button
                                             variant="contained"
-                                            className="my-2"
-                                            onClick={() => handleEditClick(pitch)}
-                                            disabled={!pitch.isEnabled}
+                                            color="error"
+                                            className="m-2"
+                                            onClick={() => handleActivateClick(pitch)}
                                         >
-                                            Chỉnh Sửa
+                                            Kích hoạt
                                         </Button>
-                                    </span>
-                                </Tooltip>
-
-                                <Tooltip title={pitch.isEnabled ? 'Xóa' : 'Sân không khả dụng'}>
-                                    <Button
-                                        variant="contained"
-                                        className="my-2 mx-2"
-                                        onClick={() => handleDelClick(pitch.id)}
-                                        disabled={!pitch.isEnabled}
-                                    >
-                                        Xóa
-                                    </Button>
-                                </Tooltip>
+                                    </Tooltip>
+                                )}
                             </div>
                         </Typography>
                     </div>

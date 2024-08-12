@@ -1,11 +1,7 @@
 package com.fpoly.httc_sport.utils;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import jakarta.servlet.ServletOutputStream;

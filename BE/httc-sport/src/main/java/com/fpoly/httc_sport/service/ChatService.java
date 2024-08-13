@@ -3,12 +3,16 @@ package com.fpoly.httc_sport.service;
 import com.fpoly.httc_sport.dto.request.ChatMessageRequest;
 import com.fpoly.httc_sport.entity.ChatMessage;
 import com.fpoly.httc_sport.entity.ChatRoom;
+import com.fpoly.httc_sport.exception.AppException;
+import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.repository.ChatMessageRepository;
 import com.fpoly.httc_sport.repository.ChatRoomRepository;
+import com.fpoly.httc_sport.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,6 +24,7 @@ import java.util.List;
 public class ChatService {
 	ChatMessageRepository chatMessageRepository;
 	ChatRoomRepository chatRoomRepository;
+	UserRepository userRepository;
 	SimpMessagingTemplate simpMessagingTemplate;
 	
 	public void processMessage(String senderId, ChatMessageRequest message) {
@@ -33,6 +38,17 @@ public class ChatService {
 			chatRoomRepository.save(chatRoom);
 		}
 		
+		var context = SecurityContextHolder.getContext();
+		var user = userRepository.findByUsername(context.getAuthentication().getName());
+		
+		if (user.isEmpty())
+			throw new AppException(ErrorCode.UNAUTHENTICATED);
+		
+		if (!senderId.equals("admin") && !senderId.equals(user.get().getId()))
+			throw new AppException(ErrorCode.UNAUTHENTICATED);
+		else if (senderId.equals("admin") && !senderId.equals(user.get().getUsername()))
+			throw new AppException(ErrorCode.UNAUTHENTICATED);
+			
 		if (message.getMessage().isEmpty())
 			return;
 		

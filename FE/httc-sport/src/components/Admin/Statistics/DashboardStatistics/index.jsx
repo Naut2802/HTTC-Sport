@@ -52,7 +52,7 @@ export const data = {
     datasets: [
         {
             label: 'Doanh Thu ',
-            data: labels.map(() => faker.datatype.number({ min: 10000000, max: 500000000 })),
+            data: labels.map(() => faker.datatype.number({ min: 500000, max: 10000000 })),
             backgroundColor: 'rgba(255, 99, 132, 0.5)',
         },
     ],

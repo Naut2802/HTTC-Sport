@@ -10,7 +10,6 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.*;
@@ -26,7 +25,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.StringJoiner;
 
 @Service
-@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class JwtService {
 	@Autowired
@@ -37,8 +35,6 @@ public class JwtService {
 	long REFRESH_TOKEN_VALID_DURATION;
 	
 	public String generateAccessToken(User user, KeyPair keyPair) throws NoSuchAlgorithmException {
-		log.info("[JwtGenerator::GenerateAccessToken] Token creation started for: {}", user.getUsername());
-		
 		String scopes = buildScope(user);
 		JwtClaimsSet claimsSet = JwtClaimsSet.builder()
 				.subject(user.getId())
@@ -53,8 +49,6 @@ public class JwtService {
 	}
 	
 	public Jwt generateRefreshToken(User user, String jti, KeyPair keyPair) throws NoSuchAlgorithmException {
-		log.info("[JwtGenerator::GenerateRefreshToken] Token creation started for: {}", user.getUsername());
-		
 		JwtEncoder jwtEncoder = buildJwtEncoder(keyUtils.getPublicKey(keyPair), keyUtils.getPrivateKey(keyPair));
 		
 		JwtClaimsSet claimsSet = JwtClaimsSet.builder()

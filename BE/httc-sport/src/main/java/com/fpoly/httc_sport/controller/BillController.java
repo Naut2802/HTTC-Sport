@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "Bill Controller")
+@Slf4j
 public class BillController {
 	BillService billService;
 	
@@ -26,8 +28,11 @@ public class BillController {
 	ApiResponse<List<BillResponse>> getAllBillByUser(@PathVariable String userId,
 	                              @RequestParam(defaultValue = "0") int page,
 	                              @RequestParam(defaultValue = "5") int size) {
+		log.info("[Bill Controller - Admin get all bills with user-id] Admin get all bills with user id: {}", userId);
+		var response = billService.getAllBillByUserId(userId, page, size);
+		log.info("[Bill Controller - Admin get all bill with user-id] total bills: {}", response.size());
 		return ApiResponse.<List<BillResponse>>builder()
-				.result(billService.getAllBillByUserId(userId, page, size))
+				.result(response)
 				.build();
 	}
 	
@@ -37,8 +42,11 @@ public class BillController {
 	ApiResponse<List<BillResponse>> getAllBill(
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "5") int size) {
+		log.info("[Bill Controller - Admin get all bills] Admin get all bills");
+		var response = billService.getAllBill(page, size);
+		log.info("[Bill Controller - Admin get all bills] total bills: {}", response.size());
 		return ApiResponse.<List<BillResponse>>builder()
-				.result(billService.getAllBill(page, size))
+				.result(response)
 				.build();
 	}
 	
@@ -48,8 +56,11 @@ public class BillController {
 	ApiResponse<List<BillResponse>> getAllBillByPitch(@PathVariable int pitchId,
 	                                 @RequestParam(defaultValue = "0") int page,
 	                                 @RequestParam(defaultValue = "5") int size) {
+		log.info("[Bill Controller - Admin get all bills with pitch-id] Admin get all bills with pitch-id: {}", pitchId);
+		var response = billService.getAllBillByPitchId(pitchId, page, size);
+		log.info("[Bill Controller - Admin get all bills with pitch-id] total bills: {}", response.size());
 		return ApiResponse.<List<BillResponse>>builder()
-				.result(billService.getAllBillByPitchId(pitchId, page, size))
+				.result(response)
 				.build();
 	}
 }

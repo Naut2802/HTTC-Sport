@@ -19,6 +19,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,30 +27,38 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "Authentication Controller")
+@Slf4j
 public class AuthenticationController {
 	AuthenticationService authenticationService;
 	
 	@Operation(summary = "Sign-in", description = "API sign-in")
 	@PostMapping("sign-in")
 	ApiResponse<AuthenticationResponse> signIn(@Valid @RequestBody LoginRequest request, HttpServletResponse response) throws NoSuchAlgorithmException {
+		log.info("[Authentication Controller - Sign in api] Starting sign in to system with username; {}", request.getUsername());
+		var res = authenticationService.authenticate(request, response);
+		log.info("[Authentication Controller - Sign in api] Signed");
 		return ApiResponse.<AuthenticationResponse>builder()
-				.result(authenticationService.authenticate(request, response))
+				.result(res)
 				.build();
 	}
 	
 	@Operation(summary = "Sign-in with Google", description = "API sign-in with Google")
 	@PostMapping("outbound/google/authenticate")
 	ApiResponse<AuthenticationResponse> googleOutboundAuthenticate(@RequestParam("code") String code, HttpServletResponse response) throws NoSuchAlgorithmException {
+		log.info("[Authentication Controller - Sign in with gmail api] Starting sign in to system with gmail");
+		var res = authenticationService.googleOutboundAuthenticate(code, response);
+		log.info("[Authentication Controller - Sign in with gmail api] Signed");
 		return ApiResponse.<AuthenticationResponse>builder()
-				.result(authenticationService.googleOutboundAuthenticate(code, response))
+				.result(res)
 				.build();
 	}
 	
 	@Operation(summary = "Sign-up", description = "API sign-up new account")
 	@PostMapping("sign-up")
 	ApiResponse<String> signUp(@Valid @RequestBody RegisterRequest request, HttpServletRequest httpRequest) {
+		log.info("[Authentication Controller - Sign up] Starting sign up to system");
 		String response = authenticationService.register(request, httpRequest);
-		
+		log.info("[Authentication Controller - Sign up] Sign up successfully");
 		return ApiResponse.<String>builder()
 				.message(response)
 				.build();
@@ -71,6 +80,7 @@ public class AuthenticationController {
 		String result = authenticationService.validateEmailToken(token);
 		
 		if (result.contains("expired")) {
+			log.error("[Authentication Controller - Verify Email] Verify link has expired");
 			response.sendRedirect("http://localhost:3000/auth-mail-error?token="+token);
 			return ApiResponse.builder()
 					.message(result)
@@ -78,6 +88,7 @@ public class AuthenticationController {
 					.build();
 		}
 		
+		log.error("[Authentication Controller - Verify Email] Email verified");
 		response.sendRedirect("http://localhost:3000/auth-mail-success");
 		return ApiResponse.builder()
 				.message("Email đã được xác thực. Kích hoạt tài khoản thành công")

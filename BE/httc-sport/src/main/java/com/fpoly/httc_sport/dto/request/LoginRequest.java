@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginRequest{
 	@NotNull(message = "USERNAME_NULL")
-	@NotBlankAndSizeAndPattern(min = 4, regexp = "^[a-zA-Z0-9@.]{4,20}$", message = "USERNAME")
+	@NotBlankAndSizeAndPattern(min = 4, message = "USERNAME")
 	String username;
 	@NotNull(message = "PASSWORD_NULL")
 	@NotBlankAndSizeAndPattern(min = 5, regexp = "^[a-zA-Z0-9]{5,20}$", message = "PASSWORD")

@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("api/v1/wallet")
 @Tag(name = "Wallet Controller")
+@Slf4j
 public class WalletController {
 	WalletService walletService;
 	
@@ -49,7 +51,9 @@ public class WalletController {
 	@PostMapping("admin/top-up-user/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<TransactionResponse> adminTopUpUser(@PathVariable String userId, @Valid @RequestBody TransactionRequest request) {
+		log.info("[Wallet Controller - Admin top up for user api] Admin top-up a user with user-id: {}", userId);
 		var response = walletService.adminTopUpUser(userId, request);
+		log.info("[Wallet Controller - Admin top up for user api] {}", response.getMessage());
 		
 		return ApiResponse.<TransactionResponse>builder()
 				.message(response.getMessage())

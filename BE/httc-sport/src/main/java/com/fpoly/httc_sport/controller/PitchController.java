@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "Pitch Controller")
+@Slf4j
 public class PitchController {
 	PitchService pitchService;
 	
@@ -29,9 +31,12 @@ public class PitchController {
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> createPitch(@Valid @ModelAttribute PitchRequest request) throws IOException {
+		log.info("[Pitch Controller - Create pitch api] Admin adding a new pitch");
+		var response = pitchService.createPitch(request);
+		log.info("[Pitch Controller - Create pitch api] New pitch added");
 		return ApiResponse.<PitchResponse>builder()
 				.message("Thêm sân thành công")
-				.result(pitchService.createPitch(request))
+				.result(response)
 				.build();
 	}
 	
@@ -39,9 +44,12 @@ public class PitchController {
 	@PutMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchDetailsResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws Exception {
+		log.info("[Pitch Controller - Update pitch api] Admin updating a pitch with pitch-id: {}", id);
+		var response = pitchService.updatePitch(id, request);
+		log.info("[Pitch Controller - Update pitch api] Updated");
 		return ApiResponse.<PitchDetailsResponse>builder()
 				.message("Chỉnh sửa sân thành công")
-				.result(pitchService.updatePitch(id, request))
+				.result(response)
 				.build();
 	}
 	
@@ -49,8 +57,11 @@ public class PitchController {
 	@DeleteMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> deletePitch(@PathVariable int id) throws Exception {
+		log.info("[Pitch Controller - Deactivate pitch api] Admin deactivate a pitch with id: {}", id);
+		var response = pitchService.deletePitch(id);
+		log.info("[Pitch Controller - Deactivate pitch api] {}", response);
 		return ApiResponse.<PitchResponse>builder()
-				.message(pitchService.deletePitch(id))
+				.message(response)
 				.build();
 	}
 	
@@ -58,8 +69,11 @@ public class PitchController {
 	@PatchMapping("/active/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> activePitch(@PathVariable int id) throws Exception {
+		log.info("[Pitch Controller - Active pitch api] Admin active a pitch with id: {}", id);
+		var response = pitchService.activePitch(id);
+		log.info("[Pitch Controller - Active pitch api] {}", response);
 		return ApiResponse.<PitchResponse>builder()
-				.message(pitchService.activePitch(id))
+				.message(response)
 				.build();
 	}
 	
@@ -67,9 +81,12 @@ public class PitchController {
 	@PatchMapping("{id}/{publicId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> deleteImageFromPitch(@PathVariable int id, @PathVariable String publicId) throws Exception {
+		log.info("[Pitch Controller - Delete a image from pitch] Admin deleting a image from a pitch with pitch-id: {}", id);
+		var response = pitchService.deleteImageFromPitch(id, publicId);
+		log.info("[Pitch Controller - Delete a image from pitch] Image deleted");
 		return ApiResponse.<PitchResponse>builder()
 				.message("Xóa ảnh thành công")
-				.result(pitchService.deleteImageFromPitch(id, publicId))
+				.result(response)
 				.build();
 	}
 	
@@ -113,50 +130,4 @@ public class PitchController {
 				.result(pitchService.getPitchesByAdmin(rates, district, city, name, price, type, page, size))
 				.build();
 	}
-	
-//	@GetMapping("find/keywords")
-//	public String findKW(Model model, @RequestParam("keywords") Optional<String> keywords) {
-//		String keyword = keywords.orElse(request.getAttribute("keywords") + "");
-//		request.setAttribute("keywords", keyword);
-//		List<San> listSanActive = sanService.findbyKeyWords(keyword);
-//		List<Float> mocSao = new ArrayList<>();
-//
-//		for (San san : listSanActive) {
-//			Float sao = 0f;
-//			for (DanhGia dg : san.getListDanhGia()) {
-//				sao += dg.getMocSao();
-//			}
-//			sao = sao / san.getListDanhGia().size();
-//
-//			mocSao.add(sao.isNaN() ? 0 : sao);
-//		}
-//
-//		session.setAttribute("listSao", mocSao);
-//		session.setAttribute("listSanActive", listSanActive);
-//		session.setAttribute("contextPath", request.getContextPath());
-//		session.setAttribute("rq", "san/dsSan.html");
-//		return "index";
-//	}
-//
-//	@GetMapping("danh-sach-san/filter")
-//	public String filter(@RequestParam("stars") String stars, @RequestParam("loai") String loaiSan) {
-//		Set<San> listSanActive = loaiSan.isEmpty() && stars.isEmpty() ? new HashSet<>(sanService.getAllSanActive())
-//				: sanService.filter(loaiSan.isEmpty() ? "" : loaiSan, stars.isEmpty() ? "" : stars);
-//		List<Float> mocSao = new ArrayList<>();
-//
-//		for (San san : listSanActive) {
-//			Float sao = 0f;
-//			for (DanhGia dg : san.getListDanhGia()) {
-//				sao += dg.getMocSao();
-//			}
-//			sao = sao / san.getListDanhGia().size();
-//
-//			mocSao.add(sao.isNaN() ? 0 : sao);
-//		}
-//
-//		session.setAttribute("listSao", mocSao);
-//		session.setAttribute("listSanActive", listSanActive);
-//		return "redirect:/san-bong-da/danh-sach-san";
-//	}
-
 }

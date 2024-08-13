@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.InvalidKeyException;
@@ -18,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "Payment Controller")
+@Slf4j
 public class PaymentController {
 	PaymentService paymentService;
 	
@@ -25,16 +27,23 @@ public class PaymentController {
 	@PostMapping("rent-pitch/{rentInfoId}")
 	ApiResponse<PayOSResponse> createRentPaymentLink(@PathVariable int rentInfoId, @RequestParam("deposit") float deposit)
 			throws NoSuchAlgorithmException, InvalidKeyException {
+		log.info("[Payment Controller - Create payment link api] Starting create payment link");
+		var response = paymentService.createRentPaymentLink(rentInfoId, deposit);
+		log.info("[Payment Controller - Create payment link api] Payment link created");
 		return ApiResponse.<PayOSResponse>builder()
-				.result(paymentService.createRentPaymentLink(rentInfoId, deposit))
+				.result(response)
 				.build();
 	}
 	
 	@Operation(summary = "Create top up to wallet payment link", description = "User use this api for top up to wallet")
 	@PostMapping("user-top-up/{transactionId}")
-	ApiResponse<PayOSResponse> createTopUpPaymentLink(@PathVariable int transactionId) throws NoSuchAlgorithmException, InvalidKeyException {
+	ApiResponse<PayOSResponse> createTopUpPaymentLink(@PathVariable int transactionId)
+			throws NoSuchAlgorithmException, InvalidKeyException {
+		log.info("[Payment Controller - Create top-up payment link api] Starting create top-up payment link");
+		var response = paymentService.createTopUpPaymentLink(transactionId);
+		log.info("[Payment Controller - Create top-up payment link api] Payment top-up link created");
 		return ApiResponse.<PayOSResponse>builder()
-				.result(paymentService.createTopUpPaymentLink(transactionId))
+				.result(response)
 				.build();
 	}
 }

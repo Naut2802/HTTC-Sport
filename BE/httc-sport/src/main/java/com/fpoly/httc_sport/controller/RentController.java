@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "Rent Controller")
 public class RentController {
+	private static final Logger log = LoggerFactory.getLogger(RentController.class);
 	RentInfoService rentInfoService;
 	
 	@Operation(summary = "Api rent a pitch")
@@ -50,7 +53,9 @@ public class RentController {
 	@PostMapping("/rent-info-to-bill/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<?> exchangeRentInfoToBill(@PathVariable int id) {
+		log.info("[Rent Controller - Exchange a rent info to bill] Admin exchanging a rent info to bill");
 		rentInfoService.exchangeRentInfoToBill(id);
+		log.info("[Rent Controller - Exchange a rent info to bill] Rent info exchanged to bill");
 		
 		return ApiResponse.builder()
 				.message("Đổi thông tin đặt sân sang hóa đơn thành công")
@@ -101,17 +106,22 @@ public class RentController {
 	@PutMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<RentInfoResponse> updateRentInfo(@PathVariable int id, @Valid @RequestBody RentInfoUpdateRequest request) {
+		log.info("[Rent Controller - Delete a rent info] Admin updating a rent info with id: {}", id);
+		var response = rentInfoService.updateRentInfo(id, request);
+		log.info("[Rent Controller - Delete a rent info] Updated");
 		return ApiResponse.<RentInfoResponse>builder()
-				.result(rentInfoService.updateRentInfo(id, request))
+				.result(response)
 				.build();
 	}
 	
 	@Operation(summary = "Api delete rent-info if paymentStatus false")
 	@DeleteMapping("{id}")
 	ApiResponse<?> deleteRentInfo(@PathVariable int id) {
-		
+		log.info("[Rent Controller - Delete a rent info] Deleting a rent info with id: {}", id);
+		var response = rentInfoService.deleteRentInfo(id);
+		log.info("[Rent Controller - Delete a rent info] Deleted");
 		return ApiResponse.builder()
-				.message(rentInfoService.deleteRentInfo(id))
+				.message(response)
 				.build();
 	}
 	

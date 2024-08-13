@@ -3,9 +3,6 @@ name: CICD FE Pipeline
 on:
   push:
     branches: [ fe-deployment ]
-    paths: 
-      - '**/cicd-fe.yml'
-      - 'FE/httc-sport/**'
 
 permissions:
   contents: read  

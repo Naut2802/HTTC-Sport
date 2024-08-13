@@ -2,7 +2,7 @@ name: CICD FE Pipeline
 
 on:
   push:
-    branches: [ fe-deployment ]
+    branches: [fe-deployment]
 
 permissions:
   contents: read  

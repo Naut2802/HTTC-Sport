@@ -67,7 +67,7 @@ export default function List({ pitches }) {
 
                             <Typography sx={{ mt: 1 }} variant="subtitle2" color="text.secondary">
                                 <span className="fs-6">
-                                    Căn Tin
+                                    Căn Tin 
                                     <StorefrontSharpIcon sx={{ marginLeft: 1, marginRight: 1 }} />
                                 </span>
                                 <span className="fs-6 border-start">

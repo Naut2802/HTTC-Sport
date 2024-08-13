@@ -58,47 +58,47 @@ const UnauthorizedRoute = () => {
 function App() {
     return (
         <Routes>
-            <Route path="/" element={<Navigate to="/trang-chu" replace={true} />} />
-            <Route path="/forgot-password-verify-error" element={<FPVerifyError />} />
-            <Route path="/forgot-password-verify-success" element={<FPVerifySuccess />} />
-            <Route path="/forgot-password/reset-password" element={<ResetPassword />} />
-            <Route path="/payment/rent/success" element={<PaymentSuccess />} />
-            <Route path="/payment/rent/error" element={<PaymentError />} />
-            <Route element={<UserHomePage />}>
-                <Route path="/register" element={<Register />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/trang-chu" element={<UserHome />} />
-                <Route path="/tin-tuc" element={<News />} />
-                <Route path="/lien-he" element={<Contact />} />
-                <Route path="/san-bong" element={<PitchList />} />
-                <Route path="/chi-tiet-san/:id" element={<PitchDetail />} />
-                <Route path="/thanh-toan" element={<Payment />} />
+            <Route path="/" component={<Navigate to="/trang-chu" replace={true} />} />
+            <Route path="/forgot-password-verify-error" component={<FPVerifyError />} />
+            <Route path="/forgot-password-verify-success" component={<FPVerifySuccess />} />
+            <Route path="/forgot-password/reset-password" component={<ResetPassword />} />
+            <Route path="/payment/rent/success" component={<PaymentSuccess />} />
+            <Route path="/payment/rent/error" component={<PaymentError />} />
+            <Route component={<UserHomePage />}>
+                <Route path="/register" component={<Register />} />
+                <Route path="/forgot-password" component={<ForgotPassword />} />
+                <Route path="/trang-chu" component={<UserHome />} />
+                <Route path="/tin-tuc" component={<News />} />
+                <Route path="/lien-he" component={<Contact />} />
+                <Route path="/san-bong" component={<PitchList />} />
+                <Route path="/chi-tiet-san/:id" component={<PitchDetail />} />
+                <Route path="/thanh-toan" component={<Payment />} />
             </Route>m
 
-            <Route element={<ProtectedRoute />}>
-                <Route element={<UserHomePage />}>
-                    <Route path="/tai-khoan" element={<UserInfo />} />
-                    <Route path="/change-password" element={<ChangePassword />} />
-                    <Route path="/thong-tin-dat-san" element={<UserRentInfo />} />
-                    <Route path="/lich-su-giao-dich" element={<UserBills />} />
+            <Route component={<ProtectedRoute />}>
+                <Route component={<UserHomePage />}>
+                    <Route path="/tai-khoan" component={<UserInfo />} />
+                    <Route path="/change-password" component={<ChangePassword />} />
+                    <Route path="/thong-tin-dat-san" component={<UserRentInfo />} />
+                    <Route path="/lich-su-giao-dich" component={<UserBills />} />
                 </Route>
 
-                <Route element={<AdminHomePage />}>
-                    <Route path="/admin/trang-chu" element={<AdminHome />} />
-                    <Route path="/admin/them-san" element={<AddPitch />} />
-                    <Route path="/admin/khach-hang" element={<ListUsers />} />
-                    <Route path="/admin/thong-ke" element={<Statistics />} />
-                    <Route path="/admin/thong-tin-dat-san" element={<RentInfo />} />
-                    <Route path="/admin/danh-sach-san" element={<ListPitchs />} />
-                    <Route path="/admin/thong-tin-tai-khoan" element={<UserInfo />} />
+                <Route component={<AdminHomePage />}>
+                    <Route path="/admin/trang-chu" component={<AdminHome />} />
+                    <Route path="/admin/them-san" component={<AddPitch />} />
+                    <Route path="/admin/khach-hang" component={<ListUsers />} />
+                    <Route path="/admin/thong-ke" component={<Statistics />} />
+                    <Route path="/admin/thong-tin-dat-san" component={<RentInfo />} />
+                    <Route path="/admin/danh-sach-san" component={<ListPitchs />} />
+                    <Route path="/admin/thong-tin-tai-khoan" component={<UserInfo />} />
                 </Route>
             </Route>
 
-            <Route element={<UnauthorizedRoute />}>
-                <Route path="/login" element={<Login />} />
-                <Route path="/authenticate/google" element={<AuthenticateGG />} />
-                <Route path="/auth-mail-success" element={<MailAuthSuccess />} />
-                <Route path="/auth-mail-error" element={<MailAuthError />} />
+            <Route component={<UnauthorizedRoute />}>
+                <Route path="/login" component={<Login />} />
+                <Route path="/authenticate/google" component={<AuthenticateGG />} />
+                <Route path="/auth-mail-success" component={<MailAuthSuccess />} />
+                <Route path="/auth-mail-error" component={<MailAuthError />} />
             </Route>
         </Routes>
     );

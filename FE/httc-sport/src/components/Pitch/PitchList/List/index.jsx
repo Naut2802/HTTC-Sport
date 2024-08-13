@@ -20,7 +20,7 @@ export default function List({ pitches }) {
                         component={Link}
                         to={`/chi-tiet-san/${pitch.id}`}
                         sx={{ width: 260 }}
-                        image={pitch.image.url}
+                        image={pitch.image && pitch.image.url ? pitch.image.url : 'default-image-url.jpg'}
                         alt={pitch.pitchName}
                         className="img-fluid"
                     />

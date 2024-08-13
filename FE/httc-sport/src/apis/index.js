@@ -155,3 +155,9 @@ export const handleGetRentInfoById = async (id) => {
 export const handleGetAllRentInfoByUser = async (userId) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/get-all-by-user/${userId}`);
 };
+
+
+// -----------------------------------REPORT API--------------------------------------
+export const handleAnalytics = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/report/analytics`);
+};

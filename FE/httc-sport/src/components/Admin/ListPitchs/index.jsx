@@ -103,7 +103,7 @@ export default function ListPitchs() {
                         <Typography className="col-4 " component="div">
                             <img
                                 src={pitch.image && pitch.image.url ? pitch.image.url : 'default-image-url.jpg'}
-                                alt={pitch.image ? pitch.pitchName : 'Sân Ngưng Hoạt Động'}
+                                alt={pitch.image ? pitch.pitchName : 'Không có ảnh'}
                                 style={{
                                     width: '100%',
                                     minHeightt: '50%',

@@ -1,9 +1,9 @@
 <configuration status="WARN">
 
     <property name="logging.error.file.name" value="error-log" />
-    <property name="logging.error.file.path" value="${LOGGING_ERROR_PATH}"/>
+    <property name="logging.error.file.path" value="${LOGGING_PATH}"/>
     <property name="logging.file.name" value="info-log" />
-    <property name="logging.file.path" value="${LOGGING_INFO_PATH}"/>
+    <property name="logging.file.path" value="${LOGGING_PATH}"/>
 
     <!-- Normal log appender -->
     <appender name="INFO_FILE" class="ch.qos.logback.core.FileAppender">

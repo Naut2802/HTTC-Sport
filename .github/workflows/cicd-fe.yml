@@ -20,14 +20,16 @@ jobs:
         with:
             node-version: 20
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
+        working-directory: FE/httc-sport/
       - name: Build Project
-        run: npm run build      
+        run: npm run build
+        working-directory: FE/httc-sport/    
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3   
         with:
            name: 'github-pages'
-           path: build
+           path: FE/httc-sport/build
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with: 

@@ -4,7 +4,6 @@ import com.fpoly.httc_sport.entity.MailInfo;
 import com.fpoly.httc_sport.event.ForgotPasswordEvent;
 import com.fpoly.httc_sport.service.MailerService;
 import com.fpoly.httc_sport.service.UserService;
-import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

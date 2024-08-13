@@ -43,6 +43,8 @@ jobs:
         run: |
           mkdir -p /home/linux/app
           echo "${{ secrets.ENV }}" >> /home/linux/app/.env
+      - name: Create logs folder for logging
+        run: mkdir -p /home/logs/httc-sport
       - name: Run docker container
         run: docker run --env-file /home/linux/app/.env
             --restart unless-stopped -d -p 8082:8082

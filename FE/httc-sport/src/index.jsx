@@ -16,19 +16,18 @@ const router = createHashRouter([
     {
       path: "/*",
       element: <App />,
+      LocalizationProvider: <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <GlobalStyles>
+            <App />
+        </GlobalStyles>
+        <ToastContainer position="bottom-right" theme="colored" />
+      </LocalizationProvider>
     }
   ]);
   
   ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-      <RouterProvider router={router}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <GlobalStyles>
-                <App />
-            </GlobalStyles>
-            <ToastContainer position="bottom-right" theme="colored" />
-        </LocalizationProvider>
-      </RouterProvider>
+      <RouterProvider router={router} />
     </React.StrictMode>
   );
 reportWebVitals();

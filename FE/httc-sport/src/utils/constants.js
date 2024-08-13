@@ -1,4 +1,4 @@
-export const API_ROOT = 'http://localhost:8082';
+export const API_ROOT = 'https://be.httc-sport.online';
 
 export const OAuthConfigGoogle = {
     clientId: '390468462355-605umotentpl4jqu1pqdh57f6351lsv6.apps.googleusercontent.com',

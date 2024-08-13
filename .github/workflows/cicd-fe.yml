@@ -2,7 +2,7 @@ name: CICD FE Pipeline
 
 on:
   push:
-    branches: [ fe-deployment, main ]
+    branches: [ fe-deployment ]
     paths: 
       - '**/cicd-fe.yml'
       - 'FE/httc-sport/**'

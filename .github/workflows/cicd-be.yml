@@ -48,4 +48,5 @@ jobs:
       - name: Run docker container
         run: docker run --env-file /home/linux/app/.env
             --restart unless-stopped -d -p 8082:8082
+            -v /home/logs/httc-sport:/home/logs/httc-sport
             --name httc-sport-container naut2802/httc-sport:latest

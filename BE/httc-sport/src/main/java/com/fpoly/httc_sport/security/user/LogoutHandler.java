@@ -41,8 +41,6 @@ public class LogoutHandler implements org.springframework.security.web.authentic
 	@Override
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		try {
-			log.info("[LogoutHandler:doLogout] :: Started ");
-			
 			log.info("[LogoutHandler:doLogout]Logout at Http Request: {}", request.getRequestURI());
 			final String headers = request.getHeader(HttpHeaders.AUTHORIZATION);
 			String jti = getRefreshTokenFromCookies(request);

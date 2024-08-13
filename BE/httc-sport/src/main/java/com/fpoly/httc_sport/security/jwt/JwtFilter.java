@@ -39,8 +39,6 @@ public class JwtFilter extends OncePerRequestFilter {
 	                                HttpServletResponse response,
 	                                FilterChain filterChain) throws ServletException, IOException {
 		try {
-			log.info("[JwtAccessTokenFilter:doFilterInternal] :: Started ");
-			
 			log.info("[JwtAccessTokenFilter:doFilterInternal]Filtering the Http Request:{}", request.getRequestURI());
 			
 			final String headers = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -79,15 +77,16 @@ public class JwtFilter extends OncePerRequestFilter {
 			
 			filterChain.doFilter(request, response);
 		} catch (AppException e) {
-			log.error("[JwtAccessTokenFilter:doFilterInternal] AppException due to :{}", e.getErrorCode().getMessage());
+			log.info("[JwtAccessTokenFilter:doFilterInternal] AppException due to JWT expired :{}", e.getErrorCode().getMessage());
 			handleException(response, HttpStatus.GONE, e.getErrorCode().getMessage());
 		} catch (Exception e) {
-			log.error("[JwtAccessTokenFilter:doFilterInternal] Exception due to :{}", e.getMessage());
-			
 			if (e.getMessage().contains("Jwt expired")) {
+				log.info("[JwtAccessTokenFilter:doFilterInternal] Exception due to JWT expired :{}", e.getMessage());
 				handleException(response, HttpStatus.GONE, e.getMessage());
-			} else
+			} else {
+				log.error("[JwtAccessTokenFilter:doFilterInternal] Exception due to :{}", e.getMessage());
 				handleException(response, HttpStatus.NOT_ACCEPTABLE, e.getMessage());
+			}
 		}
 	}
 	
@@ -97,30 +96,5 @@ public class JwtFilter extends OncePerRequestFilter {
 		Map<String, String> errorResponse = new HashMap<>();
 		errorResponse.put("error", message);
 		response.getOutputStream().write(new ObjectMapper().writeValueAsBytes(errorResponse));
-	}
-	
-	public static String getClientIp(HttpServletRequest request) {
-		String ip = request.getHeader("X-Forwarded-For");
-		if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
-			// X-Forwarded-For may return multiple IPs, the first one is the client IP
-			return ip.split(",")[0];
-		}
-		ip = request.getHeader("Proxy-Client-IP");
-		if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
-			return ip;
-		}
-		ip = request.getHeader("WL-Proxy-Client-IP");
-		if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
-			return ip;
-		}
-		ip = request.getHeader("HTTP_CLIENT_IP");
-		if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
-			return ip;
-		}
-		ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-		if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
-			return ip;
-		}
-		return request.getRemoteAddr();
 	}
 }

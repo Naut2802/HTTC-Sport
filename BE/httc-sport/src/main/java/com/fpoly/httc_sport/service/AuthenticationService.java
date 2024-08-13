@@ -22,7 +22,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,7 +39,6 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
 	UserRepository userRepository;
@@ -133,7 +131,6 @@ public class AuthenticationService {
 				.build();
 		
 		mailerService.queue(mailInfo);
-		log.info(url);
 		
 		return "Đã gửi lại email xác thực tài khoản, vui lòng kiểm tra email";
 	}
@@ -178,8 +175,6 @@ public class AuthenticationService {
 						.redirectUri(REDIRECT_URI)
 						.grantType(GRANT_TYPE)
 				.build());
-		
-		log.info("Google token exchanged {}", tokenExchanged);
 		
 		var userInfo = googleOutboundUserInfoClient.getUserInfo("json", tokenExchanged.getAccessToken());
 		

@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +31,6 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
 	PasswordEncoder passwordEncoder;
@@ -236,61 +234,10 @@ public class UserService {
 	}
 	
 	private String generateUrl(HttpServletRequest request) {
-		return "http://"+request.getServerName()+":"+request.getServerPort()+"/api/v1/user/forgot-password";
+		return "http://" + request.getServerName() + ":" + request.getServerPort() + "/api/v1/user/forgot-password";
 	}
 	
 	private String encodePassword(String username, String password) {
 		return passwordEncoder.encode(username + password);
 	}
-	
-	private String getRefreshTokenFromCookies(HttpServletRequest request) {
-		if (request.getCookies() != null) {
-			for (Cookie cookie : request.getCookies()) {
-				if ("refresh_token".equals(cookie.getName())) {
-					return cookie.getValue();
-				}
-			}
-		}
-		return null;
-	}
-//	@Autowired
-//	private com.fpoly.repository.HoaDonRepository hoadonRepository;
-//	@Autowired
-//	private VipRepo VipRepository;
-//	@Autowired
-//	private ThongTinDatRepository thongtinRepository;
-//	private int time = 0;
-//
-//	public List<User> getAllUsers() {
-//		List<User> users = (List<User>) userRepository.findUserByRolesRoleNameLike("USER");
-//
-//		return users;
-//	}
-//
-//	public Boolean delete(String username) {
-//		User _userFind = userRepository.findById(username).orElse(null);
-//		if(_userFind != null) {
-//			_userFind.setStatus(false);
-//			userRepository.save(_userFind);
-//			return true;
-//		}
-//
-//		return false;
-//	}
-//
-//	public List<Vip> findAll(){
-//		return VipRepository.findAll();
-//	}
-//
-//	public List<ThongTinDatSan> findByUser(String username){
-//		return (List<ThongTinDatSan>) thongtinRepository.findByUserUsername(username);
-//	}
-
-//	@Scheduled(fixedDelay = 1000, initialDelay = 1000)
-//	public void checkTimeOtp() {
-//		time++;
-//		if(time == 20) {
-//
-//		}
-//	}
 }

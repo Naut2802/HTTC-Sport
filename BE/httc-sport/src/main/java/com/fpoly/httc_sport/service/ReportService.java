@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Slf4j
 public class ReportService {
 	UserRepository userRepository;
 	PitchRepository pitchRepository;
@@ -55,9 +53,7 @@ public class ReportService {
 	
 	public AnalyticsResponse analytics() {
 		int totalUser = userRepository.countAllByRolesRoleNameNot(RoleEnum.ADMIN);
-		log.info("API Analytics. Total users = {}", totalUser);
 		int totalPitches = (int) pitchRepository.count();
-		log.info("API Analytics. Total pitches = {}", totalPitches);
 		
 		return AnalyticsResponse.builder()
 				.totalUser(totalUser)

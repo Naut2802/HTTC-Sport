@@ -42,9 +42,10 @@ public class GlobalExceptionHandler {
 			attributes = constraintViolation.getConstraintDescriptor().getAttributes();
 			log.error(attributes.toString());
 		} catch (IllegalArgumentException e) {
-			log.error(e.toString());
+			log.error("Validate arguments error {}", e.getMessage());
 		}
-
+		
+		log.error("Validate arguments error {}", exception.getMessage());
 		return ResponseEntity.badRequest().body(ApiResponse.builder()
 				.code(errorCode.getCode())
 				.message(Objects.nonNull(attributes) ?
@@ -55,6 +56,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = AppException.class)
 	ResponseEntity<ApiResponse<?>> appExceptionHandling(AppException appException) {
 		ErrorCode errorCode = appException.getErrorCode();
+		log.error("App error {}", appException.getMessage());
 		
 		return ResponseEntity.status(errorCode.getStatusCode()).body(ApiResponse.builder()
 				.code(errorCode.getCode())
@@ -65,6 +67,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = AccessDeniedException.class)
 	ResponseEntity<ApiResponse<?>> accessDeniedExceptionHandling(AccessDeniedException exception) {
 		ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+		log.error("Access denied error {}", errorCode.getMessage());
 		
 		return ResponseEntity.status(errorCode.getStatusCode())
 				.body(ApiResponse.builder()

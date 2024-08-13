@@ -18,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "User Controller")
+@Slf4j
 public class UserController {
 	UserService userService;
 	
@@ -94,7 +96,7 @@ public class UserController {
 	@PostMapping("forgot-password/reset-password")
 	ApiResponse<ChangePasswordResponse> resetPassword(@RequestParam("token") String token, @Valid @RequestBody ResetPasswordRequest request) {
 		ChangePasswordResponse response = userService.resetPassword(token, request);
-		
+		log.info("[User Controller - Reset password api] Password has been reset");
 		return ApiResponse.<ChangePasswordResponse>builder()
 				.message(response.getMessage())
 				.result(response)
@@ -114,8 +116,11 @@ public class UserController {
 	@PutMapping("{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<UserResponse> updateUser(@PathVariable String userId, @Valid @RequestBody UserUpdateRequest request) {
+		log.info("[User Controller - Admin update user api] Admin updating a user with user-id: {}", userId);
+		var response = userService.updateUser(userId, request);
+		log.info("[User Controller - Admin update user api] User updated");
 		return ApiResponse.<UserResponse>builder()
-				.result(userService.updateUser(userId, request))
+				.result(response)
 				.build();
 	}
 	
@@ -123,8 +128,11 @@ public class UserController {
 	@PutMapping("authorize/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<UserResponse> authorizeUser(@PathVariable String userId, @Valid @RequestBody AuthorizeUserRequest request) {
+		log.info("[User Controller - Admin authorize user api] Authorizing a user with user-id: {}", userId);
+		var response = userService.authorizeUser(userId, request);
+		log.info("[User Controller - Admin authorize user api] User authorized");
 		return ApiResponse.<UserResponse>builder()
-				.result(userService.authorizeUser(userId, request))
+				.result(response)
 				.build();
 	}
 	
@@ -132,8 +140,11 @@ public class UserController {
 	@DeleteMapping("{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<String> deleteUser(@PathVariable String userId) {
+		log.info("[User Controller - Admin deactivate user api] Deactivate a user with user-id: {}", userId);
+		var response = userService.deleteUser(userId);
+		log.info("[User Controller - Admin deactivate user api] {}", response);
 		return ApiResponse.<String>builder()
-				.result(userService.deleteUser(userId))
+				.message(response)
 				.build();
 	}
 	
@@ -141,8 +152,11 @@ public class UserController {
 	@PatchMapping("/active/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<String> activeUser(@PathVariable String userId) {
+		log.info("[User Controller - Admin active user api] Deactivate a user with user-id: {}", userId);
+		var response = userService.activeUser(userId);
+		log.info("[User Controller - Admin active user api] {}", response);
 		return ApiResponse.<String>builder()
-				.result(userService.activeUser(userId))
+				.message(response)
 				.build();
 	}
 	

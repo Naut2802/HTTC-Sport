@@ -144,7 +144,7 @@ public class PitchService {
 				rate1 = r.getFirst();
 				rate2 = r.getLast();
 			} catch (Exception e) {
-				log.error(e.getMessage());
+				log.error("[Pitch Service - filter error] 'rates' param doesn't valid {}", rates);
 			}
 		}
 		if (price != null && !price.isBlank()) {
@@ -153,7 +153,7 @@ public class PitchService {
 				price1 = p.getFirst();
 				price2 = p.getLast();
 			} catch (Exception e) {
-				log.error(e.getMessage());
+				log.error("[Pitch Service - filter error] 'price' param doesn't valid {}", price);
 			}
 		}
 		
@@ -205,7 +205,7 @@ public class PitchService {
 				rate1 = r.getFirst();
 				rate2 = r.getLast();
 			} catch (Exception e) {
-				log.error(e.getMessage());
+				log.error("[Pitch Service - admin filter error] 'rates' param doesn't valid {}", rates);
 			}
 		}
 		if (price != null && !price.isBlank()) {
@@ -214,7 +214,7 @@ public class PitchService {
 				price1 = p.getFirst();
 				price2 = p.getLast();
 			} catch (Exception e) {
-				log.error(e.getMessage());
+				log.error("[Pitch Service - admin filter error] 'price' param doesn't valid {}", price);
 			}
 		}
 		

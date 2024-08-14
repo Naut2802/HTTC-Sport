@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(value = Exception.class)
 	ResponseEntity<ApiResponse<?>> exceptionHandling(Exception exception) {
-		log.error("Exception: {}", exception.getMessage());
+		log.error("Exception: {}", exception.getMessage(), exception);
 		
 		return ResponseEntity.badRequest().body(ApiResponse.builder()
 				.code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode())

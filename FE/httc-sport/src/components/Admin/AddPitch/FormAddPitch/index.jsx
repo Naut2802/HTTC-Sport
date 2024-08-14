@@ -59,6 +59,23 @@ export default function FormAddPitch({ selectedPitch }) {
         fetchData();
     }, []);
 
+    // Thay đổi Thành Phố
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const handleCityChange = (event) => {
+        const cityId = event.target.value;
+        const selectedCity = dataCity.find((city) => city.Name === cityId);
+        setDistricts(selectedCity ? selectedCity.Districts : []);
+        setWards([]);
+    };
+
+    //Thay đổi Quận
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const handleDistrictChange = (event) => {
+        const districtId = event.target.value;
+        const selectedDistrict = districts.find((district) => district.Name === districtId);
+        setWards(selectedDistrict ? selectedDistrict.Wards : []);
+    };
+
     useEffect(() => {
         if (selectedPitch || savedPitch) {
             const pitch = selectedPitch || savedPitch;
@@ -84,25 +101,7 @@ export default function FormAddPitch({ selectedPitch }) {
                 setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
             }
         }
-    // eslint-disable-next-line no-use-before-define
     }, [selectedPitch, dataCity, districts, savedPitch, setValue, handleCityChange, handleDistrictChange]);
-
-    // Thay đổi Thành Phố
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleCityChange = (event) => {
-        const cityId = event.target.value;
-        const selectedCity = dataCity.find((city) => city.Name === cityId);
-        setDistricts(selectedCity ? selectedCity.Districts : []);
-        setWards([]);
-    };
-
-    //Thay đổi Quận
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleDistrictChange = (event) => {
-        const districtId = event.target.value;
-        const selectedDistrict = districts.find((district) => district.Name === districtId);
-        setWards(selectedDistrict ? selectedDistrict.Wards : []);
-    };
 
     const handleImageChange = (event) => {
         const files = event.target.files;

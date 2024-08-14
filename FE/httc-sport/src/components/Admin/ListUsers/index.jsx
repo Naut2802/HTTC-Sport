@@ -12,7 +12,7 @@ export default function ListUsers() {
     };
     return (
         <div className="container my-3">
-            <Typography className="fs-3 fw-bold mt-3 mb-2">Danh Sách Sân</Typography>
+            <Typography className="fs-3 fw-bold mt-3 mb-2">Quản Lý Khách Hàng</Typography>
             <Breadcrumbs aria-label="breadcrumb" className="fs-5 mb-2">
                 <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/admin/trang-chu">
                     Trang Chủ

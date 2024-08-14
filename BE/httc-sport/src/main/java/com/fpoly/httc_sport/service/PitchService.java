@@ -171,7 +171,7 @@ public class PitchService {
 		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
 		
 		if (!responses.isEmpty()) {
-			responses = pitches.stream().filter(pitch -> {
+			var _pitches = pitches.stream().filter(pitch -> {
 				if (type != null) {
 					if (type.equals("7"))
 						return pitch.getTotal() >= 3;
@@ -181,10 +181,11 @@ public class PitchService {
 						return true;
 				}
 				return true;
-			}).map(pitchMapper::toPitchResponse).toList();
+			}).toList();
+			responses = _pitches.stream().map(pitchMapper::toPitchResponse).toList();
 			
 			if (!responses.isEmpty()) {
-				List<Optional<Image>> images = new ArrayList<>(pitches
+				List<Optional<Image>> images = new ArrayList<>(_pitches
 						.stream().map(pitch -> pitch.getImages()
 								.stream().findFirst()).toList());
 				
@@ -238,7 +239,7 @@ public class PitchService {
 		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
 		
 		if (!responses.isEmpty()) {
-			responses = pitches.stream().filter(pitch -> {
+			var _pitches = pitches.stream().filter(pitch -> {
 				if (type != null) {
 					if (type.equals("7"))
 						return pitch.getTotal() >= 3;
@@ -248,10 +249,11 @@ public class PitchService {
 						return true;
 				}
 				return true;
-			}).map(pitchMapper::toPitchResponse).toList();
+			}).toList();
+			responses = _pitches.stream().map(pitchMapper::toPitchResponse).toList();
 			
 			if (!responses.isEmpty()) {
-				List<Optional<Image>> images = new ArrayList<>(pitches
+				List<Optional<Image>> images = new ArrayList<>(_pitches
 						.stream().map(pitch -> pitch.getImages()
 								.stream().findFirst()).toList());
 				

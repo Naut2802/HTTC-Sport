@@ -90,19 +90,19 @@ export default function TableUsers({ dataUserTable }) {
                 <div>
                     {users.row.isEnabled ? (
                         <>
-                            <Tooltip title="Chỉnh Sửa" variant="solid">
+                            <Tooltip title="Chỉnh Sửa">
                                 <Button sx={{ color: 'green' }} onClick={() => handleEditUser(users)}>
                                     <CreateIcon />
                                 </Button>
                             </Tooltip>
-                            <Tooltip title="Xóa" variant="solid">
+                            <Tooltip title="Xóa">
                                 <Button sx={{ color: 'red' }} onClick={() => handleDeleteUser(users)}>
                                     <DeleteIcon />
                                 </Button>
                             </Tooltip>
                         </>
                     ) : (
-                        <Tooltip title="Kích Hoạt" variant="solid">
+                        <Tooltip title="Kích Hoạt">
                             <Button sx={{ color: 'red' }} onClick={() => handleActiveUser(users)}>
                                 Kích hoạt
                             </Button>

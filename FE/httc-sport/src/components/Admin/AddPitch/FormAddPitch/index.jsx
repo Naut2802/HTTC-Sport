@@ -65,7 +65,6 @@ export default function FormAddPitch({ selectedPitch }) {
             const cityId = event.target.value;
             const selectedCity = dataCity.find((city) => city.Name === cityId);
             setDistricts(selectedCity ? selectedCity.Districts : []);
-            setWards([]);
         },
         [dataCity],
     );
@@ -93,7 +92,7 @@ export default function FormAddPitch({ selectedPitch }) {
             setValue('type', pitch.type);
             setValue('total', pitch.total);
             setValue('images', pitch.images);
-            setSelectedImages(pitch.images || savedPitch.images || []);
+            setSelectedImages(pitch.images || []);
             const city = pitch.city;
             const district = pitch.district;
 
@@ -219,10 +218,22 @@ export default function FormAddPitch({ selectedPitch }) {
     };
 
     const submitReset = () => {
+        reset({
+            id: '',
+            pitchName: '',
+            price: '',
+            street: '',
+            city: '',
+            district: '',
+            ward: '',
+            description: '',
+            type: '',
+            total: '',
+            images: [],
+        });
         setSelectedImages([]);
         setFileNames([]);
         sessionStorage.removeItem('selectedPitch');
-        reset();
     };
 
     return (

@@ -12,6 +12,7 @@ import Login from '~/components/Account/Login';
 import Popup from '../Popup';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mảng trang trên navbar nè
 const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch']; //Mảng dòng của cái avatar click ra nè
@@ -208,7 +209,6 @@ export default function Header() {
                             Đăng nhập
                         </Button>
                     ) : (
-                        // </Typography>
                         <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
                             <Tooltip title="Ví" className="mx-4">
                                 <IconButton sx={{ p: 0 }}>
@@ -217,9 +217,14 @@ export default function Header() {
                                     </Typography>
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip title="Open settings">
+                            <Tooltip title="Tài khoản">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                     <AccountBoxIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Admin" className="mx-4">
+                                <IconButton component={Link} to="/admin/trang-chu" sx={{ p: 0 }}>
+                                    <AdminPanelSettingsIcon />
                                 </IconButton>
                             </Tooltip>
                             <Menu
@@ -242,7 +247,7 @@ export default function Header() {
                                     <MenuItem key={setting} onClick={handleCloseUserMenu}>
                                         <Typography component="div" textAlign="center">
                                             <Typography
-                                                component={Link} //Cái này là hiển thị mảng của Settings nè
+                                                component={Link}
                                                 to={`/${slugify(setting, { lower: true, strict: true, locale: 'vi' })}`}
                                                 className="text-decoration-none text-dark"
                                             >

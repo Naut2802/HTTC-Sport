@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 		
 		return ResponseEntity.badRequest().body(ApiResponse.builder()
 				.code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode())
-				.message(exception.getMessage())
+				.message("Lỗi không xác định")
 				.build());
 	}
 	
@@ -48,8 +48,7 @@ public class GlobalExceptionHandler {
 		log.error("Validate arguments exception: {}", exception.getMessage());
 		return ResponseEntity.badRequest().body(ApiResponse.builder()
 				.code(errorCode.getCode())
-				.message(Objects.nonNull(attributes) ?
-						mapAttribute(errorCode.getMessage(), attributes) : errorCode.getMessage())
+				.message("Lỗi hệ thống")
 				.build());
 	}
 	
@@ -60,7 +59,7 @@ public class GlobalExceptionHandler {
 		
 		return ResponseEntity.status(errorCode.getStatusCode()).body(ApiResponse.builder()
 				.code(errorCode.getCode())
-				.message(errorCode.getMessage())
+				.message("Lỗi hệ thống")
 				.build());
 	}
 	
@@ -72,7 +71,7 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(errorCode.getStatusCode())
 				.body(ApiResponse.builder()
 						.code(errorCode.getCode())
-						.message(errorCode.getMessage())
+						.message("Lỗi hệ thống")
 						.build());
 	}
 	

@@ -46,7 +46,7 @@ public enum ErrorCode {
 	PITCH_PRICE_NULL(1003, "Giá sân không được để trống và yêu cầu tối thiểu 30000 VNĐ", HttpStatus.BAD_REQUEST),
 	PITCH_MIN_PRICE(1003, "Giá sân yêu cầu tối thiểu 300000 VNĐ", HttpStatus.BAD_REQUEST),
 	PITCH_IMAGES_NULL(1003, "Không được để trống hình ảnh sân", HttpStatus.BAD_REQUEST),
-	PITCH_IMAGES_SIZE(1003, "Sân bắt buộc tối thiểu {min} hình ảnh và tối đa 10 hình ảnh", HttpStatus.BAD_REQUEST),
+	PITCH_IMAGES_SIZE(1003, "Sân bắt buộc tối thiểu 5 hình ảnh và tối đa 10 hình ảnh", HttpStatus.BAD_REQUEST),
 	PITCH_EXISTED(1003, "Đã có sân ở địa chỉ này", HttpStatus.BAD_REQUEST),
 	PITCH_NOT_EXISTED(1003, "Sân không tồn tại", HttpStatus.NOT_FOUND),
 	RENT_INFO_EMAIL_NULL(1004, "Vui lòng nhập Email", HttpStatus.BAD_REQUEST),

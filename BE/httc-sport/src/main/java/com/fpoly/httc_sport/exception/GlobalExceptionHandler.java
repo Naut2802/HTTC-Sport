@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
 		log.error("Validate arguments exception: {}", exception.getMessage());
 		return ResponseEntity.badRequest().body(ApiResponse.builder()
 				.code(errorCode.getCode())
-				.message("Lỗi hệ thống")
+				.message(errorCode.getMessage())
 				.build());
 	}
 	
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
 		
 		return ResponseEntity.status(errorCode.getStatusCode()).body(ApiResponse.builder()
 				.code(errorCode.getCode())
-				.message("Lỗi hệ thống")
+				.message(errorCode.getMessage())
 				.build());
 	}
 	

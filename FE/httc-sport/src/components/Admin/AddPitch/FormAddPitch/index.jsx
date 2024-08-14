@@ -43,7 +43,7 @@ export default function FormAddPitch({ selectedPitch }) {
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
-    const [fileNames, setFileNames] = useState([]);
+    const [setFileNames] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -60,6 +60,7 @@ export default function FormAddPitch({ selectedPitch }) {
     }, []);
 
     // Thay đổi Thành Phố
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleCityChange = (event) => {
         const cityId = event.target.value;
         const selectedCity = dataCity.find((city) => city.Name === cityId);
@@ -68,6 +69,7 @@ export default function FormAddPitch({ selectedPitch }) {
     };
 
     //Thay đổi Quận
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleDistrictChange = (event) => {
         const districtId = event.target.value;
         const selectedDistrict = districts.find((district) => district.Name === districtId);
@@ -99,7 +101,7 @@ export default function FormAddPitch({ selectedPitch }) {
                 setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
             }
         }
-    }, [selectedPitch, dataCity, districts, setValue, handleCityChange, handleDistrictChange]);
+    }, [selectedPitch, dataCity, districts, savedPitch, setValue, handleCityChange, handleDistrictChange]);
 
     const handleImageChange = (event) => {
         const files = event.target.files;
@@ -164,7 +166,7 @@ export default function FormAddPitch({ selectedPitch }) {
         }
 
         try {
-            const res = await handleCreatePitch(formData);
+            await handleCreatePitch(formData);
             toast.success('Thêm sân thành công!');
         } catch (error) {
             console.error('Failed to add pitch:', error);

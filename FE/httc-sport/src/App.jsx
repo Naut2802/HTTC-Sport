@@ -73,7 +73,7 @@ function App() {
                 <Route path="/san-bong" element={<PitchList />} />
                 <Route path="/chi-tiet-san/:id" element={<PitchDetail />} />
                 <Route path="/thanh-toan" element={<Payment />} />
-            </Route>m
+            </Route>
 
             <Route element={<ProtectedRoute />}>
                 <Route element={<UserHomePage />}>

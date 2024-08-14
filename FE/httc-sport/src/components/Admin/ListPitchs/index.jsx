@@ -93,7 +93,13 @@ export default function ListPitchs() {
                 <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/admin/trang-chu">
                     Trang Chủ
                 </Typography>
-                <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/admin/san-bong">
+                <Typography
+                    className="text-decoration-none text-dark"
+                    variant="h6"
+                    noWrap
+                    component={Link}
+                    to="/admin/danh-sach-san"
+                >
                     Danh Sách Sân
                 </Typography>
             </Breadcrumbs>

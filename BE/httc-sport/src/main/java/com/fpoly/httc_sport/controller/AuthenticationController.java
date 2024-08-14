@@ -34,7 +34,7 @@ public class AuthenticationController {
 	@Operation(summary = "Sign-in", description = "API sign-in")
 	@PostMapping("sign-in")
 	ApiResponse<AuthenticationResponse> signIn(@Valid @RequestBody LoginRequest request, HttpServletResponse response) throws NoSuchAlgorithmException {
-		log.info("[Authentication Controller - Sign in api] Starting sign in to system with username; {}", request.getUsername());
+		log.info("[Authentication Controller - Sign in api] Starting sign in to system with username: {}", request.getUsername());
 		var res = authenticationService.authenticate(request, response);
 		log.info("[Authentication Controller - Sign in api] Signed");
 		return ApiResponse.<AuthenticationResponse>builder()

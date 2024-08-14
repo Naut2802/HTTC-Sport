@@ -183,16 +183,18 @@ public class PitchService {
 				return true;
 			}).map(pitchMapper::toPitchResponse).toList();
 			
-			List<Optional<Image>> images = new ArrayList<>(pitches
-					.stream().map(pitch -> pitch.getImages()
-							.stream().findFirst()).toList());
-			
-			int index = 0;
-			for(Optional<Image> image: images) {
-				if (image.isPresent())
-					responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+			if (!responses.isEmpty()) {
+				List<Optional<Image>> images = new ArrayList<>(pitches
+						.stream().map(pitch -> pitch.getImages()
+								.stream().findFirst()).toList());
 				
-				index++;
+				int index = 0;
+				for(Optional<Image> image: images) {
+					if (image.isPresent())
+						responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+					
+					index++;
+				}
 			}
 		}
 		
@@ -248,16 +250,18 @@ public class PitchService {
 				return true;
 			}).map(pitchMapper::toPitchResponse).toList();
 			
-			List<Optional<Image>> images = new ArrayList<>(pitches
-					.stream().map(pitch -> pitch.getImages()
-							.stream().findFirst()).toList());
-			
-			int index = 0;
-			for(Optional<Image> image: images) {
-				if (image.isPresent())
-					responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+			if (!responses.isEmpty()) {
+				List<Optional<Image>> images = new ArrayList<>(pitches
+						.stream().map(pitch -> pitch.getImages()
+								.stream().findFirst()).toList());
 				
-				index++;
+				int index = 0;
+				for(Optional<Image> image: images) {
+					if (image.isPresent())
+						responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+					
+					index++;
+				}
 			}
 		}
 		

@@ -172,7 +172,6 @@ export default function FormAddPitch({ selectedPitch }) {
             console.error('Failed to add pitch:', error);
             toast.error('Không thể thêm sân!');
         }
-        window.location.reload();
     };
 
     // Handle form submission for updating a pitch
@@ -188,7 +187,6 @@ export default function FormAddPitch({ selectedPitch }) {
             console.error('Error updating pitch:', error);
             toast.error('Cập nhật sân thất bại!');
         }
-        window.location.reload();
     };
 
     // Reset form
@@ -400,7 +398,7 @@ export default function FormAddPitch({ selectedPitch }) {
                             <Controller
                                 name="type"
                                 control={control}
-                                defaultValue="onl"
+                                defaultValue="5"
                                 render={({ field }) => (
                                     <RadioGroup {...field} aria-labelledby="demo-radio-buttons-group-label">
                                         <Typography component="div" className="d-flex">

@@ -17,7 +17,7 @@ export default function AdminHomePage() {
     return (
         <Box sx={{ display: 'flex' }}>
             <NavbarAdmin />
-            <div className="container w-100">
+            <div className="container">
                 <DrawerHeader />
                 <Outlet />
             </div>

@@ -43,7 +43,7 @@ export default function FormAddPitch({ selectedPitch }) {
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
-    const [fileNames, setFileNames] = useState([]);
+    const [setFileNames] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -173,7 +173,7 @@ export default function FormAddPitch({ selectedPitch }) {
         }
 
         try {
-            const res = await handleCreatePitch(formData);
+            await handleCreatePitch(formData);
             toast.success('Thêm sân thành công!');
         } catch (error) {
             console.error('Failed to add pitch:', error);

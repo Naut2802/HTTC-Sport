@@ -28,7 +28,7 @@ export default function ListPitchs() {
             }
         };
         fetchData();
-    }, [selectedPitch]);
+    }, [selectedPitch, pitches]);
 
     const handleEditClick = async (data) => {
         const id = data.id;
@@ -66,7 +66,7 @@ export default function ListPitchs() {
             console.error('Lỗi xóa Sân:', error);
             toast.error('Xóa sân thất bại!');
         }
-        window.location.reload();
+        // window.location.reload();
     };
 
     const handleActivateClick = async (pitch) => {
@@ -77,13 +77,12 @@ export default function ListPitchs() {
         try {
             const re = await handleActivePitch(pitchId, data);
             console.log(re.data.result);
-
             toast.success('Kích hoạt sân thành công');
         } catch (error) {
             toast.error('Kích hoạt sân thất bại');
         }
 
-        window.location.reload();
+        // window.location.reload();
     };
 
     return (

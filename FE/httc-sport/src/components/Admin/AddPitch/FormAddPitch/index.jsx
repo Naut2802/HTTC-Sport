@@ -93,7 +93,7 @@ export default function FormAddPitch({ selectedPitch }) {
             setValue('type', pitch.type);
             setValue('total', pitch.total);
             setValue('images', pitch.images);
-            setSelectedImages(pitch.images || []);
+            setSelectedImages(pitch.images || savedPitch.images || []);
             const city = pitch.city;
             const district = pitch.district;
 
@@ -102,9 +102,6 @@ export default function FormAddPitch({ selectedPitch }) {
             }
             if (district) {
                 setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
-            }
-            if (pitch.ward) {
-                setTimeout(() => setValue('ward', pitch.ward), 0);
             }
         }
     }, [selectedPitch, savedPitch, dataCity, districts, setValue, handleCityChange, handleDistrictChange]);
@@ -152,7 +149,6 @@ export default function FormAddPitch({ selectedPitch }) {
         }
     };
 
-    // Handle form submission for adding a pitch
     const submitAddPitch = async (data) => {
         const formData = new FormData();
         formData.append('pitchName', data.pitchName);
@@ -180,13 +176,32 @@ export default function FormAddPitch({ selectedPitch }) {
         }
     };
 
-    // Handle form submission for updating a pitch
     const submitUpdatePitch = async (data) => {
         try {
             const pitchId = selectedPitch?.id || savedPitch?.id;
             if (!pitchId) return;
 
-            const res = await handleUpdatePitch(pitchId, data);
+            const formData = new FormData();
+            formData.append('pitchName', data.pitchName);
+            formData.append('price', data.price);
+            formData.append('street', data.street);
+            formData.append('ward', data.ward);
+            formData.append('district', data.district);
+            formData.append('city', data.city);
+            formData.append('description', data.description);
+            formData.append('type', data.type);
+            formData.append('total', data.total);
+
+            // Thêm các ảnh vào FormData nếu có
+            if (data.images && data.images.length > 0) {
+                Array.from(data.images).forEach((image) => {
+                    if (image instanceof File) {
+                        formData.append('images', image);
+                    }
+                });
+            }
+
+            const res = await handleUpdatePitch(pitchId, formData);
             toast.success(res?.data?.message || 'Cập nhật sân thành công!');
             sessionStorage.removeItem('selectedPitch');
         } catch (error) {
@@ -195,7 +210,6 @@ export default function FormAddPitch({ selectedPitch }) {
         }
     };
 
-    // Handle form submission
     const onSubmit = async (data) => {
         if (selectedPitch || savedPitch) {
             await submitUpdatePitch(data);
@@ -205,10 +219,10 @@ export default function FormAddPitch({ selectedPitch }) {
     };
 
     const submitReset = () => {
-        reset();
         setSelectedImages([]);
         setFileNames([]);
         sessionStorage.removeItem('selectedPitch');
+        reset();
     };
 
     return (

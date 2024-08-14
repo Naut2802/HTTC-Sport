@@ -1,12 +1,14 @@
-import ContactPageIcon from '@mui/icons-material/ContactPage';
+import * as React from 'react';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
-import { Box, Typography } from '@mui/material';
+import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
-import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+import HomeWorkIcon from '@mui/icons-material/HomeWork';
+import ContactPageIcon from '@mui/icons-material/ContactPage';
 
 import { handleLogoutAPI } from '~/apis';
 
@@ -37,15 +39,22 @@ export default function AccordionAccount() {
         <>
             <Box sx={{ flexGrow: 1 }} />
             <Typography variant="h6" component="div">
-                <Button
-                    id="basic-button"
-                    aria-controls={open ? 'basic-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    onClick={handleClick}
-                >
-                    <PersonPinIcon sx={{ color: 'white', '&:hover': { color: 'green' } }} />
-                </Button>
+                <Tooltip title="Trang Chủ">
+                    <IconButton component={Link} to="/" sx={{ color: 'white' }}>
+                        <HomeWorkIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Tài Khoản" arrow>
+                    <IconButton
+                        aria-controls={open ? 'basic-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleClick}
+                        sx={{ color: 'white', '&:hover': { color: 'green' } }}
+                    >
+                        <PersonPinIcon />
+                    </IconButton>
+                </Tooltip>
                 <Menu
                     id="basic-menu"
                     anchorEl={anchorEl}

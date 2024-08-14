@@ -19,7 +19,8 @@ public class PitchRequest {
 	@NotNull(message = "PITCH_NAME_NULL")
 	String pitchName;
 	@NotNull(message = "PITCH_PRICE_NULL")
-//	@DecimalMin(value = "300000", message = "PITCH_MIN_PRICE")
+	@Min(value = 2000, message = "PITCH_MIN_PRICE")
+	@Min(value = 10000000, message = "PITCH_MAX_PRICE")
 	int price;
 	@NotBlank(message = "PITCH_ADDRESS_NULL")
 	@NotNull(message = "PITCH_ADDRESS_NULL")

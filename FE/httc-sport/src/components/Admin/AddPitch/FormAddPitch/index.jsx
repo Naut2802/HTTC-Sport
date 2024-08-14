@@ -93,7 +93,6 @@ export default function FormAddPitch({ selectedPitch }) {
             setValue('type', pitch.type);
             setValue('total', pitch.total);
             setValue('images', pitch.images);
-
             setSelectedImages(pitch.images || []);
             const city = pitch.city;
             const district = pitch.district;

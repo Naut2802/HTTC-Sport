@@ -18,7 +18,7 @@ export default function FormRentInfo() {
         },
     });
     return (
-        <div className="row">
+        <div className="row container">
             <div className="col-3"></div>
             <div className="col-6">
                 <Box className="card" component="form" noValidate>

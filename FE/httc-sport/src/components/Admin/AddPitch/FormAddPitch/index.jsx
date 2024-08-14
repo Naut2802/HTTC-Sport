@@ -59,6 +59,21 @@ export default function FormAddPitch({ selectedPitch }) {
         fetchData();
     }, []);
 
+    // Thay đổi Thành Phố
+    const handleCityChange = (event) => {
+        const cityId = event.target.value;
+        const selectedCity = dataCity.find((city) => city.Name === cityId);
+        setDistricts(selectedCity ? selectedCity.Districts : []);
+        setWards([]);
+    };
+
+    //Thay đổi Quận
+    const handleDistrictChange = (event) => {
+        const districtId = event.target.value;
+        const selectedDistrict = districts.find((district) => district.Name === districtId);
+        setWards(selectedDistrict ? selectedDistrict.Wards : []);
+    };
+
     useEffect(() => {
         if (selectedPitch || savedPitch) {
             const pitch = selectedPitch || savedPitch;
@@ -84,22 +99,7 @@ export default function FormAddPitch({ selectedPitch }) {
                 setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
             }
         }
-    }, [selectedPitch, dataCity, districts]);
-
-    // Thay đổi Thành Phố
-    const handleCityChange = (event) => {
-        const cityId = event.target.value;
-        const selectedCity = dataCity.find((city) => city.Name === cityId);
-        setDistricts(selectedCity ? selectedCity.Districts : []);
-        setWards([]);
-    };
-
-    //Thay đổi Quận
-    const handleDistrictChange = (event) => {
-        const districtId = event.target.value;
-        const selectedDistrict = districts.find((district) => district.Name === districtId);
-        setWards(selectedDistrict ? selectedDistrict.Wards : []);
-    };
+    }, [selectedPitch, dataCity, districts, setValue, handleCityChange, handleDistrictChange]);
 
     const handleImageChange = (event) => {
         const files = event.target.files;
@@ -170,7 +170,6 @@ export default function FormAddPitch({ selectedPitch }) {
             console.error('Failed to add pitch:', error);
             toast.error('Không thể thêm sân!');
         }
-        window.location.reload();
     };
 
     // Handle form submission for updating a pitch
@@ -186,7 +185,6 @@ export default function FormAddPitch({ selectedPitch }) {
             console.error('Error updating pitch:', error);
             toast.error('Cập nhật sân thất bại!');
         }
-        window.location.reload();
     };
 
     // Reset form
@@ -398,7 +396,7 @@ export default function FormAddPitch({ selectedPitch }) {
                             <Controller
                                 name="type"
                                 control={control}
-                                defaultValue="onl"
+                                defaultValue="5"
                                 render={({ field }) => (
                                     <RadioGroup {...field} aria-labelledby="demo-radio-buttons-group-label">
                                         <Typography component="div" className="d-flex">

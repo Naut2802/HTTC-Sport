@@ -28,7 +28,7 @@ export default function ListPitchs() {
             }
         };
         fetchData();
-    }, [selectedPitch, pitches]);
+    }, [selectedPitch]);
 
     const handleEditClick = async (data) => {
         const id = data.id;

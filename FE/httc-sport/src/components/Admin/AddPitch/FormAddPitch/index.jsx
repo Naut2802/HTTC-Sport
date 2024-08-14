@@ -13,7 +13,7 @@ import {
     Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
@@ -36,8 +36,8 @@ const ValidationTextField = styled(TextField)({
 });
 
 export default function FormAddPitch({ selectedPitch }) {
-    const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
     const { register, handleSubmit, control, setValue, reset } = useForm();
+    const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
 
     const [dataCity, setDataCity] = useState([]);
     const [districts, setDistricts] = useState([]);
@@ -60,19 +60,25 @@ export default function FormAddPitch({ selectedPitch }) {
     }, []);
 
     // Thay đổi Thành Phố
-    const handleCityChange = (event) => {
-        const cityId = event.target.value;
-        const selectedCity = dataCity.find((city) => city.Name === cityId);
-        setDistricts(selectedCity ? selectedCity.Districts : []);
-        setWards([]);
-    };
+    const handleCityChange = useCallback(
+        (event) => {
+            const cityId = event.target.value;
+            const selectedCity = dataCity.find((city) => city.Name === cityId);
+            setDistricts(selectedCity ? selectedCity.Districts : []);
+            setWards([]);
+        },
+        [dataCity],
+    );
 
     //Thay đổi Quận
-    const handleDistrictChange = (event) => {
-        const districtId = event.target.value;
-        const selectedDistrict = districts.find((district) => district.Name === districtId);
-        setWards(selectedDistrict ? selectedDistrict.Wards : []);
-    };
+    const handleDistrictChange = useCallback(
+        (event) => {
+            const districtId = event.target.value;
+            const selectedDistrict = districts.find((district) => district.Name === districtId);
+            setWards(selectedDistrict ? selectedDistrict.Wards : []);
+        },
+        [districts],
+    );
 
     useEffect(() => {
         if (selectedPitch || savedPitch) {
@@ -98,8 +104,11 @@ export default function FormAddPitch({ selectedPitch }) {
             if (district) {
                 setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
             }
+            if (pitch.ward) {
+                setTimeout(() => setValue('ward', pitch.ward), 0);
+            }
         }
-    }, [selectedPitch, dataCity, districts, setValue, handleCityChange, handleDistrictChange]);
+    }, [selectedPitch, savedPitch, dataCity, districts, setValue, handleCityChange, handleDistrictChange]);
 
     const handleImageChange = (event) => {
         const files = event.target.files;
@@ -114,7 +123,7 @@ export default function FormAddPitch({ selectedPitch }) {
 
     // Xóa ảnh
     const handleDeleteImage = async (index) => {
-        const pitchId = selectedPitch.id;
+        const pitchId = selectedPitch?.id || savedPitch?.id;
         try {
             const re = await handleGetPitch(pitchId);
             const dataAPI = re.data.result;
@@ -187,26 +196,6 @@ export default function FormAddPitch({ selectedPitch }) {
         }
     };
 
-    // Reset form
-    const submitReset = () => {
-        reset({
-            id: '',
-            pitchName: '',
-            price: '',
-            street: '',
-            city: '',
-            district: '',
-            ward: '',
-            description: '',
-            type: '',
-            total: '',
-            images: [],
-        });
-        setSelectedImages([]);
-        setFileNames([]);
-        sessionStorage.removeItem('selectedPitch');
-    };
-
     // Handle form submission
     const onSubmit = async (data) => {
         if (selectedPitch || savedPitch) {
@@ -214,6 +203,13 @@ export default function FormAddPitch({ selectedPitch }) {
         } else {
             await submitAddPitch(data);
         }
+    };
+
+    const submitReset = () => {
+        reset();
+        setSelectedImages([]);
+        setFileNames([]);
+        sessionStorage.removeItem('selectedPitch');
     };
 
     return (

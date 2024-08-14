@@ -167,9 +167,6 @@ public class PitchService {
 				.and(name != null && !name.isBlank() ? PitchSpecification.hasPitchNameContaining(name) : null);
 		
 		Page<Pitch> pitches = pitchRepository.findAll(spec, pageable);
-		List<Optional<Image>> images = new ArrayList<>(pitches
-				.stream().map(pitch -> pitch.getImages()
-						.stream().findFirst()).toList());
 		
 		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
 		
@@ -185,6 +182,10 @@ public class PitchService {
 				}
 				return true;
 			}).map(pitchMapper::toPitchResponse).toList();
+			
+			List<Optional<Image>> images = new ArrayList<>(pitches
+					.stream().map(pitch -> pitch.getImages()
+							.stream().findFirst()).toList());
 			
 			int index = 0;
 			for(Optional<Image> image: images) {
@@ -231,9 +232,6 @@ public class PitchService {
 				.and(name != null && !name.isBlank() ? PitchSpecification.hasPitchNameContaining(name) : null);
 		
 		Page<Pitch> pitches = pitchRepository.findAll(spec, pageable);
-		List<Optional<Image>> images = new ArrayList<>(pitches
-				.stream().map(pitch -> pitch.getImages()
-						.stream().findFirst()).toList());
 		
 		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
 		
@@ -249,6 +247,10 @@ public class PitchService {
 				}
 				return true;
 			}).map(pitchMapper::toPitchResponse).toList();
+			
+			List<Optional<Image>> images = new ArrayList<>(pitches
+					.stream().map(pitch -> pitch.getImages()
+							.stream().findFirst()).toList());
 			
 			int index = 0;
 			for(Optional<Image> image: images) {

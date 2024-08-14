@@ -19,7 +19,9 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,6 +32,10 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AuthenticationController {
 	AuthenticationService authenticationService;
+	
+	@NonFinal
+	@Value("${spring.security.cors.cross.origin}")
+	String CROSS_ORIGIN;
 	
 	@Operation(summary = "Sign-in", description = "API sign-in")
 	@PostMapping("sign-in")
@@ -81,7 +87,7 @@ public class AuthenticationController {
 		
 		if (result.contains("expired")) {
 			log.error("[Authentication Controller - Verify Email] Verify link has expired");
-			response.sendRedirect("http://localhost:3000/auth-mail-error?token="+token);
+			response.sendRedirect(CROSS_ORIGIN + "/auth-mail-error?token=" + token);
 			return ApiResponse.builder()
 					.message(result)
 					.result(token)
@@ -89,7 +95,7 @@ public class AuthenticationController {
 		}
 		
 		log.error("[Authentication Controller - Verify Email] Email verified");
-		response.sendRedirect("http://localhost:3000/auth-mail-success");
+		response.sendRedirect(CROSS_ORIGIN + "/auth-mail-success");
 		return ApiResponse.builder()
 				.message("Email đã được xác thực. Kích hoạt tài khoản thành công")
 				.build();

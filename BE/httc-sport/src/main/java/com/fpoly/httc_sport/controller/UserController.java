@@ -18,7 +18,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,10 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserController {
 	UserService userService;
+	
+	@NonFinal
+	@Value("${spring.security.cors.cross.origin}")
+	String CROSS_ORIGIN;
 	
 	@Operation(summary = "Api change password")
 	@PatchMapping("change-password/{userId}")
@@ -79,13 +85,13 @@ public class UserController {
 		String result = userService.validateForgotPasswordToken(token);
 		
 		if (result.contains("expired")) {
-			response.sendRedirect("http://localhost:3000/forgot-password-verify-error");
+			response.sendRedirect(CROSS_ORIGIN + "/forgot-password-verify-error");
 			return ApiResponse.builder()
 					.message(result)
 					.build();
 		}
 		
-		response.sendRedirect("http://localhost:3000/forgot-password-verify-success?token="+token);
+		response.sendRedirect(CROSS_ORIGIN + "/forgot-password-verify-success?token=" + token);
 		return ApiResponse.builder()
 				.message(result)
 				.result(token)

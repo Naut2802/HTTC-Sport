@@ -20,7 +20,7 @@ public class PitchRequest {
 	String pitchName;
 	@NotNull(message = "PITCH_PRICE_NULL")
 	@Min(value = 2000, message = "PITCH_MIN_PRICE")
-	@Min(value = 10000000, message = "PITCH_MAX_PRICE")
+	@Max(value = 10000000, message = "PITCH_MAX_PRICE")
 	int price;
 	@NotBlank(message = "PITCH_ADDRESS_NULL")
 	@NotNull(message = "PITCH_ADDRESS_NULL")

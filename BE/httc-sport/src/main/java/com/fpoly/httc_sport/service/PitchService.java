@@ -171,24 +171,28 @@ public class PitchService {
 				.stream().map(pitch -> pitch.getImages()
 						.stream().findFirst()).toList());
 		
-		var responses = pitches.stream().filter(pitch -> {
-			if (type != null) {
+		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
+		
+		if (!responses.isEmpty()) {
+			responses = pitches.stream().filter(pitch -> {
+				if (type != null) {
 					if (type.equals("7"))
 						return pitch.getTotal() >= 3;
 					else if (type.equals("11")) {
 						return pitch.getTotal() >= 9;
 					} else
 						return true;
-			}
-			return true;
-		}).map(pitchMapper::toPitchResponse).toList();
-		
-		int index = 0;
-		for(Optional<Image> image: images) {
-			if (image.isPresent())
-				responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+				}
+				return true;
+			}).map(pitchMapper::toPitchResponse).toList();
 			
-			index++;
+			int index = 0;
+			for(Optional<Image> image: images) {
+				if (image.isPresent())
+					responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+				
+				index++;
+			}
 		}
 		
 		return responses;
@@ -231,24 +235,28 @@ public class PitchService {
 				.stream().map(pitch -> pitch.getImages()
 						.stream().findFirst()).toList());
 		
-		var responses = pitches.stream().filter(pitch -> {
-			if (type != null) {
-				if (type.equals("7"))
-					return pitch.getTotal() >= 3;
-				else if (type.equals("11")) {
-					return pitch.getTotal() >= 9;
-				} else
-					return true;
-			}
-			return true;
-		}).map(pitchMapper::toPitchResponse).toList();
+		var responses = pitches.map(pitchMapper::toPitchResponse).toList();
 		
-		int index = 0;
-		for(Optional<Image> image: images) {
-			if (image.isPresent())
-				responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+		if (!responses.isEmpty()) {
+			responses = pitches.stream().filter(pitch -> {
+				if (type != null) {
+					if (type.equals("7"))
+						return pitch.getTotal() >= 3;
+					else if (type.equals("11")) {
+						return pitch.getTotal() >= 9;
+					} else
+						return true;
+				}
+				return true;
+			}).map(pitchMapper::toPitchResponse).toList();
 			
-			index++;
+			int index = 0;
+			for(Optional<Image> image: images) {
+				if (image.isPresent())
+					responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+				
+				index++;
+			}
 		}
 		
 		return responses;

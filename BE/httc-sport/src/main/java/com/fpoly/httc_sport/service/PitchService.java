@@ -75,6 +75,9 @@ public class PitchService {
 				pitchRepository.save(pitch);
 			}
 			
+			if (request.getImages().size() < 5 || request.getImages().size() > 10)
+				throw new AppException(ErrorCode.PITCH_IMAGES_SIZE);
+			
 			List<Image> imageResponse = imageService.saveWithPitch(request.getImages(), pitch);
 			pitch.getImages().addAll(imageResponse);
 		}

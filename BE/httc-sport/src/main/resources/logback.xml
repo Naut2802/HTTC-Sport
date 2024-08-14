@@ -1,17 +1,24 @@
-<configuration status="WARN">
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
 
-    <property name="logging.error.file.name" value="error-log" />
+    <property name="logging.error.file.name" value="error" />
     <property name="logging.error.file.path" value="${LOGGING_PATH}"/>
-    <property name="logging.file.name" value="info-log" />
+    <property name="logging.file.name" value="info" />
     <property name="logging.file.path" value="${LOGGING_PATH}"/>
 
+    <appender name = "CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{yy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg %n
+            </pattern>
+        </encoder>
+    </appender>
+
     <!-- Normal log appender -->
-    <appender name="INFO_FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${logging.file.path}/${logging.file.name}</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${logging.file.path}/${logging.file.name}-%d{yy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>10</maxHistory>
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.file.path}/${logging.file.name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logging.file.path}/${logging.file.name}-%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -27,12 +34,10 @@
     </appender>
 
     <!-- Error log appender -->
-    <appender name="ERROR_FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${logging.error.file.path}/${logging.error.file.name}</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${logging.error.file.path}/${logging.error.file.name}-%d{yy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>10</maxHistory>
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.error.file.path}/${logging.error.file.name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logging.error.file.path}/${logging.error.file.name}-%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -50,6 +55,9 @@
     <root level="INFO">
         <appender-ref ref="ERROR_FILE"/>
         <appender-ref ref="INFO_FILE"/>
+        <appender-ref ref="INFO_FILE"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 
+    <logger name="org.springframework.web.servlet.mvc.support.ExceptionHandlerExceptionResolver" level="ERROR"/>
 </configuration>

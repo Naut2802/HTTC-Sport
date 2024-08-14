@@ -31,6 +31,10 @@ public class PaymentService {
 	PayOSClient payOSClient;
 	
 	@NonFinal
+	@Value("${spring.security.cors.cross.origin}")
+	String CROSS_ORIGIN;
+	
+	@NonFinal
 	@Value("${payos.client-id}")
 	String PAYOS_CLIENT_ID;
 	
@@ -49,8 +53,8 @@ public class PaymentService {
 		
 		PayOSRequest request = PayOSRequest.builder()
 				.orderCode(rentInfo.getId())
-				.returnUrl("http://localhost:3000/payment/rent/success")
-				.cancelUrl("http://localhost:3000/payment/rent/error")
+				.returnUrl(CROSS_ORIGIN + "/payment/rent/success")
+				.cancelUrl(CROSS_ORIGIN + "/payment/rent/error")
 				.buyerEmail(rentInfo.getEmail())
 				.buyerName(rentInfo.getLastName() + " " + rentInfo.getFirstName())
 				.description("THANH TOAN DAT SAN: " + rentInfo.getPitch().getPitchName())
@@ -79,8 +83,8 @@ public class PaymentService {
 		);
 		
 		PayOSRequest request = PayOSRequest.builder()
-				.returnUrl("http://localhost:3000/payment/deposit/success")
-				.cancelUrl("http://localhost:3000/payment/deposit/error")
+				.returnUrl(CROSS_ORIGIN + "/payment/deposit/success")
+				.cancelUrl(CROSS_ORIGIN + "/payment/deposit/error")
 				.orderCode(transaction.getId())
 				.amount(transaction.getPaymentAmount())
 				.description("NAP TIEN VAO VI " + transaction.getId())

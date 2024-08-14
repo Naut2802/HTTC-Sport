@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,6 +28,10 @@ public class MailerService {
 	JavaMailSender mailSender;
 	@NonFinal
 	List<MailInfo> list = new ArrayList<>();
+	
+	@NonFinal
+	@Value("${spring.security.cors.cross.origin}")
+	String CROSS_ORIGIN;
 	
 	public void send(MailInfo mailInfo) throws MessagingException {
 		MimeMessage message = mailSender.createMimeMessage();
@@ -92,7 +97,7 @@ public class MailerService {
 				+ "<p>Thời gian kết th&uacute;c: <strong>" + rentInfo.getEndTime()
 				+ "</strong></p>\r\n"
 				+ "<p>&nbsp;</p>\r\n"
-				+ "<p>Để xem được th&ocirc;ng tin đặt s&acirc;n cụ thể: <a href=\"http://localhost:3000/user/thong-tin-dat-san/" + rentInfo.getId() + "\">Nhấn v&agrave;o đ&acirc;y</a>.</p>"
+				+ "<p>Để xem được th&ocirc;ng tin đặt s&acirc;n cụ thể: <a href=\"" + CROSS_ORIGIN + "/user/thong-tin-dat-san/" + rentInfo.getId() + "\">Nhấn v&agrave;o đ&acirc;y</a>.</p>"
 				+ "<h4> Cảm ơn đã đặt sân của chúng tôi, chúc quý khách có một trải nghiệm thật tốt !";
 	}
 	

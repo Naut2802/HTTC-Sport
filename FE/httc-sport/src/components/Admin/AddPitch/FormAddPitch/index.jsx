@@ -240,35 +240,37 @@ export default function FormAddPitch({ selectedPitch }) {
 
     return (
         <div className="row my-2">
-            <div className="col-6">
+            <div className="col-12 col-md-6">
                 <Box className="card" sx={{ height: '100%' }}>
                     <Typography className="card-header text-center fs-3" variant="h6" component="div">
                         Hình Ảnh Sân
                     </Typography>
                     <div className="row">
-                        <Typography className="card-body fs-3" variant="h6" component="div">
-                            <div className="m-2">
-                                {Array.isArray(selectedImages) && selectedImages.length > 0 ? (
-                                    selectedImages.map((image, index) => (
-                                        <img
-                                            key={index}
-                                            src={image?.url || image}
-                                            alt={`Hình ảnh ${index + 1}`}
-                                            title={`Xóa hình ảnh ${index + 1}`}
-                                            className="image-thumbnail m-1 rounded cursor-pointer img-fluid"
-                                            style={{ width: '190px', minHeight: '190px' }}
-                                            onClick={() => handleDeleteImage(image, index)}
-                                        />
-                                    ))
-                                ) : (
-                                    <p>Chưa có hình</p>
-                                )}
-                            </div>
-                        </Typography>
+                        <div className="m-2">
+                            {Array.isArray(selectedImages) && selectedImages.length > 0 ? (
+                                selectedImages.map((image, index) => (
+                                    <img
+                                        key={index}
+                                        src={image?.url || image}
+                                        alt={`Hình ảnh ${index + 1}`}
+                                        title={`Xóa hình ảnh ${index + 1}`}
+                                        className="image-thumbnail m-1 rounded cursor-pointer img-fluid"
+                                        style={{
+                                            width: '100%', // Responsive width
+                                            maxWidth: '190px', // Ensure a max width
+                                            minHeight: '190px',
+                                        }}
+                                        onClick={() => handleDeleteImage(image, index)}
+                                    />
+                                ))
+                            ) : (
+                                <p>Chưa có hình</p>
+                            )}
+                        </div>
                     </div>
                 </Box>
             </div>
-            <div className="col-6">
+            <div className="col-12 col-md-6">
                 <Box className="card" component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
                     <Typography className="card-header text-center fs-3" variant="h6" component="div">
                         Thông Tin Sân
@@ -284,7 +286,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                 )}
                             />
                             <div className="row">
-                                <div className="col-8">
+                                <div className="col-12 col-md-8">
                                     <Controller
                                         name="price"
                                         control={control}
@@ -299,7 +301,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                         )}
                                     />
                                 </div>
-                                <div className="col-4">
+                                <div className="col-12 col-md-4">
                                     <Controller
                                         name="total"
                                         control={control}
@@ -317,7 +319,7 @@ export default function FormAddPitch({ selectedPitch }) {
                             </div>
 
                             <div className="my-2 row">
-                                <div className="col-6">
+                                <div className="col-12 col-md-6">
                                     <Controller
                                         name="street"
                                         control={control}
@@ -332,7 +334,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                         )}
                                     />
                                 </div>
-                                <div className="col-6 mt-2">
+                                <div className="col-12 col-md-6 mt-2">
                                     <Controller
                                         name="city"
                                         control={control}
@@ -362,7 +364,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                 </div>
                             </div>
                             <div className="my-2 row">
-                                <div className="col-6">
+                                <div className="col-12 col-md-6">
                                     <Controller
                                         name="district"
                                         control={control}
@@ -390,7 +392,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                         )}
                                     />
                                 </div>
-                                <div className="col-6">
+                                <div className="col-12 col-md-6">
                                     <Controller
                                         name="ward"
                                         control={control}

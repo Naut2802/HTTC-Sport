@@ -107,10 +107,12 @@ export default function FormAddPitch({ selectedPitch }) {
 
     const handleImageChange = (event) => {
         const files = event.target.files;
+        if (!files) return;
+
         const fileArray = Array.from(files);
         const fileNamesList = fileArray.map((file) => file.name);
 
-        setFileNames(fileNamesList);
+        // setFileNames(fileNamesList);
 
         const newImageUrls = fileArray.map((file) => URL.createObjectURL(file));
         setSelectedImages((prevImages) => [...prevImages, ...newImageUrls]);

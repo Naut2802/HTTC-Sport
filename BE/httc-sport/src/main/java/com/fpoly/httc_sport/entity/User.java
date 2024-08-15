@@ -1,12 +1,11 @@
 package com.fpoly.httc_sport.entity;
 
-import java.util.List;
-import java.util.Set;
-
 import com.fpoly.httc_sport.event.listener.UserListener;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -32,10 +31,11 @@ public class User {
 	Boolean isEnabled;
 	
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(nullable = false)
 	Wallet wallet;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "vip")
+	@ManyToOne
+	@JoinColumn(name = "vip", nullable = false)
 	Vip vip;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)

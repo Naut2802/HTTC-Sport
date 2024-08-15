@@ -17,7 +17,7 @@ export default function CardInfo() {
                             <Typography variant="h5" component={Link} to="a" sx={{ textDecoration: 'none', color: 'black' }}>
                                 <h1>Sân Bóng</h1>
                             </Typography>
-                            <Button size="small" color="inherit" variant="contained">
+                            <Button component={Link} to="/san-bong" size="small" color="inherit" variant="contained">
                                 Chi Tiết
                             </Button>
                         </div>
@@ -51,7 +51,7 @@ export default function CardInfo() {
                             <Typography variant="h5" component={Link} to="a" sx={{ textDecoration: 'none', color: 'white' }}>
                                 <h1>Liên Hệ</h1>
                             </Typography>
-                            <Button size="small" color="inherit" variant="contained">
+                            <Button component={Link} to="/lien-he" size="small" color="inherit" variant="contained">
                                 Chi Tiết
                             </Button>
                         </div>

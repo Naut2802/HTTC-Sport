@@ -1,6 +1,8 @@
 package com.fpoly.httc_sport.config;
 
 import com.fpoly.httc_sport.entity.*;
+import com.fpoly.httc_sport.exception.AppException;
+import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.repository.PaymentMethodRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
@@ -44,32 +46,6 @@ public class ApplicationInitConfig {
 	                                    PaymentMethodRepository paymentMethodRepository) {
 		log.info("Initializing application............");
 		return args -> {
-			if (!userRepository.existsByUsername(ADMIN_USER_NAME)) {
-				roleRepository.save(Role.builder()
-						.roleName(RoleEnum.USER)
-						.description("User role")
-						.build());
-				
-				Role adminRole = roleRepository.save(Role.builder()
-						.roleName(RoleEnum.ADMIN)
-						.description("Admin role")
-						.build());
-				
-				var roles = List.of(adminRole);
-				
-				User user = User.builder()
-						.username(ADMIN_USER_NAME)
-						.password(passwordEncoder.encode(ADMIN_USER_NAME + ADMIN_PASSWORD))
-						.email("maousama333@gmail.com")
-						.roles(roles)
-						.wallet(new Wallet())
-						.isEnabled(true)
-						.build();
-				
-				userRepository.save(user);
-				log.warn("Admin user has been created with default information: \"admin\". Please change it!");
-			}
-			
 			if (vipRepository.findAll().isEmpty()) {
 				int totalLevel = 4;
 				
@@ -83,6 +59,35 @@ public class ApplicationInitConfig {
 							.discountRate(vip.getDiscountRate())
 							.build());
 				}
+			}
+			
+			if (!userRepository.existsByUsername(ADMIN_USER_NAME)) {
+				roleRepository.save(Role.builder()
+						.roleName(RoleEnum.USER)
+						.description("User role")
+						.build());
+				
+				Role adminRole = roleRepository.save(Role.builder()
+						.roleName(RoleEnum.ADMIN)
+						.description("Admin role")
+						.build());
+				
+				var roles = List.of(adminRole);
+				var vip = vipRepository.findByLevel(VipEnum.VIP_0).orElseThrow(() ->
+						new AppException(ErrorCode.VIP_NOT_EXISTED));
+				
+				User user = User.builder()
+						.username(ADMIN_USER_NAME)
+						.password(passwordEncoder.encode(ADMIN_USER_NAME + ADMIN_PASSWORD))
+						.email("maousama333@gmail.com")
+						.roles(roles)
+						.vip(vip)
+						.wallet(new Wallet())
+						.isEnabled(true)
+						.build();
+				
+				userRepository.save(user);
+				log.warn("Admin user has been created with default information: \"admin\". Please change it!");
 			}
 			
 			paymentMethodMap.put(PaymentMethodEnum.QR, 1.05f);

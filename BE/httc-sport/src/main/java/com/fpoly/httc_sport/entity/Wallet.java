@@ -17,7 +17,8 @@ public class Wallet {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	String id;
-	int money;
+	@Builder.Default
+	int money = 0;
 	
 	@OneToOne
 	@JoinColumn(name = "user_id")

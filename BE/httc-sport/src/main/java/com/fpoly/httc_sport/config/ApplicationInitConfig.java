@@ -1,9 +1,6 @@
 package com.fpoly.httc_sport.config;
 
-import com.fpoly.httc_sport.entity.PaymentMethod;
-import com.fpoly.httc_sport.entity.Role;
-import com.fpoly.httc_sport.entity.User;
-import com.fpoly.httc_sport.entity.Vip;
+import com.fpoly.httc_sport.entity.*;
 import com.fpoly.httc_sport.repository.PaymentMethodRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
@@ -65,6 +62,7 @@ public class ApplicationInitConfig {
 						.password(passwordEncoder.encode(ADMIN_USER_NAME + ADMIN_PASSWORD))
 						.email("maousama333@gmail.com")
 						.roles(roles)
+						.wallet(new Wallet())
 						.isEnabled(true)
 						.build();
 				

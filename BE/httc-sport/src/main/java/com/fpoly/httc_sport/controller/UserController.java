@@ -71,7 +71,7 @@ public class UserController {
 	
 	@Operation(summary = "Api forgot password (step 1)", description = "Api use for send a verify token when email valid")
 	@GetMapping("forgot-password")
-	ApiResponse<?> checkEmail(@RequestParam("email") String email, HttpServletRequest request) {
+	ApiResponse<?> forgotPassword(@RequestParam("email") String email, HttpServletRequest request) {
 		String response = userService.sendForgotPasswordEmail(email, request);
 		
 		return ApiResponse.builder()

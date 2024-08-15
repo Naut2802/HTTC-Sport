@@ -48,10 +48,6 @@ export default function FormAddPitch({ selectedPitch }) {
     const [wards, setWards] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
     // const [fileNames, setFileNames] = useState([]);
-    //aa
-    //aa
-    //aa
-    //aa
 
     useEffect(() => {
         const fetchData = async () => {

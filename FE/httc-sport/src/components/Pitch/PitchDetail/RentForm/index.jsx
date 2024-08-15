@@ -49,6 +49,8 @@ export default function RentForm({ id }) {
         if (dateValue && timeValue) {
             const formattedDate = format(dateValue.$d, 'yyyy-MM-dd');
             const formattedTime = format(timeValue.$d, 'HH:mm:ss');
+            console.log(data);
+
             data = {
                 ...data,
                 pitchId: id,

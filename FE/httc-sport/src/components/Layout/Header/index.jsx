@@ -16,10 +16,12 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mảng trang trên navbar nè
 const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch']; //Mảng dòng của cái avatar click ra nè
+const vi = ['Nạp Tiền', 'Lịch Sử Giao Dịch Ví'];
 
 export default function Header() {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const [ViElUser, setViUser] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
     const navigate = useNavigate();
 
@@ -47,12 +49,20 @@ export default function Header() {
         setAnchorElUser(event.currentTarget);
     };
 
+    const handleOpenVi = (event) => {
+        setViUser(event.currentTarget);
+    };
+
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
+    };
+
+    const handleCloseVi = () => {
+        setViUser(null);
     };
 
     // const Search = styled('div')(({ theme }) => ({
@@ -211,12 +221,45 @@ export default function Header() {
                     ) : (
                         <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
                             <Tooltip title="Ví" className="mx-4">
-                                <IconButton sx={{ p: 0 }}>
-                                    <Typography component={Link} to="/san-bong" sx={{ color: '#5A5A5A' }}>
+                                <IconButton sx={{ p: 0 }} onClick={handleOpenVi}>
+                                    <Typography sx={{ color: '#5A5A5A' }}>
                                         <AccountBalanceWalletIcon />
                                     </Typography>
                                 </IconButton>
                             </Tooltip>
+                            <Menu
+                                sx={{ mt: '45px' }}
+                                id="menu-appbar"
+                                anchorEl={ViElUser}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(ViElUser)}
+                                onClose={handleCloseVi}
+                            >
+                                <Typography component="div" className="container text-decoration-none text-dark mx-1">
+                                    Số Dư : 3.000.000
+                                </Typography>
+                                {vi.map((vi) => (
+                                    <MenuItem key={vi} onClick={handleCloseUserMenu}>
+                                        <Typography component="div" textAlign="center">
+                                            <Typography
+                                                component={Link}
+                                                to={`/${slugify(vi, { lower: true, strict: true, locale: 'vi' })}`}
+                                                className="text-decoration-none text-dark"
+                                            >
+                                                {vi}
+                                            </Typography>
+                                        </Typography>
+                                    </MenuItem>
+                                ))}
+                            </Menu>
                             <Tooltip title="Tài khoản">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                     <AccountBoxIcon />

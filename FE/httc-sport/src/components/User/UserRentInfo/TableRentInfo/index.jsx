@@ -1,9 +1,11 @@
+import DeleteForeverTwoToneIcon from '@mui/icons-material/DeleteForeverTwoTone';
 import { Button, Grid } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 
-import { handleGetAllRentInfoByUser } from '~/apis';
+import { toast } from 'react-toastify';
+import { handleDeleteRentInfo, handleGetAllRentInfoByUser } from '~/apis';
 import Popup from '~/components/Layout/Popup';
 import ModalDetail from '../ModalDetail';
 import RePayment from '../RePayment';
@@ -21,16 +23,17 @@ export default function TableRentInfo({ userId }) {
     const [openPopupRePayment, setOpenPopupRePayment] = useState(false);
     const [selectedRentInfo, setSelectedRentInfo] = useState(null);
 
+    const fetchData = async () => {
+        try {
+            const res = await handleGetAllRentInfoByUser(userId);
+            setRentInfo(res.data.result);
+            console.log(res.data.result);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await handleGetAllRentInfoByUser(userId);
-                setRentInfo(res.data.result);
-                console.log(res.data.result);
-            } catch (error) {
-                console.error(error);
-            }
-        };
         fetchData();
     }, [userId]);
 
@@ -46,6 +49,13 @@ export default function TableRentInfo({ userId }) {
         setOpenPopupRePayment(true);
     };
 
+    const handleDeleteRentInfoByID = async (id) => {
+        const selectedInfo = rentInfo[id - 1];
+        const res = await handleDeleteRentInfo(selectedInfo.id);
+        toast.success(res.data.message);
+        fetchData();
+    };
+
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
         { field: 'pitchName', headerName: 'Tên Sân', width: 130 },
@@ -59,7 +69,6 @@ export default function TableRentInfo({ userId }) {
         {
             field: 'deposit',
             headerName: 'Tiền Cọc',
-            sortable: false,
             width: 160,
             renderCell: (params) => {
                 const { id } = params.row;
@@ -73,8 +82,7 @@ export default function TableRentInfo({ userId }) {
         {
             field: 'total',
             headerName: 'Tổng Tiền',
-            sortable: false,
-            width: 160,
+            width: 100,
             renderCell: (params) => formatCurrency(params.value),
         },
         {
@@ -97,13 +105,29 @@ export default function TableRentInfo({ userId }) {
             field: 'detail',
             headerName: 'Chi Tiết',
             sortable: false,
-            width: 160,
+            width: 120,
             renderCell: (params) => {
                 const { id } = params.row;
                 return (
                     <Button onClick={() => handleViewDetails(id)} variant="text">
                         Xem Chi Tiết
                     </Button>
+                );
+            },
+        },
+        {
+            field: 'delelte',
+            headerName: 'Xóa',
+            sortable: false,
+            width: 100,
+            renderCell: (params) => {
+                const { id } = params.row;
+                return !rentInfo[id - 1].paymentStatus ? (
+                    <Button onClick={() => handleDeleteRentInfoByID(id)} color="error" variant="text">
+                        <DeleteForeverTwoToneIcon sx={{ textAlign: 'start' }} />
+                    </Button>
+                ) : (
+                    <Button disabled></Button>
                 );
             },
         },
@@ -120,7 +144,13 @@ export default function TableRentInfo({ userId }) {
 
     return (
         <div style={{ width: '100%', height: '350px' }}>
-            <DataGrid rows={rows} columns={columns} getRowId={(rows) => rows.id} pageSizeOptions={[5, 10, 20, 50, 100]} />
+            <DataGrid
+                rows={rows}
+                // sx={{ textAlign: 'center' }}
+                columns={columns}
+                getRowId={(rows) => rows.id}
+                pageSizeOptions={[5, 10, 20, 50, 100]}
+            />
             <Popup openPopup={openPopupDetail} setOpenPopup={setOpenPopupDetail}>
                 <Grid container>
                     <Grid item>{selectedRentInfo && <ModalDetail rentInfo={selectedRentInfo} />}</Grid>
@@ -128,7 +158,7 @@ export default function TableRentInfo({ userId }) {
             </Popup>
             <Popup openPopup={openPopupRePayment} setOpenPopup={setOpenPopupRePayment}>
                 <Grid container>
-                    <Grid item>{selectedRentInfo && <RePayment rentInfo={selectedRentInfo}/>}</Grid>
+                    <Grid item>{selectedRentInfo && <RePayment rentInfo={selectedRentInfo} />}</Grid>
                 </Grid>
             </Popup>
         </div>

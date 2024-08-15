@@ -23,7 +23,6 @@ import AdminHomePage from './pages/AdminHomePage';
 import UserHomePage from './pages/UserHomePage';
 
 //PITCH
-import Payment from './components/Pitch/Payment';
 import PaymentError from './components/Pitch/Payment/PaymentError';
 import PaymentSuccess from './components/Pitch/Payment/PaymentSuccess';
 import PitchDetail from './components/Pitch/PitchDetail';
@@ -73,7 +72,7 @@ function App() {
                 <Route path="/san-bong" element={<PitchList />} />
                 <Route path="/chi-tiet-san/:id" element={<PitchDetail />} />
             </Route>
-            m
+
             <Route element={<ProtectedRoute />}>
                 <Route element={<UserHomePage />}>
                     <Route path="/tai-khoan" element={<UserInfo />} />

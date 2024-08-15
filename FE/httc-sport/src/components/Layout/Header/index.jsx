@@ -1,23 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import {
-    AppBar,
-    Avatar,
-    Box,
-    Button,
-    Container,
-    Grid,
-    IconButton,
-    InputBase,
-    Menu,
-    MenuItem,
-    Toolbar,
-    Tooltip,
-    Typography,
-} from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
+import { AppBar, Box, Button, Container, Grid, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -25,15 +9,19 @@ import slugify from 'slugify'; // Import slugify nè
 
 import { handleLogoutAPI } from '~/apis';
 import Login from '~/components/Account/Login';
-import avt from '~/components/Images/avt.jpg';
 import Popup from '../Popup';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mảng trang trên navbar nè
 const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch']; //Mảng dòng của cái avatar click ra nè
+const vi = ['Nạp Tiền', 'Lịch Sử Giao Dịch Ví'];
 
 export default function Header() {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const [ViElUser, setViUser] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
     const navigate = useNavigate();
 
@@ -61,6 +49,10 @@ export default function Header() {
         setAnchorElUser(event.currentTarget);
     };
 
+    const handleOpenVi = (event) => {
+        setViUser(event.currentTarget);
+    };
+
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
@@ -69,47 +61,51 @@ export default function Header() {
         setAnchorElUser(null);
     };
 
-    const Search = styled('div')(({ theme }) => ({
-        position: 'relative',
-        borderRadius: theme.shape.borderRadius,
-        backgroundColor: alpha(theme.palette.common.black, 0.15),
-        '&:hover': {
-            backgroundColor: alpha(theme.palette.common.black, 0.25),
-        },
-        marginLeft: 0,
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(1),
-            width: 'auto',
-        },
-        color: 'black',
-    }));
+    const handleCloseVi = () => {
+        setViUser(null);
+    };
 
-    const SearchIconWrapper = styled('div')(({ theme }) => ({
-        padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'black',
-    }));
+    // const Search = styled('div')(({ theme }) => ({
+    //     position: 'relative',
+    //     borderRadius: theme.shape.borderRadius,
+    //     backgroundColor: alpha(theme.palette.common.black, 0.15),
+    //     '&:hover': {
+    //         backgroundColor: alpha(theme.palette.common.black, 0.25),
+    //     },
+    //     marginLeft: 0,
+    //     width: '100%',
+    //     [theme.breakpoints.up('sm')]: {
+    //         marginLeft: theme.spacing(1),
+    //         width: 'auto',
+    //     },
+    //     color: 'black',
+    // }));
 
-    const StyledInputBase = styled(InputBase)(({ theme }) => ({
-        width: '100%',
-        '& .MuiInputBase-input': {
-            padding: theme.spacing(1, 1, 1, 0),
-            paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-            transition: theme.transitions.create('width'),
-            [theme.breakpoints.up('sm')]: {
-                width: '12ch',
-                '&:focus': {
-                    width: '20ch',
-                },
-            },
-        },
-    }));
+    // const SearchIconWrapper = styled('div')(({ theme }) => ({
+    //     padding: theme.spacing(0, 2),
+    //     height: '100%',
+    //     position: 'absolute',
+    //     pointerEvents: 'none',
+    //     display: 'flex',
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    //     color: 'black',
+    // }));
+
+    // const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    //     width: '100%',
+    //     '& .MuiInputBase-input': {
+    //         padding: theme.spacing(1, 1, 1, 0),
+    //         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    //         transition: theme.transitions.create('width'),
+    //         [theme.breakpoints.up('sm')]: {
+    //             width: '12ch',
+    //             '&:focus': {
+    //                 width: '20ch',
+    //             },
+    //         },
+    //     },
+    // }));
 
     return (
         <AppBar
@@ -213,7 +209,6 @@ export default function Header() {
                             <StyledInputBase placeholder="Tìm kiếm..." inputProps={{ 'aria-label': 'search' }} />
                         </Search>
                     </Box> */}
-
                     {!checkUser ? (
                         <Button
                             onClick={() => setOpenPopup(true)}
@@ -224,11 +219,55 @@ export default function Header() {
                             Đăng nhập
                         </Button>
                     ) : (
-                        // </Typography>
                         <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
-                            <Tooltip title="Open settings">
+                            <Tooltip title="Ví" className="mx-4">
+                                <IconButton sx={{ p: 0 }} onClick={handleOpenVi}>
+                                    <Typography sx={{ color: '#5A5A5A' }}>
+                                        <AccountBalanceWalletIcon />
+                                    </Typography>
+                                </IconButton>
+                            </Tooltip>
+                            <Menu
+                                sx={{ mt: '45px' }}
+                                id="menu-appbar"
+                                anchorEl={ViElUser}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(ViElUser)}
+                                onClose={handleCloseVi}
+                            >
+                                <Typography component="div" className="container text-decoration-none text-dark mx-1">
+                                    Số Dư : 3.000.000
+                                </Typography>
+                                {vi.map((vi) => (
+                                    <MenuItem key={vi} onClick={handleCloseUserMenu}>
+                                        <Typography component="div" textAlign="center">
+                                            <Typography
+                                                component={Link}
+                                                to={`/${slugify(vi, { lower: true, strict: true, locale: 'vi' })}`}
+                                                className="text-decoration-none text-dark"
+                                            >
+                                                {vi}
+                                            </Typography>
+                                        </Typography>
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                            <Tooltip title="Tài khoản">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="" src={avt} />
+                                    <AccountBoxIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Admin" className="mx-4">
+                                <IconButton component={Link} to="/admin/trang-chu" sx={{ p: 0 }}>
+                                    <AdminPanelSettingsIcon />
                                 </IconButton>
                             </Tooltip>
                             <Menu
@@ -251,7 +290,7 @@ export default function Header() {
                                     <MenuItem key={setting} onClick={handleCloseUserMenu}>
                                         <Typography component="div" textAlign="center">
                                             <Typography
-                                                component={Link} //Cái này là hiển thị mảng của Settings nè
+                                                component={Link}
                                                 to={`/${slugify(setting, { lower: true, strict: true, locale: 'vi' })}`}
                                                 className="text-decoration-none text-dark"
                                             >

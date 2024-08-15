@@ -4,16 +4,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Box, Drawer, IconButton, Toolbar, Typography } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import { styled, useTheme } from '@mui/material/styles';
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import AccordionAccount from './AccordionAccount';
 import AccordionAdmin from './AccordionAdmin';
+import { handleGetMyInfoAPI } from '~/apis';
 
-const drawerWidth = 240;
+const drawerWidth = 220;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(),
+    flexGrow: 1, // Để chiếm toàn bộ không gian trống
+    padding: theme.spacing(3), // Điều chỉnh khoảng cách padding nếu cần
     transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -43,22 +44,20 @@ const AppBar = styled(MuiAppBar, {
             duration: theme.transitions.duration.enteringScreen,
         }),
     }),
-    // Đảm bảo kích thước không vượt quá
-    maxWidth: '100%',
+    maxWidth: '100%', // Đảm bảo không vượt quá kích thước màn hình
 }));
 
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
 }));
-
 export default function NavbarAdmin() {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [account, setAccount] = useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -68,9 +67,21 @@ export default function NavbarAdmin() {
         setOpen(false);
     };
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await handleGetMyInfoAPI();
+                setAccount(res.data.result);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
+
     return (
         <Box sx={{ display: 'flex' }}>
-            <AppBar position="fixed" open={open} className="bg-dark ">
+            <AppBar position="fixed" open={open} className="bg-dark">
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -102,15 +113,16 @@ export default function NavbarAdmin() {
             >
                 <DrawerHeader className="bg-dark" sx={{ color: 'white' }}>
                     <Typography component="div" className="mx-4 my-2 text-decoration-none">
-                        Admin: Tôn Lê
+                        Quản Lý : {account.lastName} {account.firstName} <br />
+                        {/* {account.username} */}
                     </Typography>
-                    <IconButton onClick={handleDrawerClose} sx={{ color: 'white' }}>
+                    <IconButton onClick={handleDrawerClose} sx={{ color: 'white', marginLeft: '25px' }}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
                 </DrawerHeader>
                 <AccordionAdmin />
             </Drawer>
-            <Main open={open} sx={{ display: 'flex' }}>
+            <Main open={open}>
                 <DrawerHeader />
             </Main>
         </Box>

@@ -1,169 +1,127 @@
-import { Button, Tooltip } from '@mui/material';
+import { toast } from 'react-toastify';
 import { DataGrid } from '@mui/x-data-grid';
-import * as React from 'react';
-
+import { useEffect, useState } from 'react';
+import { Button, Tooltip } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { handleGetUserAdmin, handleGetUsersAdmin, handleDeleteUserAdmin, handleActiveUserAdmin } from '~/apis';
 
-export default function TableUsers() {
+export default function TableUsers({ dataUserTable }) {
+    const [users, setUsers] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await handleGetUserAdmin();
+                // console.log(response.data.result);
+                const dataUser = response.data.result;
+                const filteredUsers = dataUser.filter((user) => !user.roles.some((role) => role.roleName === 'ADMIN'));
+                setUsers(filteredUsers);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        fetchData();
+    }, []);
+
+    const handleEditUser = async (users) => {
+        const userId = users.id;
+        try {
+            const re = await handleGetUsersAdmin(userId);
+            const dataUser = re.data.result;
+            dataUserTable(dataUser);
+        } catch (error) {
+            toast.error('Lỗi');
+            console.log(error);
+        }
+    };
+
+    const handleDeleteUser = async (user) => {
+        const userId = user.id;
+        try {
+            const re = await handleDeleteUserAdmin(userId);
+            console.log(re.data.result);
+            toast.success('Xóa thành công');
+        } catch (error) {
+            toast.error('Xóa không thành công');
+            console.log(error);
+        }
+    };
+
+    const handleActiveUser = async (user) => {
+        const userId = user.id;
+        const data = user.row.isEnable;
+        console.log(userId);
+        try {
+            const response = await handleActiveUserAdmin(userId, data);
+            if (response && response.status === 200) {
+                const dataUser = response.data.result;
+                console.log(dataUser);
+                toast.success('Kích hoạt tài khoản thành công');
+            }
+        } catch (error) {
+            if (error.response && error.response.status) {
+                console.log('Error Response Data:', error.response.data);
+            } else {
+                console.log('Error Message:', error.message);
+            }
+            toast.error('Kích hoạt tài khoản không thành công');
+        }
+    };
+
     const columns = [
-        { field: 'id', headerName: 'ID', width: 100 },
-        { field: 'email', headerName: 'Email', width: 250 },
-        { field: 'tenTK', headerName: 'Tên TK', width: 200 },
+        { field: 'email', headerName: 'Email', width: 280 },
+        { field: 'username', headerName: 'Tên Tài Khoản', width: 150 },
+        { field: 'lastName', headerName: 'Họ', width: 150 },
+        { field: 'firstName', headerName: 'Tên', width: 100 },
+        { field: 'phoneNumber', headerName: 'Số Điện Thoại', width: 180 },
         {
-            field: 'ho',
-            headerName: 'Họ',
-            width: 100,
-        },
-        {
-            field: 'ten',
-            headerName: 'Tên',
-            width: 100,
-        },
-        {
-            field: 'sdt',
-            headerName: 'Số Điện Thoại',
-            width: 150,
-        },
-        {
-            field: 'vip',
-            headerName: 'VIP',
-            width: 100,
-        },
-        {
-            field: 'trangThai',
+            field: 'isEnabled',
             headerName: 'Trạng Thái',
-            sortable: false,
-            width: 120,
+            width: 200,
+            renderCell: (users) => (users.value ? 'Hoạt Động' : 'Không Hoạt Động'),
         },
-
         {
             field: 'orther',
             headerName: 'Khác',
             sortable: false,
+            headerAlign: 'center',
             width: 150,
-            renderCell: () => (
+            renderCell: (users) => (
                 <div>
-                    <Tooltip title="Chỉnh Sửa" variant="solid">
-                        <Button sx={{ color: 'green' }}>
-                            <CreateIcon />
-                        </Button>
-                    </Tooltip>
-                    <Tooltip title="Chỉnh Sửa" variant="solid">
-                        <Button sx={{ color: 'red' }}>
-                            <DeleteIcon />
-                        </Button>
-                    </Tooltip>
+                    {users.row.isEnabled ? (
+                        <>
+                            <Tooltip title="Chỉnh Sửa">
+                                <Button sx={{ color: 'green' }} onClick={() => handleEditUser(users)}>
+                                    <CreateIcon />
+                                </Button>
+                            </Tooltip>
+                            <Tooltip title="Xóa">
+                                <Button sx={{ color: 'red' }} onClick={() => handleDeleteUser(users)}>
+                                    <DeleteIcon />
+                                </Button>
+                            </Tooltip>
+                        </>
+                    ) : (
+                        <Tooltip title="Kích Hoạt">
+                            <Button sx={{ color: 'red' }} onClick={() => handleActiveUser(users)}>
+                                Kích hoạt
+                            </Button>
+                        </Tooltip>
+                    )}
                 </div>
             ),
         },
     ];
 
-    const rows = [
-        {
-            id: '1',
-            email: 'leminhhoang241299@gmail.com',
-            tenTK: 'hoanglmn',
-            ho: 'Lê',
-            ten: 'Hoàng',
-            sdt: '0901333123',
-            vip: '1',
-            trangThai: 'Hoạt Động',
-        },
-        {
-            id: '2',
-            email: 'tuandc@gmail.com',
-            tenTK: 'tuandc',
-            ho: 'Đỗ',
-            ten: 'Tuấn',
-            sdt: '0901333123',
-            vip: '2',
-            trangThai: 'Hoạt Động',
-        },
-    ];
     return (
         <div className="w-100 my-2">
-            <DataGrid key={rows.id} rows={rows} columns={columns} pageSizeOptions={[5, 10, 20, 50, 100]} />
+            <DataGrid
+                rows={users}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5, 10, 20, 50, 100]}
+                getRowId={(row) => row.id}
+            />
         </div>
     );
 }
-// import { Button, Tooltip } from '@mui/material';
-// import { DataGrid } from '@mui/x-data-grid';
-// import { useEffect, useState } from 'react';
-// import CreateIcon from '@mui/icons-material/Create';
-// import DeleteIcon from '@mui/icons-material/Delete';
-// import { handleGetMyInfoAPI } from '~/apis';
-
-// export default function TableUsers() {
-//     const [users, setUsers] = useState([]);
-
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             try {
-//                 const response = await handleGetMyInfoAPI();
-//                 const dataWithId = response.data.result.map((item, index) => ({
-//                     ...item,
-//                     id: item.id || index,
-//                 }));
-//                 setUsers(dataWithId);
-//                 console.log(dataWithId);
-
-//                 if (Array.isArray(dataWithId)) {
-//                     setUsers(dataWithId);
-//                 } else {
-//                     console.error('Dữ liệu trả về không phải là mảng:', dataWithId);
-//                 }
-//             } catch (error) {
-//                 console.error('Error fetching user data:', error);
-//             }
-//         };
-//         fetchData();
-//     }, []);
-
-//     const columns = [
-//         { field: 'id', headerName: 'ID', width: 200 },
-//         { field: 'email', headerName: 'Email', width: 250 },
-//         { field: 'username', headerName: 'Tên TK', width: 200 },
-//         { field: 'lastName', headerName: 'Họ', width: 100 },
-//         { field: 'firstName', headerName: 'Tên', width: 100 },
-//         { field: 'phoneNumber', headerName: 'Số Điện Thoại', width: 150 },
-//         {
-//             field: 'isEnabled',
-//             headerName: 'Trạng Thái',
-//             width: 120,
-//             renderCell: (params) => (params.value ? 'Hoạt Động' : 'Không Hoạt Động'),
-//         },
-//         {
-//             field: 'orther',
-//             headerName: 'Khác',
-//             sortable: false,
-//             width: 150,
-//             renderCell: () => (
-//                 <div>
-//                     <Tooltip title="Chỉnh Sửa" variant="solid">
-//                         <Button sx={{ color: 'green' }}>
-//                             <CreateIcon />
-//                         </Button>
-//                     </Tooltip>
-//                     <Tooltip title="Xóa" variant="solid">
-//                         <Button sx={{ color: 'red' }}>
-//                             <DeleteIcon />
-//                         </Button>
-//                     </Tooltip>
-//                 </div>
-//             ),
-//         },
-//     ];
-
-//     return (
-//         <div className="w-100 my-2">
-//             <DataGrid
-//                 rows={users}
-//                 columns={columns}
-//                 pageSize={5}
-//                 rowsPerPageOptions={[5, 10, 20, 50, 100]}
-//                 getRowId={(row) => row.id}
-//             />
-//         </div>
-//     );
-// }

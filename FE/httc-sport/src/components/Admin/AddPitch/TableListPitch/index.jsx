@@ -12,7 +12,6 @@ export default function TableListPitch({ onRowClick }) {
         const fetchData = async () => {
             try {
                 const response = await handleGetPitchesAdmin();
-                // Lọc dữ liệu giữ các sân có trạng thái === true
                 const dataWithId = response.data.result
                     .filter((item) => item.isEnabled)
                     .map((item, index) => ({
@@ -31,11 +30,9 @@ export default function TableListPitch({ onRowClick }) {
 
     const handleEditPitch = async (params) => {
         try {
-            const id = params.row.id; // Lấy ID từ params
+            const id = params.row.id;
             const response = await handleGetPitch(id);
             const Data = response.data.result;
-            console.log(Data);
-            // Gọi onRowClick với dữ liệu trả về từ API
             onRowClick(Data);
         } catch (error) {
             console.error('Error fetching pitch:', error);
@@ -44,17 +41,18 @@ export default function TableListPitch({ onRowClick }) {
     };
 
     const columns = [
-        { field: 'pitchName', headerName: 'Tên Sân', width: 150 },
-        { field: 'price', headerName: 'Giá', width: 80 },
-        { field: 'description', headerName: 'Mô Tả', width: 250 },
-        { field: 'address', headerName: 'Địa Chỉ', width: 670 },
+        { field: 'pitchName', headerName: 'Tên Sân', flex: 1, minWidth: 100 },
+        { field: 'price', headerName: 'Giá', flex: 0.5, minWidth: 60 },
+        { field: 'description', headerName: 'Mô Tả', flex: 2, minWidth: 200 },
+        { field: 'address', headerName: 'Địa Chỉ', flex: 3, minWidth: 300 },
         {
             field: 'other',
             headerName: 'Khác',
             sortable: false,
-            width: 100,
+            flex: 0.5,
+            minWidth: 80,
             renderCell: (params) => (
-                <Tooltip title="Chỉnh Sửa" variant="solid">
+                <Tooltip title="Chỉnh Sửa">
                     <Button onClick={() => handleEditPitch(params)} sx={{ color: 'green' }}>
                         <CreateIcon />
                     </Button>
@@ -64,13 +62,14 @@ export default function TableListPitch({ onRowClick }) {
     ];
 
     return (
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%', height: '100%' }}>
             <DataGrid
                 rows={pitch}
                 columns={columns}
                 pageSize={10}
                 rowsPerPageOptions={[5, 10, 20, 50, 100]}
                 getRowId={(row) => row.id}
+                autoHeight
             />
         </div>
     );

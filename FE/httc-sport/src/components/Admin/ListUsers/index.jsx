@@ -2,11 +2,17 @@ import { Breadcrumbs, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import FormUpdateUser from './FormUpdateUser';
 import TableUsers from './TableUsers';
+import { useState } from 'react';
 
 export default function ListUsers() {
+    const [selectedUser, setSelectedUser] = useState(null);
+
+    const handleClick = (users) => {
+        setSelectedUser(users);
+    };
     return (
         <div className="container my-3">
-            <Typography className="fs-3 fw-bold mt-3 mb-2">Danh Sách Sân</Typography>
+            <Typography className="fs-3 fw-bold mt-3 mb-2">Quản Lý Khách Hàng</Typography>
             <Breadcrumbs aria-label="breadcrumb" className="fs-5 mb-2">
                 <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/admin/trang-chu">
                     Trang Chủ
@@ -23,10 +29,9 @@ export default function ListUsers() {
             </Breadcrumbs>
             <hr />
 
-            <FormUpdateUser />
+            <FormUpdateUser selectedUser={selectedUser} />
 
-            <TableUsers />
+            <TableUsers dataUserTable={handleClick} />
         </div>
     );
 }
-

@@ -6,7 +6,7 @@ import TableRentInfo from './TableRentInfo';
 
 export default function RentInfo() {
     return (
-        <div className="my-3 container">
+        <div className="container my-3 ">
             <Typography className="fs-3 fw-bold mt-3 mb-2">Thông Tin Sân</Typography>
             <Breadcrumbs aria-label="breadcrumb" className="fs-5 mb-2">
                 <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/admin/trang-chu">

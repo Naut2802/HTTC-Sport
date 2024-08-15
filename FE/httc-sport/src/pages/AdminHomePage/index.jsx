@@ -15,12 +15,14 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function AdminHomePage() {
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', width: '100%', height: '100vh' }}>
             <NavbarAdmin />
-            <div className="container w-100">
+            <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
                 <DrawerHeader />
-                <Outlet />
-            </div>
+                <div className="container">
+                    <Outlet />
+                </div>
+            </Box>
         </Box>
     );
 }

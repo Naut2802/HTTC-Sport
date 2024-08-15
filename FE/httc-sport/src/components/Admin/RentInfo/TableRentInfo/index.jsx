@@ -87,8 +87,8 @@ export default function TableRentInfo() {
     ];
 
     return (
-        <div className="my-3" style={{ width: '100%' }}>
-            <DataGrid key={rows.id} rows={rows} columns={columns} pageSizeOptions={[5, 10, 20, 50, 100]} sx={{ width: 'auto' }} />
+        <div className="my-3" sx={{ width: 'auto' }}>
+            <DataGrid key={rows.id} rows={rows} columns={columns} pageSizeOptions={[5, 10, 20, 50, 100]} />
         </div>
     );
 }

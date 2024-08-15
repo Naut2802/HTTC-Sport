@@ -13,8 +13,9 @@ import {
     Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { handleCreatePitch, handleDelImgs, handleGetPitch, handleProvinces, handleUpdatePitch } from '~/apis';
@@ -36,14 +37,17 @@ const ValidationTextField = styled(TextField)({
 });
 
 export default function FormAddPitch({ selectedPitch }) {
-    const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
     const { register, handleSubmit, control, setValue, reset } = useForm();
+    // const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { dataPitch } = location.state || {};
 
     const [dataCity, setDataCity] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
-    const [fileNames, setFileNames] = useState([]);
+    // const [fileNames, setFileNames] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -59,20 +63,39 @@ export default function FormAddPitch({ selectedPitch }) {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        if (selectedPitch || savedPitch) {
-            const pitch = selectedPitch || savedPitch;
-            setValue('pitchName', pitch.pitchName);
-            setValue('price', pitch.price);
-            setValue('street', pitch.street);
-            setValue('city', pitch.city);
-            setValue('district', pitch.district);
-            setValue('ward', pitch.ward);
-            setValue('description', pitch.description);
-            setValue('type', pitch.type);
-            setValue('total', pitch.total);
-            setValue('images', pitch.images);
+    // Thay đổi Thành Phố
+    const handleCityChange = useCallback(
+        (event) => {
+            const cityId = event.target.value;
+            const selectedCity = dataCity.find((city) => city.Name === cityId);
+            setDistricts(selectedCity ? selectedCity.Districts : []);
+        },
+        [dataCity],
+    );
 
+    //Thay đổi Quận
+    const handleDistrictChange = useCallback(
+        (event) => {
+            const districtId = event.target.value;
+            const selectedDistrict = districts.find((district) => district.Name === districtId);
+            setWards(selectedDistrict ? selectedDistrict.Wards : []);
+        },
+        [districts],
+    );
+
+    useEffect(() => {
+        if (selectedPitch || dataPitch) {
+            const pitch = selectedPitch || dataPitch;
+            setValue('pitchName', pitch.pitchName || '');
+            setValue('price', pitch.price || '');
+            setValue('street', pitch.street || '');
+            setValue('city', pitch.city || '');
+            setValue('district', pitch.district || '');
+            setValue('ward', pitch.ward || '');
+            setValue('description', pitch.description || '');
+            setValue('type', pitch.type || '');
+            setValue('total', pitch.total || '');
+            setValue('images', pitch.images || '');
             setSelectedImages(pitch.images || []);
             const city = pitch.city;
             const district = pitch.district;
@@ -84,29 +107,15 @@ export default function FormAddPitch({ selectedPitch }) {
                 setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
             }
         }
-    }, [selectedPitch, savedPitch, setValue]);
-
-    // Thay đổi Thành Phố
-    const handleCityChange = (event) => {
-        const cityId = event.target.value;
-        const selectedCity = dataCity.find((city) => city.Name === cityId);
-        setDistricts(selectedCity ? selectedCity.Districts : []);
-        setWards([]);
-    };
-
-    //Thay đổi Quận
-    const handleDistrictChange = (event) => {
-        const districtId = event.target.value;
-        const selectedDistrict = districts.find((district) => district.Name === districtId);
-        setWards(selectedDistrict ? selectedDistrict.Wards : []);
-    };
+    }, [selectedPitch, dataPitch, dataCity, districts, setValue, handleCityChange, handleDistrictChange]);
 
     const handleImageChange = (event) => {
         const files = event.target.files;
-        const fileArray = Array.from(files);
-        const fileNamesList = fileArray.map((file) => file.name);
+        if (!files) return;
 
-        setFileNames(fileNamesList);
+        const fileArray = Array.from(files);
+        // const fileNamesList = fileArray.map((file) => file.name);
+        // setFileNames(fileNamesList);
 
         const newImageUrls = fileArray.map((file) => URL.createObjectURL(file));
         setSelectedImages((prevImages) => [...prevImages, ...newImageUrls]);
@@ -114,20 +123,22 @@ export default function FormAddPitch({ selectedPitch }) {
 
     // Xóa ảnh
     const handleDeleteImage = async (index) => {
-        const pitchId = selectedPitch.id;
+        const pitchId = selectedPitch?.id || dataPitch?.id;
         try {
             const re = await handleGetPitch(pitchId);
             const dataAPI = re.data.result;
             const dataImage = dataAPI.images;
-            //Kiểm tra đảm bảo dataImage là một mảng và index hợp lệ.
+
+            // Kiểm tra đảm bảo dataImage là một mảng và index hợp lệ
             if (!Array.isArray(dataImage) || index < 0 || index >= dataImage.length) {
                 toast.error('Index không hợp lệ hoặc dataImage không hợp lệ');
                 return;
             }
-            // Lấy publicId của hình ảnh tại vị trí index
-            const publicId = dataImage[index].publicId;
-            console.log(publicId);
+            console.log('Data Image:', dataImage);
+            console.log('Index:', index);
 
+            // Lấy publicId của hình ảnh tại vị trí index
+            const publicId = index.publicId;
             const response = await handleDelImgs(pitchId, publicId);
 
             if (response.data.message === 'Xóa ảnh thành công') {
@@ -142,7 +153,6 @@ export default function FormAddPitch({ selectedPitch }) {
         }
     };
 
-    // Handle form submission for adding a pitch
     const submitAddPitch = async (data) => {
         const formData = new FormData();
         formData.append('pitchName', data.pitchName);
@@ -168,27 +178,53 @@ export default function FormAddPitch({ selectedPitch }) {
             console.error('Failed to add pitch:', error);
             toast.error('Không thể thêm sân!');
         }
-        window.location.reload();
     };
 
-    // Handle form submission for updating a pitch
     const submitUpdatePitch = async (data) => {
         try {
-            const pitchId = selectedPitch?.id || savedPitch?.id;
+            const pitchId = selectedPitch?.id || dataPitch?.id;
             if (!pitchId) return;
 
-            const res = await handleUpdatePitch(pitchId, data);
+            const formData = new FormData();
+            formData.append('pitchName', data.pitchName);
+            formData.append('price', data.price);
+            formData.append('street', data.street);
+            formData.append('ward', data.ward);
+            formData.append('district', data.district);
+            formData.append('city', data.city);
+            formData.append('description', data.description);
+            formData.append('type', data.type);
+            formData.append('total', data.total);
+
+            // Thêm các ảnh vào FormData nếu có
+            if (data.images && data.images.length > 0) {
+                Array.from(data.images).forEach((image) => {
+                    if (image instanceof File) {
+                        formData.append('images', image);
+                    }
+                });
+            }
+
+            const res = await handleUpdatePitch(pitchId, formData);
             toast.success(res?.data?.message || 'Cập nhật sân thành công!');
             sessionStorage.removeItem('selectedPitch');
         } catch (error) {
             console.error('Error updating pitch:', error);
             toast.error('Cập nhật sân thất bại!');
         }
-        window.location.reload();
     };
 
-    // Reset form
+    const onSubmit = async (data) => {
+        if (selectedPitch || dataPitch) {
+            await submitUpdatePitch(data);
+        } else {
+            await submitAddPitch(data);
+        }
+    };
+
     const submitReset = () => {
+        // sessionStorage.removeItem('selectedPitch');
+        navigate('/admin/them-san', { replace: true, state: {} });
         reset({
             id: '',
             pitchName: '',
@@ -203,50 +239,41 @@ export default function FormAddPitch({ selectedPitch }) {
             images: [],
         });
         setSelectedImages([]);
-        setFileNames([]);
-        sessionStorage.removeItem('selectedPitch');
-    };
-
-    // Handle form submission
-    const onSubmit = async (data) => {
-        if (selectedPitch || savedPitch) {
-            await submitUpdatePitch(data);
-        } else {
-            await submitAddPitch(data);
-        }
     };
 
     return (
         <div className="row my-2">
-            <div className="col-6">
+            <div className="col-12 col-md-6">
                 <Box className="card" sx={{ height: '100%' }}>
                     <Typography className="card-header text-center fs-3" variant="h6" component="div">
                         Hình Ảnh Sân
                     </Typography>
                     <div className="row">
-                        <Typography className="card-body fs-3" variant="h6" component="div">
-                            <div className="m-2">
-                                {Array.isArray(selectedImages) && selectedImages.length > 0 ? (
-                                    selectedImages.map((image, index) => (
-                                        <img
-                                            key={index}
-                                            src={image?.url || image}
-                                            alt={`Hình ảnh ${index + 1}`}
-                                            title={`Xóa hình ảnh ${index + 1}`}
-                                            className="image-thumbnail m-1 rounded cursor-pointer img-fluid"
-                                            style={{ width: '190px', minHeight: '190px' }}
-                                            onClick={() => handleDeleteImage({ publicId: index }, index)}
-                                        />
-                                    ))
-                                ) : (
-                                    <p>Chưa có hình</p>
-                                )}
-                            </div>
-                        </Typography>
+                        <div className="m-2">
+                            {Array.isArray(selectedImages) && selectedImages.length > 0 ? (
+                                selectedImages.map((image, index) => (
+                                    <img
+                                        key={index}
+                                        src={image?.url || image}
+                                        alt={`Hình ảnh ${index + 1}`}
+                                        title={`Xóa hình ảnh ${index + 1}`}
+                                        className="image-thumbnail m-1 rounded cursor-pointer img-fluid"
+                                        style={{
+                                            width: '100%', // Responsive width
+                                            maxWidth: '190px', // Ensure a max width
+                                            minHeight: '190px',
+                                        }}
+                                        onClick={() => handleDeleteImage(image, index)}
+                                    />
+                                ))
+                            ) : (
+                                <p>Chưa có hình</p>
+                            )}
+                        </div>
                     </div>
                 </Box>
             </div>
-            <div className="col-6">
+            <div className="col-12 col-md-6">
                 <Box className="card" component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
                     <Typography className="card-header text-center fs-3" variant="h6" component="div">
                         Thông Tin Sân
@@ -262,7 +289,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                 )}
                             />
                             <div className="row">
-                                <div className="col-8">
+                                <div className="col-12 col-md-8">
                                     <Controller
                                         name="price"
                                         control={control}
@@ -277,7 +304,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                         )}
                                     />
                                 </div>
-                                <div className="col-4">
+                                <div className="col-12 col-md-4">
                                     <Controller
                                         name="total"
                                         control={control}
@@ -295,7 +322,7 @@ export default function FormAddPitch({ selectedPitch }) {
                             </div>
 
                             <div className="my-2 row">
-                                <div className="col-6">
+                                <div className="col-12 col-md-6">
                                     <Controller
                                         name="street"
                                         control={control}
@@ -310,7 +337,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                         )}
                                     />
                                 </div>
-                                <div className="col-6 mt-2">
+                                <div className="col-12 col-md-6 mt-2">
                                     <Controller
                                         name="city"
                                         control={control}
@@ -340,7 +367,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                 </div>
                             </div>
                             <div className="my-2 row">
-                                <div className="col-6">
+                                <div className="col-12 col-md-6">
                                     <Controller
                                         name="district"
                                         control={control}
@@ -368,7 +395,7 @@ export default function FormAddPitch({ selectedPitch }) {
                                         )}
                                     />
                                 </div>
-                                <div className="col-6">
+                                <div className="col-12 col-md-6">
                                     <Controller
                                         name="ward"
                                         control={control}
@@ -396,7 +423,7 @@ export default function FormAddPitch({ selectedPitch }) {
                             <Controller
                                 name="type"
                                 control={control}
-                                defaultValue="onl"
+                                defaultValue="5"
                                 render={({ field }) => (
                                     <RadioGroup {...field} aria-labelledby="demo-radio-buttons-group-label">
                                         <Typography component="div" className="d-flex">
@@ -425,7 +452,7 @@ export default function FormAddPitch({ selectedPitch }) {
                     </Typography>
                     <Typography component="div" className="d-flex w-100 align-items-center my-2 card-footer">
                         <Button variant="outlined" color="success" className="text-capitalize mx-1" type="submit">
-                            {selectedPitch?.id || savedPitch?.id ? 'Cập Nhật' : 'Thêm'}
+                            {selectedPitch?.id || dataPitch?.id ? 'Cập Nhật' : 'Thêm'}
                         </Button>
                         <Button variant="outlined" color="inherit" type="button" onClick={submitReset}>
                             Làm Mới

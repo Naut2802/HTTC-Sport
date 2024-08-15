@@ -13,7 +13,7 @@ export default function Contact() {
             <div className="d-flex justify-content-center">
                 <img src={logo} alt="" style={{ width: 120 }} />
             </div>
-            <Typography className="fs-3 fw-bold mt-3 mb-2">Tin Tức</Typography>
+            <Typography className="fs-3 fw-bold mt-3 mb-2">Liên Hệ</Typography>
             <Breadcrumbs aria-label="breadcrumb" className="fs-5 mb-2">
                 <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/trang-chu">
                     Trang Chủ

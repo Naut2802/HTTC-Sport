@@ -1,82 +1,66 @@
-import { Button, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import * as React from 'react';
-
-import CreateIcon from '@mui/icons-material/Create';
+import { useEffect, useState } from 'react';
+import { handleGetUserAdmin } from '~/apis';
 
 export default function TableListUserHome() {
+    const [users, setUsers] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await handleGetUserAdmin();
+                // console.log(response.data.result);
+                const dataUser = response.data.result;
+                const filteredUsers = dataUser.filter(
+                    (user) => !user.roles.some((role) => role.roleName === 'ADMIN' || user.isEnabled === false),
+                );
+                setUsers(filteredUsers);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        fetchData();
+    }, []);
+
     const columns = [
-        { field: 'id', headerName: 'ID', width: 100 },
-        { field: 'email', headerName: 'Email', width: 250 },
-        { field: 'tenTK', headerName: 'Tên TK', width: 200 },
+        { field: 'email', headerName: 'Email', width: 280 },
+        { field: 'username', headerName: 'Tên Tài Khoản', width: 150 },
+        { field: 'lastName', headerName: 'Họ', width: 180 },
+        { field: 'firstName', headerName: 'Tên', width: 150 },
+        { field: 'phoneNumber', headerName: 'Số Điện Thoại', width: 150 },
         {
-            field: 'ho',
-            headerName: 'Họ',
-            width: 100,
-        },
-        {
-            field: 'ten',
-            headerName: 'Tên',
-            width: 100,
-        },
-        {
-            field: 'sdt',
-            headerName: 'Số Điện Thoại',
+            field: 'isEnabled',
+            headerName: 'Trạng Thái',
             width: 200,
+            renderCell: (users) => (users.value ? 'Hoạt Động' : 'Không Hoạt Động'),
         },
         {
             field: 'vip',
             headerName: 'VIP',
-            width: 100,
-        },
-        {
-            field: 'trangThai',
-            headerName: 'Trạng Thái',
             sortable: false,
-            width: 120,
-        },
-
-        {
-            field: 'orther',
-            headerName: 'Khác',
-            sortable: false,
-            width: 100,
-            renderCell: () => (
-                <Tooltip title="Chỉnh Sửa" variant="solid">
-                    <Button sx={{ color: 'green' }}>
-                        <CreateIcon />
-                    </Button>
-                </Tooltip>
-            ),
-        },
-    ];
-
-    const rows = [
-        {
-            id: '1',
-            email: 'leminhhoang241299@gmail.com',
-            tenTK: 'hoanglmn',
-            ho: 'Lê',
-            ten: 'Hoàng',
-            sdt: '0901333123',
-            vip: '1',
-            trangThai: 'Hoạt Động',
-        },
-        {
-            id: '2',
-            email: 'tuandc@gmail.com',
-            tenTK: 'tuandc',
-            ho: 'Đỗ',
-            ten: 'Tuấn',
-            sdt: '0901333123',
-            vip: '2',
-            trangThai: 'Hoạt Động',
+            width: 150,
+            renderCell: (users) => {
+                if (users.value === 'VIP_0') {
+                    return 'Vip 0';
+                } else if (users.value === 'VIP_1') {
+                    return 'Vip 1';
+                } else if (users.value === 'VIP_2') {
+                    return 'Vip 2';
+                } else {
+                    return 'Vip 3';
+                }
+            },
         },
     ];
 
     return (
-        <div style={{ width: '100%' }}>
-            <DataGrid key={rows.id} rows={rows} columns={columns} pageSizeOptions={[5, 10, 20, 50, 100]} />
+        <div className="w-100 my-2">
+            <DataGrid
+                rows={users}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5, 10, 20, 50, 100]}
+                getRowId={(row) => row.id}
+            />
         </div>
     );
 }

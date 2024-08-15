@@ -54,6 +54,26 @@ export const handleResetPasswordUser = async (token, data) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/user/forgot-password/reset-password?token=${token}`, data);
 };
 
+export const handleGetUserAdmin = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user`);
+};
+
+export const handleGetUsersAdmin = async (userId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user/${userId}`);
+};
+
+export const handleDeleteUserAdmin = async (userId) => {
+    return await authorizedAxiosInstance.delete(`${API_ROOT}/api/v1/user/${userId}`);
+};
+
+export const handleUpdateUserAdmin = async (userId, data) => {
+    return await authorizedAxiosInstance.put(`${API_ROOT}/api/v1/user/${userId}`, data);
+};
+
+export const handleActiveUserAdmin = async (userId, data) => {
+    return await authorizedAxiosInstance.patch(`${API_ROOT}/api/v1/user/active/${userId}`, data);
+};
+
 // ----------------------------------PITCH API--------------------------------------
 
 export const handleGetPitchesAdmin = async () => {
@@ -70,8 +90,8 @@ export const handleGetPitchesWithFilter = async (data) => {
     );
 };
 
-export const handleGetPitch = async (id) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${id}`);
+export const handleGetPitch = async (pitchId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${pitchId}`);
 };
 
 export const handleChangePitchInfo = async (pitchId, data) => {
@@ -108,6 +128,10 @@ export const handleProvinces = async () => {
     });
 };
 
+export const handleActivePitch = async (pitchId, data) => {
+    return await authorizedAxiosInstance.patch(`${API_ROOT}/api/v1/pitch/active/${pitchId}`, data);
+};
+
 // -----------------------------------RENT PITCH API--------------------------------------
 
 export const handleRentPitch = async (data) => {
@@ -130,4 +154,10 @@ export const handleGetRentInfoById = async (id) => {
 
 export const handleGetAllRentInfoByUser = async (userId) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/get-all-by-user/${userId}`);
+};
+
+
+// -----------------------------------REPORT API--------------------------------------
+export const handleAnalytics = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/report/analytics`);
 };

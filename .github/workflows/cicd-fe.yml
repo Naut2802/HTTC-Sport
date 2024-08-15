@@ -1,0 +1,41 @@
+name: CICD FE Pipeline
+
+on:
+  push:
+    branches: [fe-deployment]
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout Source  
+        uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Build Docker Image
+        run: docker build -t naut2802/httc-sport-fe FE/httc-sport
+      - name: Publish image to Docker Hub
+        run: docker image push naut2802/httc-sport-fe:latest
+
+  deploy:
+    needs: build
+    runs-on: [httc-sport-fe]
+    steps:
+      - name: Set up Docker on EC2
+        run: |
+          sudo yum update -y
+          sudo amazon-linux-extras install docker -y
+          sudo service docker start
+          sudo systemctl enable docker
+          sudo usermod -a -G docker $USER
+          newgrp docker
+      - name: Verify Docker is running
+        run: sudo systemctl status docker
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Pull image from Docker Hub
+        run: sudo docker pull naut2802/httc-sport-fe:latest
+      - name: Delete Old Container
+        run: sudo docker rm -f httc-sport-fe-container
+      - name: Run docker container
+        run: sudo docker run -d -p 3000:80 --name httc-sport-fe-container naut2802/httc-sport-fe:latest

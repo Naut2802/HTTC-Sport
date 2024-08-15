@@ -168,7 +168,7 @@ export default function FormAddPitch({ selectedPitch }) {
         }
 
         try {
-            const res = await handleCreatePitch(formData);
+            await handleCreatePitch(formData);
             toast.success('Thêm sân thành công!');
         } catch (error) {
             console.error('Failed to add pitch:', error);

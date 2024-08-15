@@ -174,6 +174,9 @@ public class UserService {
 		var user = userRepository.findById(userId).orElseThrow(()
 				-> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
+		if (userRepository.existsByEmail(request.getEmail()))
+			throw new AppException(ErrorCode.EMAIL_EXISTED);
+		
 		userMapper.updateUser(user, request);
 		return userMapper.toUserResponse(userRepository.save(user));
 	}

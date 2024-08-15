@@ -34,7 +34,8 @@ public class User {
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	Wallet wallet;
 	
-	@ManyToOne @JoinColumn(name = "vip")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "vip")
 	Vip vip;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)

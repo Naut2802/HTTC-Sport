@@ -72,9 +72,8 @@ function App() {
                 <Route path="/lien-he" element={<Contact />} />
                 <Route path="/san-bong" element={<PitchList />} />
                 <Route path="/chi-tiet-san/:id" element={<PitchDetail />} />
-                <Route path="/thanh-toan" element={<Payment />} />
-            </Route>m
-
+            </Route>
+            m
             <Route element={<ProtectedRoute />}>
                 <Route element={<UserHomePage />}>
                     <Route path="/tai-khoan" element={<UserInfo />} />
@@ -93,7 +92,6 @@ function App() {
                     <Route path="/admin/thong-tin-tai-khoan" element={<UserInfo />} />
                 </Route>
             </Route>
-
             <Route element={<UnauthorizedRoute />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/authenticate/google" element={<AuthenticateGG />} />

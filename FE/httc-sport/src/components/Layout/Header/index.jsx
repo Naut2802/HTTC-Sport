@@ -7,12 +7,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import slugify from 'slugify'; // Import slugify nè
 
-import { handleLogoutAPI } from '~/apis';
-import Login from '~/components/Account/Login';
-import Popup from '../Popup';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import { handleLogoutAPI } from '~/apis';
+
+import LoginWithModal from '~/components/Account/LoginWithModal';
+import Popup from '../Popup';
 
 const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mảng trang trên navbar nè
 const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch']; //Mảng dòng của cái avatar click ra nè
@@ -25,6 +26,7 @@ export default function Header() {
     const [openPopup, setOpenPopup] = useState(false);
     const navigate = useNavigate();
 
+    const checkRole = localStorage.getItem('role');
     var checkUser = null;
     const checkUserInStorage = localStorage.getItem('accessToken');
     if (checkUserInStorage) {
@@ -265,11 +267,16 @@ export default function Header() {
                                     <AccountBoxIcon />
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip title="Admin" className="mx-4">
-                                <IconButton component={Link} to="/admin/trang-chu" sx={{ p: 0 }}>
-                                    <AdminPanelSettingsIcon />
-                                </IconButton>
-                            </Tooltip>
+                            {checkRole === 'ADMIN' ? (
+                                <Tooltip title="Admin" className="mx-4">
+                                    <IconButton component={Link} to="/admin/trang-chu" sx={{ p: 0 }}>
+                                        <AdminPanelSettingsIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : (
+                                <></>
+                            )}
+
                             <Menu
                                 sx={{ mt: '45px' }}
                                 id="menu-appbar"
@@ -322,7 +329,7 @@ export default function Header() {
             <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <Grid container>
                     <Grid item>
-                        <Login />
+                        <LoginWithModal />
                     </Grid>
                 </Grid>
             </Popup>

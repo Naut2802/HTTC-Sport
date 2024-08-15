@@ -220,6 +220,7 @@ export default function FormAddPitch({ selectedPitch }) {
     };
 
     const submitReset = () => {
+        sessionStorage.removeItem('selectedPitch');
         reset({
             id: '',
             pitchName: '',
@@ -234,8 +235,6 @@ export default function FormAddPitch({ selectedPitch }) {
             images: [],
         });
         setSelectedImages([]);
-        setFileNames([]);
-        sessionStorage.removeItem('selectedPitch');
     };
 
     return (

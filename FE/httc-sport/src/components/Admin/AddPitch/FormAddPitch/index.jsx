@@ -43,7 +43,7 @@ export default function FormAddPitch({ selectedPitch }) {
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
-    const [setFileNames] = useState([]);
+    // const [fileNames, setFileNames] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -110,8 +110,7 @@ export default function FormAddPitch({ selectedPitch }) {
         if (!files) return;
 
         const fileArray = Array.from(files);
-        const fileNamesList = fileArray.map((file) => file.name);
-
+        // const fileNamesList = fileArray.map((file) => file.name);
         // setFileNames(fileNamesList);
 
         const newImageUrls = fileArray.map((file) => URL.createObjectURL(file));

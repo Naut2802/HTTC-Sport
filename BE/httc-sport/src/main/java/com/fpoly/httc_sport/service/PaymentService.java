@@ -57,7 +57,7 @@ public class PaymentService {
 				.cancelUrl(CROSS_ORIGIN + "/payment/rent/error")
 				.buyerEmail(rentInfo.getEmail())
 				.buyerName(rentInfo.getLastName() + " " + rentInfo.getFirstName())
-				.description("THANH TOAN DAT SAN: " + rentInfo.getPitch().getPitchName())
+				.description("THANH TOAN DAT SAN: " + rentInfo.getPitch().getId())
 				.buyerPhone(rentInfo.getPhoneNumber())
 				.amount((int) (rentInfo.getTotal() * deposit))
 				.build();

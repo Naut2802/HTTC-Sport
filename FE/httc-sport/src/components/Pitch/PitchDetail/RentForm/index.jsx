@@ -14,16 +14,15 @@ import {
 } from '@mui/material';
 import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { handleRentPitch } from '~/apis';
+import { handleGetMyInfoAPI, handleRentPitch } from '~/apis';
 import Popup from '~/components/Layout/Popup';
 import Payment from '../../Payment';
 
 export default function RentForm({ id }) {
-    const { register, handleSubmit } = useForm();
     const [time, setTime] = useState('');
     const [type, setType] = useState(5);
     const [payment, setPayment] = useState('');
@@ -32,6 +31,26 @@ export default function RentForm({ id }) {
     const [openPopup, setOpenPopup] = useState(false);
     const [dataPayment, setDataPayment] = useState(null);
     const [resPayment, setResPayment] = useState(null);
+
+    const { handleSubmit, control, reset, register } = useForm({
+        defaultValues: {
+            lastName: '',
+            firstName: '',
+            phoneNumber: '',
+            email: '',
+            note: '',
+        },
+    });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await handleGetMyInfoAPI();
+                reset(res.data.result);
+            } catch (error) {}
+        };
+        fetchData();
+    }, [reset]);
 
     const handleChangeTime = (event) => {
         setTime(event.target.value);
@@ -49,6 +68,8 @@ export default function RentForm({ id }) {
         if (dateValue && timeValue) {
             const formattedDate = format(dateValue.$d, 'yyyy-MM-dd');
             const formattedTime = format(timeValue.$d, 'HH:mm:ss');
+            console.log(data);
+
             data = {
                 ...data,
                 pitchId: id,
@@ -58,6 +79,7 @@ export default function RentForm({ id }) {
                 typePitch: type,
                 paymentMethod: payment,
             };
+            console.log(data);
             setDataPayment(data);
             const res = await handleRentPitch(data);
             setResPayment(res.data.result);
@@ -104,49 +126,34 @@ export default function RentForm({ id }) {
                     <Typography component={'span'}>
                         <Grid container spacing={1}>
                             <Grid item xs={6}>
-                                <Typography component={'span'}>
-                                    <TextField
-                                        label="Họ"
-                                        variant="outlined"
-                                        fullWidth
-                                        autoComplete="lastName"
-                                        {...register('lastName')}
-                                    />
-                                </Typography>
+                                <Controller
+                                    name="lastName"
+                                    control={control}
+                                    render={({ field }) => <TextField {...field} fullWidth label="Họ" variant="outlined" />}
+                                />
                             </Grid>
                             <Grid item xs={6}>
-                                <Typography component={'span'}>
-                                    <TextField
-                                        label="Tên"
-                                        variant="outlined"
-                                        fullWidth
-                                        autoComplete="firstName"
-                                        {...register('firstName')}
-                                    />
-                                </Typography>
+                                <Controller
+                                    name="firstName"
+                                    control={control}
+                                    render={({ field }) => <TextField {...field} fullWidth label="Tên" variant="outlined" />}
+                                />
                             </Grid>
                             <Grid item xs={12}>
-                                <Typography component={'span'}>
-                                    <TextField
-                                        label="Số điện thoại"
-                                        variant="outlined"
-                                        fullWidth
-                                        autoComplete="phoneNumber"
-                                        {...register('phoneNumber')}
-                                    />
-                                </Typography>
+                                <Controller
+                                    name="phoneNumber"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField {...field} label="Số Điện Thoại" fullWidth variant="outlined" />
+                                    )}
+                                />
                             </Grid>
                             <Grid item xs={12}>
-                                <Typography component={'span'}>
-                                    <TextField
-                                        label="Email"
-                                        variant="outlined"
-                                        fullWidth
-                                        type="email"
-                                        autoComplete="email"
-                                        {...register('email')}
-                                    />
-                                </Typography>
+                                <Controller
+                                    name="email"
+                                    control={control}
+                                    render={({ field }) => <TextField {...field} label="Email" fullWidth variant="outlined" />}
+                                />
                             </Grid>
                             <Grid item xs={6}>
                                 <Typography component={'span'}>

@@ -7,22 +7,26 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import slugify from 'slugify'; // Import slugify nè
 
-import { handleLogoutAPI } from '~/apis';
-import Login from '~/components/Account/Login';
-import Popup from '../Popup';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import { handleLogoutAPI } from '~/apis';
+
+import LoginWithModal from '~/components/Account/LoginWithModal';
+import Popup from '../Popup';
 
 const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mảng trang trên navbar nè
 const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch']; //Mảng dòng của cái avatar click ra nè
+const vi = ['Nạp Tiền', 'Lịch Sử Giao Dịch Ví'];
 
 export default function Header() {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const [ViElUser, setViUser] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
     const navigate = useNavigate();
 
+    const checkRole = localStorage.getItem('role');
     var checkUser = null;
     const checkUserInStorage = localStorage.getItem('accessToken');
     if (checkUserInStorage) {
@@ -47,12 +51,20 @@ export default function Header() {
         setAnchorElUser(event.currentTarget);
     };
 
+    const handleOpenVi = (event) => {
+        setViUser(event.currentTarget);
+    };
+
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
+    };
+
+    const handleCloseVi = () => {
+        setViUser(null);
     };
 
     // const Search = styled('div')(({ theme }) => ({
@@ -211,22 +223,60 @@ export default function Header() {
                     ) : (
                         <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
                             <Tooltip title="Ví" className="mx-4">
-                                <IconButton sx={{ p: 0 }}>
-                                    <Typography component={Link} to="/san-bong" sx={{ color: '#5A5A5A' }}>
+                                <IconButton sx={{ p: 0 }} onClick={handleOpenVi}>
+                                    <Typography sx={{ color: '#5A5A5A' }}>
                                         <AccountBalanceWalletIcon />
                                     </Typography>
                                 </IconButton>
                             </Tooltip>
+                            <Menu
+                                sx={{ mt: '45px' }}
+                                id="menu-appbar"
+                                anchorEl={ViElUser}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(ViElUser)}
+                                onClose={handleCloseVi}
+                            >
+                                <Typography component="div" className="container text-decoration-none text-dark mx-1">
+                                    Số Dư : 3.000.000
+                                </Typography>
+                                {vi.map((vi) => (
+                                    <MenuItem key={vi} onClick={handleCloseUserMenu}>
+                                        <Typography component="div" textAlign="center">
+                                            <Typography
+                                                component={Link}
+                                                to={`/${slugify(vi, { lower: true, strict: true, locale: 'vi' })}`}
+                                                className="text-decoration-none text-dark"
+                                            >
+                                                {vi}
+                                            </Typography>
+                                        </Typography>
+                                    </MenuItem>
+                                ))}
+                            </Menu>
                             <Tooltip title="Tài khoản">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                     <AccountBoxIcon />
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip title="Admin" className="mx-4">
-                                <IconButton component={Link} to="/admin/trang-chu" sx={{ p: 0 }}>
-                                    <AdminPanelSettingsIcon />
-                                </IconButton>
-                            </Tooltip>
+                            {checkRole === 'ADMIN' ? (
+                                <Tooltip title="Admin" className="mx-4">
+                                    <IconButton component={Link} to="/admin/trang-chu" sx={{ p: 0 }}>
+                                        <AdminPanelSettingsIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : (
+                                <></>
+                            )}
+
                             <Menu
                                 sx={{ mt: '45px' }}
                                 id="menu-appbar"
@@ -279,7 +329,7 @@ export default function Header() {
             <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <Grid container>
                     <Grid item>
-                        <Login />
+                        <LoginWithModal />
                     </Grid>
                 </Grid>
             </Popup>

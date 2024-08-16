@@ -1,6 +1,6 @@
 import { Breadcrumbs, Button, Card, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { handleDeletePitch, handleGetPitch, handleGetPitchesAdmin, handleActivePitch } from '~/apis';
 
@@ -14,7 +14,7 @@ function formatCurrency(amount) {
 export default function ListPitchs() {
     const [pitches, setPitch] = useState([]);
     const [selectedPitch, setSelectedPitch] = useState([]);
-
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -38,8 +38,9 @@ export default function ListPitchs() {
             // console.log(re.data.result);
             const dataPitch = re.data.result;
             setSelectedPitch(dataPitch);
-            sessionStorage.setItem('selectedPitch', JSON.stringify(dataPitch));
-            window.location.href = '/admin/them-san';
+            navigate('/admin/them-san', { state: { dataPitch } });
+            // sessionStorage.setItem('selectedPitch', JSON.stringify(dataPitch));
+            // window.location.href = '/admin/them-san';
         } catch (error) {
             console.error('Lỗi: ', error);
         }

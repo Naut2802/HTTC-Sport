@@ -90,8 +90,8 @@ export const handleGetPitchesWithFilter = async (data) => {
     );
 };
 
-export const handleGetPitch = async (pitchId) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${pitchId}`);
+export const handleGetPitch = async (id) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${id}`);
 };
 
 export const handleChangePitchInfo = async (pitchId, data) => {
@@ -156,6 +156,15 @@ export const handleGetAllRentInfoByUser = async (userId) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/get-all-by-user/${userId}`);
 };
 
+export const handleDeleteRentInfo = async (id) => {
+    return await authorizedAxiosInstance.delete(`${API_ROOT}/api/v1/rent-pitch/${id}`);
+};
+
+// -----------------------------------ADMIN RENT PITCH API--------------------------------------
+
+export const handleGetAllRentInfoAdmin = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch`);
+};
 
 // -----------------------------------REPORT API--------------------------------------
 export const handleAnalytics = async () => {

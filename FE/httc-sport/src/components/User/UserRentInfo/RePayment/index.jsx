@@ -19,6 +19,8 @@ function formatDate(dateString) {
 
 // { resData, resPayment, resDate }
 export default function RePayment({ rentInfo }) {
+    console.log(rentInfo);
+
     const handlePayPercent = async () => {
         const id = rentInfo.id;
         const deposit = 0.35;

@@ -10,8 +10,6 @@ export default function AuthenticateGG() {
     const [isLoggedin, setIsLoggedin] = useState(false);
 
     useEffect(() => {
-        console.log(window.location.href);
-
         const authCodeRegex = /code=([^&]+)/;
         const isMatch = window.location.href.match(authCodeRegex);
 
@@ -25,6 +23,7 @@ export default function AuthenticateGG() {
                     console.log(res.data);
                     setToken(res.data.result?.accessToken);
                     localStorage.setItem('userId', res.data.result?.userId);
+                    localStorage.setItem('role', res.data.result?.roles[0].roleName);
                     setIsLoggedin(true);
                 } catch (error) {
                     console.error('Error during fetchData:', error);

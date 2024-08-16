@@ -29,7 +29,7 @@ export default function Payment({ resData, resPayment, resDate }) {
         const id = resPayment.id;
         const deposit = 1;
         const res = await handleCreatePaymentLink(id, deposit);
-        console.log(res.data.result.data);
+        console.log(res.data.result);
         if (res.data.result.data) {
             window.location.href = res.data.result.data.checkoutUrl;
         } else {

@@ -23,7 +23,6 @@ import AdminHomePage from './pages/AdminHomePage';
 import UserHomePage from './pages/UserHomePage';
 
 //PITCH
-import Payment from './components/Pitch/Payment';
 import PaymentError from './components/Pitch/Payment/PaymentError';
 import PaymentSuccess from './components/Pitch/Payment/PaymentSuccess';
 import PitchDetail from './components/Pitch/PitchDetail';
@@ -72,7 +71,6 @@ function App() {
                 <Route path="/lien-he" element={<Contact />} />
                 <Route path="/san-bong" element={<PitchList />} />
                 <Route path="/chi-tiet-san/:id" element={<PitchDetail />} />
-                <Route path="/thanh-toan" element={<Payment />} />
             </Route>
 
             <Route element={<ProtectedRoute />}>
@@ -93,7 +91,6 @@ function App() {
                     <Route path="/admin/thong-tin-tai-khoan" element={<UserInfo />} />
                 </Route>
             </Route>
-
             <Route element={<UnauthorizedRoute />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/authenticate/google" element={<AuthenticateGG />} />

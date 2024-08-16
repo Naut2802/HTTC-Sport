@@ -1,5 +1,4 @@
-import { Box, Breadcrumbs, Button, Card, CardContent, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Box, Breadcrumbs, Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,22 +7,6 @@ import { toast } from 'react-toastify';
 import { handleChangeInfoUser, handleGetMyInfoAPI } from '~/apis';
 import logo from '~/components/Images/logo.png';
 import VipLevel from './VipLevel';
-
-const ValidationTextField = styled(TextField)({
-    width: '100%',
-    '& input:valid + fieldset': {
-        borderColor: '#E0E3E7',
-        borderWidth: 1,
-    },
-    '& input:invalid + fieldset': {
-        borderColor: 'red',
-        borderWidth: 1,
-    },
-    '& input:valid:focus + fieldset': {
-        borderLeftWidth: 4,
-        padding: '4px !important', // override inline-style
-    },
-});
 
 export default function UserInfo() {
     const navigate = useNavigate();
@@ -77,100 +60,106 @@ export default function UserInfo() {
             </Breadcrumbs>
             <hr />
             <div className="row">
-                <Card sx={{ display: 'flex', width: '100%' }}>
-                    <div className="col-6 border rounded-2 my-2">
-                        <Box
-                            component="form"
-                            onSubmit={handleSubmit(submitChangeInfo)}
-                            sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-                        >
-                            <CardContent>
-                                <Typography className="text-center text-dark fw-bold" variant="h6" noWrap>
-                                    Thông Tin Cá Nhân
-                                </Typography>
-                                <hr />
-                                <Controller
-                                    name="username"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <ValidationTextField
-                                            {...field}
-                                            label="Tài Khoản"
-                                            variant="outlined"
-                                            className="my-2"
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
-                                        />
-                                    )}
-                                />
-                                <Controller
-                                    name="email"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <ValidationTextField
-                                            {...field}
-                                            label="Email"
-                                            variant="outlined"
-                                            className="my-2 w-100"
-                                            type="email"
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
-                                        />
-                                    )}
-                                />
-                                <div className="d-flex">
-                                    <Controller
-                                        name="lastName"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <ValidationTextField {...field} label="Họ" variant="outlined" className="my-2 w-50" />
-                                        )}
-                                    />
-                                    <Controller
-                                        name="firstName"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <ValidationTextField
-                                                {...field}
-                                                label="Tên"
-                                                variant="outlined"
-                                                className="my-2 w-50 ms-1"
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <Card sx={{ width: '100%' }}>
+                            <Box
+                                component="form"
+                                className="border rounded-2"
+                                onSubmit={handleSubmit(submitChangeInfo)}
+                                sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+                            >
+                                <CardContent>
+                                    <Typography className="text-center text-dark fw-bold" variant="h6" noWrap>
+                                        Thông Tin Cá Nhân
+                                    </Typography>
+                                    <hr />
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={6}>
+                                            <Controller
+                                                name="username"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        label="Tài Khoản"
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        InputProps={{
+                                                            readOnly: true,
+                                                        }}
+                                                    />
+                                                )}
                                             />
-                                        )}
-                                    />
-                                </div>
-                                <Controller
-                                    name="phoneNumber"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <ValidationTextField
-                                            {...field}
-                                            label="Số Điện Thoại"
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Controller
+                                                name="email"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        label="Email"
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        type="email"
+                                                        InputProps={{
+                                                            readOnly: true,
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <Controller
+                                                name="lastName"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <TextField {...field} label="Họ" variant="outlined" fullWidth />
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <Controller
+                                                name="firstName"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <TextField {...field} label="Tên" variant="outlined" fullWidth />
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <Controller
+                                                name="phoneNumber"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <TextField {...field} label="Số Điện Thoại" variant="outlined" fullWidth />
+                                                )}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    <hr />
+                                    <div className="d-flex justify-content-between align-items-center my-2">
+                                        <Button
+                                            component={Link}
+                                            to="/change-password"
                                             variant="outlined"
-                                            className="my-2"
-                                        />
-                                    )}
-                                />
-                                <hr />
-                                <div className="d-flex justify-content-between align-items-center my-2">
-                                    <Button component={Link} to="/change-password" variant="outlined" className="text-capitalize">
-                                        Đổi Mật Khẩu
-                                    </Button>
-                                    <Button type="submit" variant="outlined" color="success" className="text-capitalize">
-                                        Cập Nhật
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Box>
-                    </div>
-                    <div className="col-6 d-flex justify-content-center">
-                        <div className="w-100 mx-2 my-2">
-                            <VipLevel />
-                        </div>
-                    </div>
-                </Card>
+                                            className="text-capitalize"
+                                        >
+                                            Đổi Mật Khẩu
+                                        </Button>
+                                        <Button type="submit" variant="outlined" color="success" className="text-capitalize">
+                                            Cập Nhật
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Box>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <VipLevel />
+                    </Grid>
+                </Grid>
             </div>
         </div>
     );

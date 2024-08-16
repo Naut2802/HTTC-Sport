@@ -15,6 +15,7 @@ import {
 import { styled } from '@mui/material/styles';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { handleCreatePitch, handleDelImgs, handleGetPitch, handleProvinces, handleUpdatePitch } from '~/apis';
@@ -37,7 +38,10 @@ const ValidationTextField = styled(TextField)({
 
 export default function FormAddPitch({ selectedPitch }) {
     const { register, handleSubmit, control, setValue, reset } = useForm();
-    const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
+    // const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { dataPitch } = location.state || {};
 
     const [dataCity, setDataCity] = useState([]);
     const [districts, setDistricts] = useState([]);
@@ -80,18 +84,18 @@ export default function FormAddPitch({ selectedPitch }) {
     );
 
     useEffect(() => {
-        if (selectedPitch || savedPitch) {
-            const pitch = selectedPitch || savedPitch;
-            setValue('pitchName', pitch.pitchName);
-            setValue('price', pitch.price);
-            setValue('street', pitch.street);
-            setValue('city', pitch.city);
-            setValue('district', pitch.district);
-            setValue('ward', pitch.ward);
-            setValue('description', pitch.description);
-            setValue('type', pitch.type);
-            setValue('total', pitch.total);
-            setValue('images', pitch.images);
+        if (selectedPitch || dataPitch) {
+            const pitch = selectedPitch || dataPitch;
+            setValue('pitchName', pitch.pitchName || '');
+            setValue('price', pitch.price || '');
+            setValue('street', pitch.street || '');
+            setValue('city', pitch.city || '');
+            setValue('district', pitch.district || '');
+            setValue('ward', pitch.ward || '');
+            setValue('description', pitch.description || '');
+            setValue('type', pitch.type || '');
+            setValue('total', pitch.total || '');
+            setValue('images', pitch.images || '');
             setSelectedImages(pitch.images || []);
             const city = pitch.city;
             const district = pitch.district;
@@ -103,8 +107,8 @@ export default function FormAddPitch({ selectedPitch }) {
                 setTimeout(() => handleDistrictChange({ target: { value: district } }), 0);
             }
         }
-    }, [selectedPitch, savedPitch, dataCity, districts, setValue, handleCityChange, handleDistrictChange]);
-    
+    }, [selectedPitch, dataPitch, dataCity, districts, setValue, handleCityChange, handleDistrictChange]);
+
     const handleImageChange = (event) => {
         const files = event.target.files;
         if (!files) return;
@@ -119,7 +123,7 @@ export default function FormAddPitch({ selectedPitch }) {
 
     // Xóa ảnh
     const handleDeleteImage = async (index) => {
-        const pitchId = selectedPitch?.id || savedPitch?.id;
+        const pitchId = selectedPitch?.id || dataPitch?.id;
         try {
             const re = await handleGetPitch(pitchId);
             const dataAPI = re.data.result;
@@ -178,7 +182,7 @@ export default function FormAddPitch({ selectedPitch }) {
 
     const submitUpdatePitch = async (data) => {
         try {
-            const pitchId = selectedPitch?.id || savedPitch?.id;
+            const pitchId = selectedPitch?.id || dataPitch?.id;
             if (!pitchId) return;
 
             const formData = new FormData();
@@ -211,7 +215,7 @@ export default function FormAddPitch({ selectedPitch }) {
     };
 
     const onSubmit = async (data) => {
-        if (selectedPitch || savedPitch) {
+        if (selectedPitch || dataPitch) {
             await submitUpdatePitch(data);
         } else {
             await submitAddPitch(data);
@@ -219,7 +223,8 @@ export default function FormAddPitch({ selectedPitch }) {
     };
 
     const submitReset = () => {
-        sessionStorage.removeItem('selectedPitch');
+        // sessionStorage.removeItem('selectedPitch');
+        navigate('/admin/them-san', { replace: true, state: {} });
         reset({
             id: '',
             pitchName: '',
@@ -447,7 +452,7 @@ export default function FormAddPitch({ selectedPitch }) {
                     </Typography>
                     <Typography component="div" className="d-flex w-100 align-items-center my-2 card-footer">
                         <Button variant="outlined" color="success" className="text-capitalize mx-1" type="submit">
-                            {selectedPitch?.id || savedPitch?.id ? 'Cập Nhật' : 'Thêm'}
+                            {selectedPitch?.id || dataPitch?.id ? 'Cập Nhật' : 'Thêm'}
                         </Button>
                         <Button variant="outlined" color="inherit" type="button" onClick={submitReset}>
                             Làm Mới

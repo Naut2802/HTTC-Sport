@@ -23,7 +23,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RentRequest {
 	@NotNull(message = "PITCH_NULL")
-	int pitchId;
+	Long pitchId;
 	@NotBlank(message = "RENT_INFO_EMAIL_NULL")
 	@NotNull(message = "RENT_INFO_EMAIL_NULL")
 	@Pattern(regexp = Constant.EMAIL_REGEX, message = "EMAIL_INVALID")

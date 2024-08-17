@@ -13,10 +13,7 @@ import java.util.List;
 @Builder
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ChatRoom {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+public class ChatRoom extends AbstractIdEntity {
 	String userId;
 	String adminId;
 	

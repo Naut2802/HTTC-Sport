@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -26,8 +27,7 @@ public class Cronjob {
 	
 	@Scheduled(cron = "0 0/30 * * * ?")
 	public void checkInvalidatedAccessTokenExpiryTime() {
-		Date date = Date.from(Instant.now());
-		var tokens = invalidatedTokenRepository.findByExpiryTimeLessThan(date);
+		var tokens = invalidatedTokenRepository.findByExpiryTimeLessThan(LocalDateTime.now());
 		
 		log.info("========================================================");
 		log.info("Started Cronjob: check and delete Invalidated Access Token");
@@ -36,8 +36,7 @@ public class Cronjob {
 	}
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void checkRefreshTokenExpiryTime() {
-		Date date = Date.from(Instant.now());
-		var tokens = refreshTokenRepository.findByExpiryTimeLessThan(date);
+		var tokens = refreshTokenRepository.findByExpiryTimeLessThan(LocalDateTime.now());
 		
 		log.info("========================================================");
 		log.info("Started Cronjob: check and delete expired Refresh Token");
@@ -46,8 +45,7 @@ public class Cronjob {
 	}
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void checkInvalidRentInfo() {
-		LocalDate localDate = LocalDate.now();
-		var rentInfos = rentInfoRepository.findByRentedAtLessThanAndPaymentStatusFalse(localDate);
+		var rentInfos = rentInfoRepository.findByRentedAtLessThanAndPaymentStatusFalse(LocalDate.now());
 		
 		log.info("========================================================");
 		log.info("Started Cronjob: check and delete expired Rent infos");

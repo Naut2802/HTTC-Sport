@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Wallet {
+public class Wallet extends AbstractEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	String id;

@@ -12,7 +12,6 @@ import com.fpoly.httc_sport.repository.ForgotPasswordTokenRepository;
 import com.fpoly.httc_sport.repository.RoleRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
 import com.fpoly.httc_sport.utils.Enum.RoleEnum;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -137,7 +135,7 @@ public class UserService {
 		var forgotPasswordToken = forgotPasswordTokenRepository.findByToken(token).orElseThrow(() ->
 				new AppException(ErrorCode.FORGOT_PASSWORD_TOKEN_NOT_FOUND));
 		
-		if (forgotPasswordToken.getExpiryTime().before(Date.from(Instant.now()))) {
+		if (forgotPasswordToken.getExpiryTime().isBefore(LocalDateTime.now())) {
 			forgotPasswordTokenRepository.delete(forgotPasswordToken);
 			return "Invalid, token expired";
 		}
@@ -232,7 +230,7 @@ public class UserService {
 	public void saveForgotPasswordToken(User user, String token) {
 		var forgotPasswordToken = ForgotPasswordToken.builder()
 				.token(token)
-				.expiryTime(Date.from(Instant.now().plus(2, ChronoUnit.MINUTES)))
+				.expiryTime(LocalDateTime.now().plusMinutes(2))
 				.user(user)
 				.build();
 		forgotPasswordTokenRepository.save(forgotPasswordToken);

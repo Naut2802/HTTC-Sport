@@ -15,10 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Vip {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+public class Vip extends AbstractIdEntity {
 	@Column(unique = true, nullable = false)
 	@Enumerated(EnumType.STRING)
 	VipEnum level;

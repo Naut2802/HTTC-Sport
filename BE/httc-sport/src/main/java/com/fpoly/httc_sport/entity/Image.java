@@ -11,10 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Image {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+public class Image extends AbstractIdEntity {
 	String publicId;
 	String url;
 	

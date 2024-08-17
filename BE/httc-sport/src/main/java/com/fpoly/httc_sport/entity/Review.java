@@ -11,10 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Review {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+public class Review extends AbstractIdEntity {
 	Integer rate;
 	String description;
 	

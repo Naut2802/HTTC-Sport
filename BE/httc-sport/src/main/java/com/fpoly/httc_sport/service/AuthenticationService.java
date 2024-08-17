@@ -33,8 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -110,7 +110,7 @@ public class AuthenticationService {
 		if (user.getIsEnabled())
 			throw new AppException(ErrorCode.USER_ENABLED);
 		
-		if (verificationToken.getExpiryTime().before(Date.from(Instant.now())))
+		if (verificationToken.getExpiryTime().isBefore(LocalDateTime.now()))
 			return "Invalid, token expired";
 		
 		user.setIsEnabled(true);
@@ -236,7 +236,7 @@ public class AuthenticationService {
 		var refreshTokenFromRepo = refreshTokenRepository.findById(rti)
 				.orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 		
-		if (refreshTokenFromRepo.getExpiryTime().toInstant().isBefore(Instant.now()))
+		if (refreshTokenFromRepo.getExpiryTime().isBefore(LocalDateTime.now()))
 			throw new AppException(ErrorCode.UNAUTHENTICATED);
 		
 		refreshTokenRepository.deleteById(refreshTokenFromRepo.getId());
@@ -265,7 +265,7 @@ public class AuthenticationService {
 				.user(user)
 				.token(refreshToken.getTokenValue())
 				.publicKey(publicKey)
-				.expiryTime(Date.from(Objects.requireNonNull(refreshToken.getExpiresAt())))
+				.expiryTime(LocalDateTime.ofInstant(Objects.requireNonNull(refreshToken.getExpiresAt()), ZoneId.systemDefault()))
 				.build());
 	}
 	
@@ -300,7 +300,7 @@ public class AuthenticationService {
 	public void saveVerificationToken(User user, String token) {
 		VerificationToken verificationToken = VerificationToken.builder()
 				.token(token)
-				.expiryTime(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)))
+				.expiryTime(LocalDateTime.now().plusMinutes(15))
 				.user(user)
 				.build();
 		verificationTokenRepository.save(verificationToken);
@@ -311,7 +311,7 @@ public class AuthenticationService {
 				new AppException(ErrorCode.VERIFICATION_TOKEN_NOT_FOUND));
 		
 		verificationToken.setToken(UUID.randomUUID().toString());
-		verificationToken.setExpiryTime(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)));
+		verificationToken.setExpiryTime(LocalDateTime.now().plusMinutes(15));
 		verificationTokenRepository.save(verificationToken);
 		
 		return verificationToken;

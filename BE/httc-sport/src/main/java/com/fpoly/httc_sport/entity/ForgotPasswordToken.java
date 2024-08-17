@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,7 +18,7 @@ public class ForgotPasswordToken {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	String token;
-	Date expiryTime;
+	LocalDateTime expiryTime;
 	
 	@OneToOne
 	User user;

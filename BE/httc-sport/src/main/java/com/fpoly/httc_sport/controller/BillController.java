@@ -53,7 +53,7 @@ public class BillController {
 	@Operation(summary = "Get all bill with pitch-id", description = "Api for admin")
 	@GetMapping("/get-all-by-pitch/{pitchId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<List<BillResponse>> getAllBillByPitch(@PathVariable int pitchId,
+	ApiResponse<List<BillResponse>> getAllBillByPitch(@PathVariable long pitchId,
 	                                 @RequestParam(defaultValue = "0") int page,
 	                                 @RequestParam(defaultValue = "5") int size) {
 		log.info("[Bill Controller - Admin get all bills with pitch-id] Admin get all bills with pitch-id: {}", pitchId);

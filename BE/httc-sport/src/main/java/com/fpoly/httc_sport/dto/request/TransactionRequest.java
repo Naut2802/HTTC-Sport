@@ -18,6 +18,7 @@ public class TransactionRequest {
 	@NotNull(message = "WALLET_ID_NULL")
 	@NotBlank(message = "WALLET_ID_NULL")
 	String walletId;
+	@NotNull(message = "PAYMENT_AMOUNT_NULL")
 	@Min(value = 2000, message = "PAYMENT_AMOUNT_MIN")
 	@Max(value = 500000, message = "PAYMENT_AMOUNT_MAX")
 	int paymentAmount;

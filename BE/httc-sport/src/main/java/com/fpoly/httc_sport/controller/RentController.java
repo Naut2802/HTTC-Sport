@@ -94,7 +94,7 @@ public class RentController {
 	@Operation(summary = "Api get all rent-info by pitch-id", description = "Admin use this api")
 	@GetMapping("/get-all-by-pitch/{pitchId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<List<RentInfoResponse>> getAllRentInfoByPitch(@PathVariable int pitchId,
+	ApiResponse<List<RentInfoResponse>> getAllRentInfoByPitch(@PathVariable long pitchId,
 	                                                          @RequestParam(defaultValue = "0") int page,
 	                                                          @RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<RentInfoResponse>>builder()

@@ -24,9 +24,11 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -68,7 +70,7 @@ public class LogoutHandler implements org.springframework.security.web.authentic
 					if (jwtUtils.isTokenValid(jwtToken)) {
 						invalidatedTokenRepository.save(InvalidatedToken.builder()
 								.token(jwtToken.getTokenValue())
-								.expiryTime(Date.from(jwtToken.getIssuedAt()))
+								.expiryTime(LocalDateTime.from(Objects.requireNonNull(jwtToken.getIssuedAt())))
 								.build());
 					}
 				}

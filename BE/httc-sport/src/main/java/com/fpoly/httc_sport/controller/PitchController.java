@@ -43,7 +43,7 @@ public class PitchController {
 	@Operation(summary = "Api update pitch", description = "Admin use this api to update a pitch")
 	@PutMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<PitchDetailsResponse> updatePitch(@PathVariable int id, @Valid @ModelAttribute PitchRequest request) throws Exception {
+	ApiResponse<PitchDetailsResponse> updatePitch(@PathVariable long id, @Valid @ModelAttribute PitchRequest request) throws Exception {
 		log.info("[Pitch Controller - Update pitch api] Admin updating a pitch with pitch-id: {}", id);
 		var response = pitchService.updatePitch(id, request);
 		log.info("[Pitch Controller - Update pitch api] Updated");
@@ -56,7 +56,7 @@ public class PitchController {
 	@Operation(summary = "Api deactivate pitch", description = "Admin use this api to deactivate a pitch")
 	@DeleteMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<PitchResponse> deletePitch(@PathVariable int id) throws Exception {
+	ApiResponse<PitchResponse> deletePitch(@PathVariable long id) {
 		log.info("[Pitch Controller - Deactivate pitch api] Admin deactivate a pitch with id: {}", id);
 		var response = pitchService.deletePitch(id);
 		log.info("[Pitch Controller - Deactivate pitch api] {}", response);
@@ -68,7 +68,7 @@ public class PitchController {
 	@Operation(summary = "Api active pitch", description = "Admin use this api to active a pitch")
 	@PatchMapping("/active/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<PitchResponse> activePitch(@PathVariable int id) throws Exception {
+	ApiResponse<PitchResponse> activePitch(@PathVariable long id) {
 		log.info("[Pitch Controller - Active pitch api] Admin active a pitch with id: {}", id);
 		var response = pitchService.activePitch(id);
 		log.info("[Pitch Controller - Active pitch api] {}", response);
@@ -80,7 +80,7 @@ public class PitchController {
 	@Operation(summary = "Api delete image", description = "Admin use this api delete a image from a pitch")
 	@PatchMapping("{id}/{publicId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<PitchResponse> deleteImageFromPitch(@PathVariable int id, @PathVariable String publicId) throws Exception {
+	ApiResponse<PitchResponse> deleteImageFromPitch(@PathVariable long id, @PathVariable String publicId) throws Exception {
 		log.info("[Pitch Controller - Delete a image from pitch] Admin deleting a image from a pitch with pitch-id: {}", id);
 		var response = pitchService.deleteImageFromPitch(id, publicId);
 		log.info("[Pitch Controller - Delete a image from pitch] Image deleted");
@@ -92,7 +92,7 @@ public class PitchController {
 	
 	@Operation(summary = "Api get a pitch", description = "Api use to get a pitch with pitch-id")
 	@GetMapping("{id}")
-	ApiResponse<PitchDetailsResponse> getPitch(@PathVariable int id) {
+	ApiResponse<PitchDetailsResponse> getPitch(@PathVariable long id) {
 		return ApiResponse.<PitchDetailsResponse>builder()
 				.result(pitchService.getPitch(id))
 				.build();

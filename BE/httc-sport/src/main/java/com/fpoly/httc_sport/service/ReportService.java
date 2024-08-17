@@ -43,10 +43,10 @@ public class ReportService {
 		
 		var total = bills.stream().map(Bill::getTotal).reduce(0, Integer::sum);
 		
-		var billReponses = bills.map(billMapper::toBillResponse).toList();
+		var billResponses = bills.map(billMapper::toBillResponse).toList();
 		
 		return ReportResponse.builder()
-				.bills(billReponses)
+				.bills(billResponses)
 				.total(total)
 				.build();
 	}

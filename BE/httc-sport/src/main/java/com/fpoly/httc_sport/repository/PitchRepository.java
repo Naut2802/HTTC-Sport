@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.fpoly.httc_sport.entity.Pitch;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface PitchRepository extends JpaRepository<Pitch, Integer>, JpaSpecificationExecutor<Pitch> {
+public interface PitchRepository extends JpaRepository<Pitch, Long>, JpaSpecificationExecutor<Pitch> {
 	Page<Pitch> findAllByIsEnabledTrue(Pageable pageable);
 }

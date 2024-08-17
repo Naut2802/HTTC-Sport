@@ -226,7 +226,7 @@ public class RentInfoService {
 		return rentInfoRepository.findByUserId(userId, pageable).stream().map(rentInfoMapper::toRentInfoResponse).toList();
 	}
 	
-	public List<RentInfoResponse> getAllRentInfoByPitchId(int pitchId, int page, int size) {
+	public List<RentInfoResponse> getAllRentInfoByPitchId(long pitchId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		return rentInfoRepository.findByPitchId(pitchId, pageable).stream().map(rentInfoMapper::toRentInfoResponse).toList();
 	}
@@ -389,7 +389,6 @@ public class RentInfoService {
 				.phoneNumber(rentInfo.getPhoneNumber())
 				.firstName(rentInfo.getFirstName())
 				.lastName(rentInfo.getLastName())
-				.createdAt(LocalDate.now())
 				.rentedAt(rentInfo.getRentedAt())
 				.startTime(rentInfo.getStartTime())
 				.endTime(rentInfo.getEndTime())

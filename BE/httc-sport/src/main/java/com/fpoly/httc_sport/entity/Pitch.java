@@ -1,8 +1,6 @@
 package com.fpoly.httc_sport.entity;
 
-import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,10 +13,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Pitch implements Serializable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+public class Pitch extends AbstractIdEntity {
 	@Column(nullable = false)
 	String pitchName;
 	@Column(nullable = false)

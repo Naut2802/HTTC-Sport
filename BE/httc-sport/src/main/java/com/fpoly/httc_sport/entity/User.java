@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(UserListener.class)
-public class User {
+public class User extends AbstractEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	String id;

@@ -6,7 +6,6 @@ import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.mapper.TransactionMapper;
 import com.fpoly.httc_sport.repository.TransactionRepository;
 import com.fpoly.httc_sport.repository.UserRepository;
-import com.fpoly.httc_sport.repository.WalletRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TransactionService {
-	WalletRepository walletRepository;
 	TransactionRepository transactionRepository;
 	TransactionMapper transactionMapper;
 	UserRepository userRepository;

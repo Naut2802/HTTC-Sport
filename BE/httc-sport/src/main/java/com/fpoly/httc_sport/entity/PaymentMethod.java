@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import com.fpoly.httc_sport.utils.Enum.PaymentMethodEnum;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Builder
@@ -15,10 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PaymentMethod {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int id;
+public class PaymentMethod extends AbstractIdEntity {
 	@Enumerated(EnumType.STRING)
 	PaymentMethodEnum method;
 	float priceRate;

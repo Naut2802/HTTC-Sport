@@ -20,8 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +46,7 @@ public class WalletService {
 			throw new AppException(ErrorCode.UNAUTHENTICATED);
 		
 		Transaction transaction = Transaction.builder()
-				.createdAt(Date.from(Instant.now()))
+				.transactionDate(LocalDateTime.now())
 				.wallet(wallet)
 				.transactionType(TransactionTypeEnum.DEPOSIT.getValue())
 				.paymentAmount(request.getPaymentAmount())
@@ -108,7 +107,7 @@ public class WalletService {
 		
 		Transaction transaction = Transaction.builder()
 				.paymentAmount(rentInfo.getTotal())
-				.createdAt(Date.from(Instant.now()))
+				.transactionDate(LocalDateTime.now())
 				.transactionType(TransactionTypeEnum.PAY.getValue())
 				.paymentStatus(true)
 				.wallet(wallet)
@@ -134,7 +133,7 @@ public class WalletService {
 		
 		Transaction transaction = Transaction.builder()
 				.paymentAmount(request.getPaymentAmount())
-				.createdAt(Date.from(Instant.now()))
+				.transactionDate(LocalDateTime.now())
 				.paymentStatus(true)
 				.transactionType(TransactionTypeEnum.ADMIN_DEPOSIT.getValue())
 				.wallet(wallet)

@@ -12,10 +12,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int id;
+public class Role extends AbstractIdEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(unique = true)
 	RoleEnum roleName;

@@ -3,7 +3,7 @@ package com.fpoly.httc_sport.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
@@ -12,11 +12,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Transaction {
+public class Transaction extends AbstractEntity {
 	@Id
 	Integer id;
 	int paymentAmount;
-	Date createdAt;
+	LocalDateTime transactionDate;
 	String transactionType;
 	@Builder.Default
 	boolean paymentStatus = false;

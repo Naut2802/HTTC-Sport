@@ -21,7 +21,7 @@ public class PitchRequest {
 	@NotNull(message = "PITCH_PRICE_NULL")
 	@Min(value = 2000, message = "PITCH_MIN_PRICE")
 	@Max(value = 10000000, message = "PITCH_MAX_PRICE")
-	int price;
+	Integer price;
 	@NotBlank(message = "PITCH_ADDRESS_NULL")
 	@NotNull(message = "PITCH_ADDRESS_NULL")
 	String street;
@@ -37,6 +37,6 @@ public class PitchRequest {
 	@NotNull(message = "PITCH_TYPE_NULL")
 	String type;
 	@NotNull(message = "PITCH_TOTAL_NULL")
-	int total;
+	Integer total;
 	List<MultipartFile> images;
 }

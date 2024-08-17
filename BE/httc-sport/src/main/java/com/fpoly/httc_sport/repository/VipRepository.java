@@ -6,6 +6,6 @@ import com.fpoly.httc_sport.entity.Vip;
 
 import java.util.Optional;
 
-public interface VipRepository extends JpaRepository<Vip, Integer> {
+public interface VipRepository extends JpaRepository<Vip, Long> {
 	Optional<Vip> findByLevel(VipEnum level);
 }

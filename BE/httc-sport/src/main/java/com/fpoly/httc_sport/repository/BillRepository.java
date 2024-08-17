@@ -8,16 +8,12 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
-import com.fpoly.httc_sport.entity.Report;
-import com.fpoly.httc_sport.entity.ReportForYear;
 
 
 public interface BillRepository extends JpaRepository<Bill, Long> {
 	List<Bill> findByUserId(String userId);
 	Page<Bill> findByUserId(String userId, Pageable pageable);
-	Page<Bill> findByPitchId(int pitchId, Pageable pageable);
+	Page<Bill> findByPitchId(Long pitchId, Pageable pageable);
 	Page<Bill> findByRentedAtBetween(LocalDate date1, LocalDate date2, Pageable pageable);
 	Page<Bill> findByIsRateTrue(Pageable pageable);
 	

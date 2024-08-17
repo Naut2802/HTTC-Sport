@@ -51,7 +51,7 @@ public class BillService {
 		return billRepository.findByUserId(userId, pageable).stream().map(billMapper::toBillResponse).toList();
 	}
 	
-	public List<BillResponse> getAllBillByPitchId(int pitchId, int page, int size) {
+	public List<BillResponse> getAllBillByPitchId(long pitchId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		return billRepository.findByPitchId(pitchId, pageable).stream().map(billMapper::toBillResponse).toList();
 	}

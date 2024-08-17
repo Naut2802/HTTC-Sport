@@ -1,10 +1,8 @@
 package com.fpoly.httc_sport.entity;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import com.fpoly.httc_sport.utils.Enum.BillStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,21 +14,13 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Bill implements Serializable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+public class Bill extends AbstractIdEntity {
 	String email;
 	String phoneNumber;
 	String firstName;
 	String lastName;
-	@Temporal(TemporalType.DATE)
-	LocalDate createdAt;
-	@Temporal(TemporalType.DATE)
 	LocalDate rentedAt;
-	@Temporal(TemporalType.TIME)
 	LocalTime startTime;
-	@Temporal(TemporalType.TIME)
 	LocalTime endTime;
 	Integer total;
 	Integer typePitch;

@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @Builder
@@ -13,10 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Address {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+public class Address extends AbstractIdEntity {
 	String street;
 	String ward;
 	String district;

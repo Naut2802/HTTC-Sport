@@ -14,10 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ChatMessage {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+public class ChatMessage extends AbstractIdEntity {
 	String senderId;
 	String message;
 	LocalDateTime timeStamp;

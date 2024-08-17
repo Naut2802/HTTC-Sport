@@ -11,10 +11,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.fpoly.httc_sport.entity.RentInfo;
 
 public interface RentInfoRepository extends JpaRepository<RentInfo, Integer> {
-	Page<RentInfo> findByPitchId(Integer pitchId, Pageable pageable);
+	Page<RentInfo> findByPitchId(Long pitchId, Pageable pageable);
 	Page<RentInfo> findByUserId(String userId, Pageable pageable);
-	List<RentInfo> findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(Integer pitchId, LocalDate date, LocalTime time, LocalTime time2);
-	List<RentInfo> findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(Integer pitchId, LocalDate date, LocalTime time, LocalTime time2);
-	List<RentInfo> findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(Integer pitchId, LocalDate date, LocalTime time, LocalTime time2);
+	List<RentInfo> findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(Long pitchId, LocalDate date, LocalTime time, LocalTime time2);
+	List<RentInfo> findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(Long pitchId, LocalDate date, LocalTime time, LocalTime time2);
+	List<RentInfo> findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(Long pitchId, LocalDate date, LocalTime time, LocalTime time2);
 	List<RentInfo> findByRentedAtLessThanAndPaymentStatusFalse(LocalDate date);
 }

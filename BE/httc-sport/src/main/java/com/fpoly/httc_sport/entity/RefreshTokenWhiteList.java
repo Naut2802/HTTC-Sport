@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,7 +18,7 @@ public class RefreshTokenWhiteList {
 	String id;
 	@Column(name = "token", nullable = false, columnDefinition = "TEXT")
 	String token;
-	Date expiryTime;
+	LocalDateTime expiryTime;
 	@Column(name = "public_key", nullable = false, columnDefinition = "TEXT")
 	String publicKey;
 	@ManyToOne @JoinColumn(name = "user_id")

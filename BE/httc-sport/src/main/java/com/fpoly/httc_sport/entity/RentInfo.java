@@ -2,7 +2,6 @@ package com.fpoly.httc_sport.entity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Random;
 import java.util.UUID;
 
 import jakarta.persistence.*;
@@ -16,18 +15,15 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RentInfo {
+public class RentInfo extends AbstractEntity {
 	@Id
 	Integer id;
 	String email;
 	String phoneNumber;
 	String firstName;
 	String lastName;
-	@Temporal(TemporalType.DATE)
 	LocalDate rentedAt;
-	@Temporal(TemporalType.TIME)
 	LocalTime startTime;
-	@Temporal(TemporalType.TIME)
 	LocalTime endTime;
 	int total;
 	@Builder.Default

@@ -62,7 +62,7 @@ public class PitchService {
 	}
 	
 	@Transactional
-	public PitchDetailsResponse updatePitch(int id, PitchRequest request) throws Exception {
+	public PitchDetailsResponse updatePitch(long id, PitchRequest request) throws Exception {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
@@ -85,7 +85,7 @@ public class PitchService {
 		return pitchMapper.toPitchDetailsResponse(pitchRepository.save(pitch));
 	}
 	
-	public PitchResponse deleteImageFromPitch(int id, String publicId) throws Exception {
+	public PitchResponse deleteImageFromPitch(long id, String publicId) throws Exception {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
@@ -100,7 +100,7 @@ public class PitchService {
 		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
 	}
 	
-	public String deletePitch(int id) throws Exception {
+	public String deletePitch(long id) {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
@@ -113,7 +113,7 @@ public class PitchService {
 		return "Ngưng hoạt động sân thành công";
 	}
 	
-	public String activePitch(int id) throws Exception {
+	public String activePitch(long id) {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
@@ -126,7 +126,7 @@ public class PitchService {
 		return "Kích hoạt sân thành công";
 	}
 	
-	public PitchDetailsResponse getPitch(int id) {
+	public PitchDetailsResponse getPitch(long id) {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		

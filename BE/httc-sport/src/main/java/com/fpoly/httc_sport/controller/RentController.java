@@ -50,7 +50,7 @@ public class RentController {
 	
 	@Operation(summary = "Api exchange rent-info to bill",
 			description = "Admin use this api to exchange a rent-info to bill")
-	@PostMapping("/rent-info-to-bill/{id}")
+	@PostMapping("rent-info-to-bill/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<?> exchangeRentInfoToBill(@PathVariable int id) {
 		log.info("[Rent Controller - Exchange a rent info to bill] Admin exchanging a rent info to bill");
@@ -71,7 +71,7 @@ public class RentController {
 	}
 	
 	@Operation(summary = "Api get all rent-info with user-id")
-	@GetMapping("/get-all-by-user/{userId}")
+	@GetMapping("get-all-by-user/{userId}")
 	ApiResponse<List<RentInfoResponse>> getAllRentInfoByUser(@PathVariable String userId,
 				@RequestParam(defaultValue = "0") int page,
 				@RequestParam(defaultValue = "5") int size) {
@@ -92,7 +92,7 @@ public class RentController {
 	}
 	
 	@Operation(summary = "Api get all rent-info by pitch-id", description = "Admin use this api")
-	@GetMapping("/get-all-by-pitch/{pitchId}")
+	@GetMapping("get-all-by-pitch/{pitchId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<RentInfoResponse>> getAllRentInfoByPitch(@PathVariable long pitchId,
 	                                                          @RequestParam(defaultValue = "0") int page,

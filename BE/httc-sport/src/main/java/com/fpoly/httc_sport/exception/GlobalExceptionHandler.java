@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 	}
 	
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)
-	ResponseEntity<ApiResponse<?>> handlingValidation(MethodArgumentNotValidException exception) {
+	ResponseEntity<ApiResponse<?>> validationExceptionHandling(MethodArgumentNotValidException exception) {
 		String key = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
 		ErrorCode errorCode = ErrorCode.INVALID_KEY;
 		Map attributes = null;
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(errorCode.getStatusCode())
 				.body(ApiResponse.builder()
 						.code(errorCode.getCode())
-						.message("Lỗi hệ thống")
+						.message(errorCode.getMessage())
 						.build());
 	}
 	

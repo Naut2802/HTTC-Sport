@@ -9,10 +9,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,9 +33,44 @@ public class TransactionController {
 	@Operation(summary = "Get transactions by admin")
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<List<TransactionResponse>> getAllTransactions() {
+	ApiResponse<List<TransactionResponse>> getAllTransactions(@RequestParam(defaultValue = "0") int page,
+	                                                          @RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<TransactionResponse>>builder()
-				.result(transactionService.getAllTransactions())
+				.result(transactionService.getAllTransactions(page, size))
+				.build();
+	}
+	
+	@Operation(summary = "Get transactions with fromDate and toDate", description = "Api for admin")
+	@GetMapping("{userId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<List<TransactionResponse>> getAllTransactionsByDate(@RequestParam LocalDate fromDate,
+	                                                                @RequestParam LocalDate toDate,
+	                                                                @RequestParam(defaultValue = "0") int page,
+	                                                                @RequestParam(defaultValue = "5") int size) {
+		return ApiResponse.<List<TransactionResponse>>builder()
+				.result(transactionService.getAllTransactionsByDate(fromDate, toDate, page, size))
+				.build();
+	}
+	
+	@Operation(summary = "Get transactions by user")
+	@GetMapping("{userId}")
+	ApiResponse<List<TransactionResponse>> getAllTransactionsByUser(@PathVariable String userId,
+	                                                          @RequestParam(defaultValue = "0") int page,
+	                                                          @RequestParam(defaultValue = "5") int size) {
+		return ApiResponse.<List<TransactionResponse>>builder()
+				.result(transactionService.getAllTransactionsByUser(userId, page, size))
+				.build();
+	}
+	
+	@Operation(summary = "Get transactions with fromDate and toDate by user")
+	@GetMapping("{userId}")
+	ApiResponse<List<TransactionResponse>> getAllTransactionsByUserAndDate(@PathVariable String userId,
+	                                                          @RequestParam LocalDate fromDate,
+	                                                          @RequestParam LocalDate toDate,
+	                                                          @RequestParam(defaultValue = "0") int page,
+	                                                          @RequestParam(defaultValue = "5") int size) {
+		return ApiResponse.<List<TransactionResponse>>builder()
+				.result(transactionService.getAllTransactionsByUserAndDate(userId, fromDate, toDate, page, size))
 				.build();
 	}
 }

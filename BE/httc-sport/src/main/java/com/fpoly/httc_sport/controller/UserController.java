@@ -155,7 +155,7 @@ public class UserController {
 	}
 	
 	@Operation(summary = "Api active a user by user-id", description = "Admin use this api")
-	@PatchMapping("/active/{userId}")
+	@PatchMapping("active/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<String> activeUser(@PathVariable String userId) {
 		log.info("[User Controller - Admin active user api] Deactivate a user with user-id: {}", userId);

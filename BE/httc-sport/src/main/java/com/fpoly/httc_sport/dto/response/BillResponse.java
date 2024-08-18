@@ -22,7 +22,6 @@ public class BillResponse {
 	String phoneNumber;
 	String firstName;
 	String lastName;
-	LocalDate createdAt;
 	LocalDate rentedAt;
 	LocalTime startTime;
 	LocalTime endTime;

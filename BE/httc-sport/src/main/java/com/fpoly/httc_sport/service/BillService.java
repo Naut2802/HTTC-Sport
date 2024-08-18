@@ -41,18 +41,28 @@ public class BillService {
 		billRepository.save(bill);
 	}
 	
-	public List<BillResponse> getAllBill(int page, int size) {
+	public List<BillResponse> getAllBills(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		return billRepository.findAll(pageable).stream().map(billMapper::toBillResponse).toList();
 	}
 	
-	public List<BillResponse> getAllBillByUserId(String userId, int page, int size) {
+	public List<BillResponse> getAllBillsByUserId(String userId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		return billRepository.findByUserId(userId, pageable).stream().map(billMapper::toBillResponse).toList();
 	}
 	
-	public List<BillResponse> getAllBillByPitchId(long pitchId, int page, int size) {
+	public List<BillResponse> getAllBillsByPitchId(long pitchId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		return billRepository.findByPitchId(pitchId, pageable).stream().map(billMapper::toBillResponse).toList();
+	}
+	
+	public List<BillResponse> getAllRatedBillsByUser(String userId, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return billRepository.findByUserIdAndIsRateTrue(userId, pageable).stream().map(billMapper::toBillResponse).toList();
+	}
+	
+	public List<BillResponse> getAllRatedBills(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return billRepository.findByIsRateTrue(pageable).stream().map(billMapper::toBillResponse).toList();
 	}
 }

@@ -81,7 +81,7 @@ public class ReviewService {
 		return reviewMapper.toReviewResponse(review);
 	}
 	
-	public List<ReviewResponse> getAllReviewByUser(String userId, int page, int size) {
+	public List<ReviewResponse> getAllReviewsByUser(String userId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		
 		return reviewRepository.findByUserId(userId, pageable).stream().map(reviewMapper::toReviewResponse).toList();

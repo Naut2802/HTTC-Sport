@@ -23,44 +23,64 @@ import java.util.List;
 public class BillController {
 	BillService billService;
 	
-	@Operation(summary = "Get all bill with user-id")
-	@GetMapping("/get-all-by-user/{userId}")
-	ApiResponse<List<BillResponse>> getAllBillByUser(@PathVariable String userId,
+	@Operation(summary = "Get all bills with user-id")
+	@GetMapping("get-all-bills-by-user/{userId}")
+	ApiResponse<List<BillResponse>> getAllBillsByUser(@PathVariable String userId,
 	                              @RequestParam(defaultValue = "0") int page,
 	                              @RequestParam(defaultValue = "5") int size) {
 		log.info("[Bill Controller - Admin get all bills with user-id] Admin get all bills with user id: {}", userId);
-		var response = billService.getAllBillByUserId(userId, page, size);
-		log.info("[Bill Controller - Admin get all bill with user-id] total bills: {}", response.size());
+		var response = billService.getAllBillsByUserId(userId, page, size);
+		log.info("[Bill Controller - Admin get all bills with user-id] total bills: {}", response.size());
 		return ApiResponse.<List<BillResponse>>builder()
 				.result(response)
 				.build();
 	}
 	
-	@Operation(summary = "Get all bill for admin")
+	@Operation(summary = "Get all bills for admin")
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<List<BillResponse>> getAllBill(
+	ApiResponse<List<BillResponse>> getAllBills(
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "5") int size) {
 		log.info("[Bill Controller - Admin get all bills] Admin get all bills");
-		var response = billService.getAllBill(page, size);
+		var response = billService.getAllBills(page, size);
 		log.info("[Bill Controller - Admin get all bills] total bills: {}", response.size());
 		return ApiResponse.<List<BillResponse>>builder()
 				.result(response)
 				.build();
 	}
 	
-	@Operation(summary = "Get all bill with pitch-id", description = "Api for admin")
-	@GetMapping("/get-all-by-pitch/{pitchId}")
+	@Operation(summary = "Get all bills with pitch-id", description = "Api for admin")
+	@GetMapping("get-all-bills-by-pitch/{pitchId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<List<BillResponse>> getAllBillByPitch(@PathVariable long pitchId,
+	ApiResponse<List<BillResponse>> getAllBillsByPitch(@PathVariable long pitchId,
 	                                 @RequestParam(defaultValue = "0") int page,
 	                                 @RequestParam(defaultValue = "5") int size) {
 		log.info("[Bill Controller - Admin get all bills with pitch-id] Admin get all bills with pitch-id: {}", pitchId);
-		var response = billService.getAllBillByPitchId(pitchId, page, size);
+		var response = billService.getAllBillsByPitchId(pitchId, page, size);
 		log.info("[Bill Controller - Admin get all bills with pitch-id] total bills: {}", response.size());
 		return ApiResponse.<List<BillResponse>>builder()
 				.result(response)
+				.build();
+	}
+	
+	@Operation(summary = "Get all rated bill by user")
+	@GetMapping("get-all-rated-bills-by-user/{userId}")
+	ApiResponse<List<BillResponse>> getAllRatedBillsByUser(@PathVariable String userId,
+	                                                 @RequestParam(defaultValue = "0") int page,
+	                                                 @RequestParam(defaultValue = "5") int size) {
+		return ApiResponse.<List<BillResponse>>builder()
+				.result(billService.getAllRatedBillsByUser(userId, page, size))
+				.build();
+	}
+	
+	@Operation(summary = "Get all rated bill", description = "Api for admin")
+	@GetMapping("get-all-rated-bills")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<List<BillResponse>> getAllRatedBills(@RequestParam(defaultValue = "0") int page,
+	                                                 @RequestParam(defaultValue = "5") int size) {
+		return ApiResponse.<List<BillResponse>>builder()
+				.result(billService.getAllRatedBills(page, size))
 				.build();
 	}
 }

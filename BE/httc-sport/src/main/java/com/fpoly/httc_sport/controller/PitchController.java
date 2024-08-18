@@ -66,7 +66,7 @@ public class PitchController {
 	}
 	
 	@Operation(summary = "Api active pitch", description = "Admin use this api to active a pitch")
-	@PatchMapping("/active/{id}")
+	@PatchMapping("active/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<PitchResponse> activePitch(@PathVariable long id) {
 		log.info("[Pitch Controller - Active pitch api] Admin active a pitch with id: {}", id);

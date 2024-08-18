@@ -41,12 +41,12 @@ public class ReviewController {
 	}
 	
 	@Operation(summary = "Api get reviews by user-id")
-	@GetMapping("/get-all-by-user/{userId}")
-	ApiResponse<List<ReviewResponse>> getAllReviewByUser(@PathVariable String userId,
+	@GetMapping("get-all-reviews-by-user/{userId}")
+	ApiResponse<List<ReviewResponse>> getAllReviewsByUser(@PathVariable String userId,
 	                                                     @RequestParam(defaultValue = "0") int page,
 	                                                     @RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<ReviewResponse>>builder()
-				.result(reviewService.getAllReviewByUser(userId, page, size))
+				.result(reviewService.getAllReviewsByUser(userId, page, size))
 				.build();
 	}
 }

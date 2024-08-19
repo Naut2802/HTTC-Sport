@@ -1,6 +1,7 @@
 package com.fpoly.httc_sport.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fpoly.httc_sport.utils.Enum.PaymentMethodEnum;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -33,4 +34,5 @@ public class RentInfoResponse {
 	int typePitch;
 	Boolean isDone;
 	Boolean paymentStatus;
+	PaymentMethodEnum paymentMethod;
 }

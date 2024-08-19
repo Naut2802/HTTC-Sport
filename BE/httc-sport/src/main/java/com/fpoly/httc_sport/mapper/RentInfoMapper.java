@@ -15,6 +15,7 @@ public interface RentInfoMapper {
 	
 	@Mapping(source = "pitch.id", target = "pitchId")
 	@Mapping(source = "pitch.pitchName", target = "pitchName")
+	@Mapping(source = "paymentMethod.method", target = "paymentMethod")
 	RentInfoResponse toRentInfoResponse(RentInfo rentInfo);
 	
 	void updateRentInfo(@MappingTarget RentInfo rentInfo, RentInfoUpdateRequest request);

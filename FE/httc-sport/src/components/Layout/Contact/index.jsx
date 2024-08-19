@@ -66,7 +66,7 @@ export default function Contact() {
                                         variant="text"
                                         startIcon={<RoomIcon />}
                                         component={Link}
-                                        to="https://www.facebook.com/ton.le.1656"
+                                        to="https://www.google.com/maps/place/Tr%C6%B0%E1%BB%9Dng+Cao+%C4%91%E1%BA%B3ng+FPT+Polytechnic/@10.853922,106.626773,17z/data=!4m6!3m5!1s0x31752b6c59ba4c97:0x535e784068f1558b!8m2!3d10.8537829!4d106.6260569!16s%2Fg%2F11v5ywmcf8?hl=vi&entry=ttu"
                                     >
                                         <span className="text-capitalize">
                                             Công viên phần mềm Quang Trung, P. Tân Chánh Hiệp, Q.12, TP.HCM, Việt Nam

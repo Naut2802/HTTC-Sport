@@ -74,6 +74,24 @@ export const handleActiveUserAdmin = async (userId, data) => {
     return await authorizedAxiosInstance.patch(`${API_ROOT}/api/v1/user/active/${userId}`, data);
 };
 
+export const handleTopUpUser = async (data) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/wallet/top-up`, data);
+};
+
+export const handleCreatePaymentLinkWallet = async (id) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/payment/user-top-up/${id}`);
+};
+
+export const handleConfirmTransaction = async (code, id, status) => {
+    return await authorizedAxiosInstance.post(
+        `${API_ROOT}/api/v1/wallet/confirm-transaction?code=${code}&id=${id}&status=${status}`,
+    );
+};
+
+export const handleGetTransactionsByUser = async (userId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/transaction/${userId}`);
+};
+
 // ----------------------------------PITCH API--------------------------------------
 
 export const handleGetPitchesAdmin = async () => {

@@ -15,7 +15,6 @@ function formatCurrency(amount) {
 }
 export default function TableTransaction() {
     const [transaction, setTransaction] = useState([]);
-    const index = transaction;
     useEffect(() => {
         const fetchData = async () => {
             const responseUser = await handleGetMyInfoAPI();

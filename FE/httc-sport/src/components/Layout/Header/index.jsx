@@ -47,17 +47,18 @@ export default function Header() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await handleGetMyInfoAPI();
-                // console.log(response.data.result.wallet.money);
-                const moneyWallet = response.data.result.wallet.money;
-                setMoney(moneyWallet);
-            } catch (error) {
-                console.error('Lỗi đỗ dữ liệu: ', error);
+            if (checkUser) {
+                try {
+                    const response = await handleGetMyInfoAPI();
+                    const moneyWallet = response.data.result.wallet.money;
+                    setMoney(moneyWallet);
+                } catch (error) {
+                    console.error('Lỗi đổ dữ liệu: ', error);
+                }
             }
         };
         fetchData();
-    }, []);
+    }, [checkUser]);
 
     const handleLogOut = async () => {
         await handleLogoutAPI();

@@ -65,7 +65,7 @@ public class RentInfoService {
 			return RentResponse.builder().message("Đặt sân thất bại, năm đặt không hợp lệ").build();
 		} else if (request.getRentedAt().getYear() == dateNow.getYear()) {
 			if (request.getRentedAt().getDayOfYear() < dateNow.getDayOfYear())
-				return RentResponse.builder().message("Đặt sân thất bại, ngày đặt không hợp lệ").build();;
+				return RentResponse.builder().message("Đặt sân thất bại, ngày đặt không hợp lệ").build();
 			
 			if (request.getRentedAt().getDayOfYear() == dateNow.getDayOfYear())
 				if (timeNow.isAfter(startTime))
@@ -176,6 +176,7 @@ public class RentInfoService {
 				.id(rentInfo.getId())
 				.deposit(rentInfo.getDeposit())
 				.total(rentInfo.getTotal())
+				.isRentSuccess(true)
 				.message("Đặt sân thành công")
 				.build();
 	}
@@ -213,6 +214,7 @@ public class RentInfoService {
 				.total(rentInfo.getTotal())
 				.deposit(rentInfo.getDeposit())
 				.message("Thanh toán đặt cọc thành công, vui lòng kiểm tra thông tin đặt sân được gửi qua Email")
+				.isRentSuccess(true)
 				.build();
 	}
 

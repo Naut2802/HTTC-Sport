@@ -22,33 +22,25 @@ import java.util.List;
 public class TransactionController {
 	TransactionService transactionService;
 	
-	@Operation(summary = "Get transactions by user")
-	@GetMapping("{userId}")
-	ApiResponse<List<TransactionResponse>> getTransactionsByUser(@PathVariable String userId) {
-		return ApiResponse.<List<TransactionResponse>>builder()
-				.result(transactionService.getAllByUser(userId))
-				.build();
-	}
-	
 	@Operation(summary = "Get transactions by admin")
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<TransactionResponse>> getAllTransactions(@RequestParam(defaultValue = "0") int page,
 	                                                          @RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<TransactionResponse>>builder()
-				.result(transactionService.getAllTransactions(page, size))
+				.result(transactionService.getAll(page, size))
 				.build();
 	}
 	
 	@Operation(summary = "Get transactions with fromDate and toDate", description = "Api for admin")
-	@GetMapping("{userId}")
+	@GetMapping("get-all-by-date")
 	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<List<TransactionResponse>> getAllTransactionsByDate(@RequestParam LocalDate fromDate,
 	                                                                @RequestParam LocalDate toDate,
 	                                                                @RequestParam(defaultValue = "0") int page,
 	                                                                @RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<TransactionResponse>>builder()
-				.result(transactionService.getAllTransactionsByDate(fromDate, toDate, page, size))
+				.result(transactionService.getAllByDate(fromDate, toDate, page, size))
 				.build();
 	}
 	
@@ -58,19 +50,19 @@ public class TransactionController {
 	                                                          @RequestParam(defaultValue = "0") int page,
 	                                                          @RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<TransactionResponse>>builder()
-				.result(transactionService.getAllTransactionsByUser(userId, page, size))
+				.result(transactionService.getAllByUser(userId, page, size))
 				.build();
 	}
 	
 	@Operation(summary = "Get transactions with fromDate and toDate by user")
-	@GetMapping("{userId}")
+	@GetMapping("get-all-by-user-and-date/{userId}")
 	ApiResponse<List<TransactionResponse>> getAllTransactionsByUserAndDate(@PathVariable String userId,
 	                                                          @RequestParam LocalDate fromDate,
 	                                                          @RequestParam LocalDate toDate,
 	                                                          @RequestParam(defaultValue = "0") int page,
 	                                                          @RequestParam(defaultValue = "5") int size) {
 		return ApiResponse.<List<TransactionResponse>>builder()
-				.result(transactionService.getAllTransactionsByUserAndDate(userId, fromDate, toDate, page, size))
+				.result(transactionService.getAllByUserAndDate(userId, fromDate, toDate, page, size))
 				.build();
 	}
 }

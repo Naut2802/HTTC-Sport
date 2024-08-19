@@ -2,7 +2,7 @@
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Box, Button, Container, Grid, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import slugify from 'slugify'; // Import slugify nè
@@ -10,7 +10,8 @@ import slugify from 'slugify'; // Import slugify nè
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import { handleLogoutAPI } from '~/apis';
+import { handleGetMyInfoAPI, handleLogoutAPI } from '~/apis';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 import LoginWithModal from '~/components/Account/LoginWithModal';
 import Popup from '../Popup';
@@ -19,11 +20,22 @@ const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mản
 const settings = ['Tài Khoản', 'Thông Tin Đặt Sân', 'Lịch Sử Giao Dịch']; //Mảng dòng của cái avatar click ra nè
 const vi = ['Nạp Tiền', 'Lịch Sử Giao Dịch Ví'];
 
+function formatCurrency(amount) {
+    if (amount == null || isNaN(amount)) {
+        return '0 ₫';
+    }
+    return Number(amount).toLocaleString('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+}
+
 export default function Header() {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const [ViElUser, setViUser] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
+    const [ViElUser, setViUser] = useState(null);
+    const [money, setMoney] = useState(null);
     const navigate = useNavigate();
 
     const checkRole = localStorage.getItem('role');
@@ -32,6 +44,21 @@ export default function Header() {
     if (checkUserInStorage) {
         checkUser = checkUserInStorage;
     }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (checkUser) {
+                try {
+                    const response = await handleGetMyInfoAPI();
+                    const moneyWallet = response.data.result.wallet.money;
+                    setMoney(moneyWallet);
+                } catch (error) {
+                    console.error('Lỗi đổ dữ liệu: ', error);
+                }
+            }
+        };
+        fetchData();
+    }, [checkUser]);
 
     const handleLogOut = async () => {
         await handleLogoutAPI();
@@ -245,8 +272,16 @@ export default function Header() {
                                 open={Boolean(ViElUser)}
                                 onClose={handleCloseVi}
                             >
-                                <Typography component="div" className="container text-decoration-none text-dark mx-1">
-                                    Số Dư : 3.000.000
+                                <Typography
+                                    component="div"
+                                    className="container text-decoration-none text-dark mx-2 my-2 d-flex "
+                                >
+                                    <Typography component="div" className="align-items-center">
+                                        <AttachMoneyIcon />:
+                                    </Typography>
+                                    <Typography component="div" className="align-items-center fs-6 mx-2">
+                                        {formatCurrency(money)}
+                                    </Typography>
                                 </Typography>
                                 {vi.map((vi) => (
                                     <MenuItem key={vi} onClick={handleCloseUserMenu}>

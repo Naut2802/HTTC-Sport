@@ -32,6 +32,9 @@ import PitchList from './components/Pitch/PitchList';
 import UserBills from './components/User/UserBills';
 import UserInfo from './components/User/UserInfo';
 import UserRentInfo from './components/User/UserRentInfo';
+import Payment from './components/Wallet/Payment';
+import PaymentErrorTransaction from './components/Wallet/Payment/PaymentErrorTransaction';
+import PaymentSuccessTransaction from './components/Wallet/Payment/PaymentSuccessTransaction';
 
 //ADMIN
 import AddPitch from './components/Admin/AddPitch';
@@ -39,6 +42,7 @@ import ListPitchs from './components/Admin/ListPitchs';
 import ListUsers from './components/Admin/ListUsers';
 import RentInfo from './components/Admin/RentInfo';
 import Statistics from './components/Admin/Statistics';
+import TableTransaction from './components/Wallet/TableTransaction';
 
 const ProtectedRoute = () => {
     const user = localStorage.getItem('accessToken');
@@ -63,6 +67,8 @@ function App() {
             <Route path="/forgot-password/reset-password" element={<ResetPassword />} />
             <Route path="/payment/rent/success" element={<PaymentSuccess />} />
             <Route path="/payment/rent/error" element={<PaymentError />} />
+            <Route path="/payment/deposit/success" element={<PaymentSuccessTransaction />} />
+            <Route path="/payment/deposit/error" element={<PaymentErrorTransaction />} />
             <Route element={<UserHomePage />}>
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -71,6 +77,8 @@ function App() {
                 <Route path="/lien-he" element={<Contact />} />
                 <Route path="/san-bong" element={<PitchList />} />
                 <Route path="/chi-tiet-san/:id" element={<PitchDetail />} />
+                <Route path="/nap-tien" element={<Payment />} />
+                <Route path="/lich-su-giao-dich-vi" element={<TableTransaction />} />
             </Route>
 
             <Route element={<ProtectedRoute />}>

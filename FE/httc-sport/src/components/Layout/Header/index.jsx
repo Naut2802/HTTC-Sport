@@ -34,8 +34,9 @@ export default function Header() {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
-    const [ViElUser, setViUser] = useState(null);
+    const [ViUser, setViUser] = useState(null);
     const [money, setMoney] = useState(null);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
     const checkRole = localStorage.getItem('role');
@@ -51,6 +52,9 @@ export default function Header() {
                 try {
                     const response = await handleGetMyInfoAPI();
                     const moneyWallet = response.data.result.wallet.money;
+                    const dataUser = response.data.result;
+                    console.log(dataUser);
+                    setUser(dataUser);
                     setMoney(moneyWallet);
                 } catch (error) {
                     console.error('Lỗi đổ dữ liệu: ', error);
@@ -248,7 +252,10 @@ export default function Header() {
                             Đăng nhập
                         </Button>
                     ) : (
-                        <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
+                        <Box sx={{ flexGrow: 0, marginLeft: 2 }} className="d-flex">
+                            <Typography component="div" className="text-dark">
+                                Xin Chào : {user?.lastName} {user?.firstName}
+                            </Typography>
                             <Tooltip title="Ví" className="mx-4">
                                 <IconButton sx={{ p: 0 }} onClick={handleOpenVi}>
                                     <Typography sx={{ color: '#5A5A5A' }}>
@@ -259,7 +266,7 @@ export default function Header() {
                             <Menu
                                 sx={{ mt: '45px' }}
                                 id="menu-appbar"
-                                anchorEl={ViElUser}
+                                anchorEl={ViUser}
                                 anchorOrigin={{
                                     vertical: 'top',
                                     horizontal: 'right',
@@ -269,7 +276,7 @@ export default function Header() {
                                     vertical: 'top',
                                     horizontal: 'right',
                                 }}
-                                open={Boolean(ViElUser)}
+                                open={Boolean(ViUser)}
                                 onClose={handleCloseVi}
                             >
                                 <Typography

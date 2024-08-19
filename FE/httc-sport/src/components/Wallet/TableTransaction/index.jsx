@@ -1,5 +1,6 @@
 import { Breadcrumbs, Grid, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -39,7 +40,13 @@ export default function TableTransaction() {
     }));
     const columns = [
         { field: 'indexId', headerName: 'ID', flex: 1, minWidth: 100 },
-        { field: 'transactionDate', headerName: 'Ngày thanh toán', flex: 1, minWidth: 350 },
+        {
+            field: 'transactionDate',
+            headerName: 'Ngày thanh toán',
+            flex: 1,
+            minWidth: 350,
+            renderCell: (params) => format(new Date(params.value), 'dd/MM/yyyy'),
+        },
         {
             field: 'paymentAmount',
             headerName: 'Số tiền',
@@ -49,7 +56,7 @@ export default function TableTransaction() {
                 return <div>{formatCurrency(params.value)}</div>;
             },
         },
-        { field: 'transactionType', headerName: 'Hoạt động', flex: 2, minWidth: 200 },
+        { field: 'transactionType', headerName: 'Loại Giao Dịch', flex: 2, minWidth: 200 },
         {
             field: 'paymentStatus',
             headerName: 'Trạng thái',

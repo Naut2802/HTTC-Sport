@@ -65,6 +65,7 @@ public enum ErrorCode {
 	RENT_INFO_NOT_EXISTED(1004, "Không tìm thấy thông tin đặt sân", HttpStatus.NOT_FOUND),
 	RENT_INFO_PAY_REMAINING_USER_NOT_FOUND(1004, "Không tìm thông tin tài khoản hợp lệ để thanh toán qua ví", HttpStatus.NOT_FOUND),
 	UNPAID(1004, "Thông tin đặt sân này chưa được thanh toán tiền cọc", HttpStatus.NOT_ACCEPTABLE),
+	PAID(1004, "Thông tin đặt sân này đã được thanh toán", HttpStatus.NOT_ACCEPTABLE),
 	PAYMENT_METHOD_NOT_EXISTED(1005, "Phương thức thanh toán không hợp lệ", HttpStatus.NOT_FOUND),
 	PAYMENT_METHOD_INVALID(1005, "Vui lòng đăng nhập hoặc nhập đúng email đã đăng ký tài khoản để thanh toán thông qua ví", HttpStatus.BAD_REQUEST),
 	PAYMENT_NOT_EXISTED(1005, "Thông tin thanh toán không hợp lệ", HttpStatus.NOT_FOUND),

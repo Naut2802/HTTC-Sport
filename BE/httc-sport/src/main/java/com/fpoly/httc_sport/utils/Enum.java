@@ -38,15 +38,11 @@ public final class Enum {
 		private final float discountRate;
 	}
 	
-	@Getter
-	@AllArgsConstructor
 	public enum TransactionTypeEnum {
-		ADMIN_DEPOSIT("Admin nạp tiền vào ví"),
-		DEPOSIT("Nạp tiền vào ví"),
-		PAY("Thanh toán đặt sân"),
-		PAY_REMAINING("Thanh toán tiền đặt sân còn lại");
-		
-		private final String value;
+		ADMIN_ADD_MONEY_TO_USER,
+		USER_DEPOSIT,
+		RENT_PAY,
+		RENT_PAY_REMAINING
 	}
 	
 }

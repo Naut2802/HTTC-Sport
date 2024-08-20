@@ -392,6 +392,9 @@ public class RentInfoService {
 		if (!rentInfo.getPaymentStatus())
 			throw new AppException(ErrorCode.UNPAID);
 		
+		if (rentInfo.getTotal() == rentInfo.getDeposit())
+			throw new AppException(ErrorCode.PAID);
+		
 		var _paymentMethod = paymentMethodRepository.findByMethod(PaymentMethodEnum.valueOf(paymentMethod)).orElseThrow(
 				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
 		);
@@ -467,8 +470,7 @@ public class RentInfoService {
 				.paymentMethod(paymentMethod)
 				.build();
 		
-		rentInfo.setIsDone(true);
-		rentInfoRepository.save(rentInfo);
+		rentInfoRepository.delete(rentInfo);
 		billService.createBill(bill);
 		
 		return RentResponse.builder()
@@ -491,7 +493,9 @@ public class RentInfoService {
 		if (!rentInfo.getPaymentStatus())
 			throw new AppException(ErrorCode.UNPAID);
 		
-		var paymentMethod = paymentMethodRepository.findByMethod(PaymentMethodEnum.CASH).orElseThrow(
+		var paymentMethod = rentInfo.getPaymentMethod().getMethod().equals(PaymentMethodEnum.WALLET) ?
+				rentInfo.getPaymentMethod() :
+				paymentMethodRepository.findByMethod(PaymentMethodEnum.CASH).orElseThrow(
 				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
 		);
 		
@@ -511,8 +515,7 @@ public class RentInfoService {
 				.paymentMethod(paymentMethod)
 				.build();
 		
-		rentInfo.setIsDone(true);
-		rentInfoRepository.save(rentInfo);
+		rentInfoRepository.delete(rentInfo);
 		billService.createBill(bill);
 	}
 }

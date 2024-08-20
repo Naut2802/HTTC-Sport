@@ -48,7 +48,7 @@ public class WalletService {
 		Transaction transaction = Transaction.builder()
 				.transactionDate(LocalDateTime.now())
 				.wallet(wallet)
-				.transactionType(TransactionTypeEnum.DEPOSIT.getValue())
+				.transactionType(TransactionTypeEnum.USER_DEPOSIT)
 				.paymentAmount(request.getPaymentAmount())
 				.build();
 		
@@ -108,10 +108,9 @@ public class WalletService {
 		Transaction transaction = Transaction.builder()
 				.paymentAmount(rentInfo.getTotal())
 				.transactionDate(LocalDateTime.now())
-				.transactionType(TransactionTypeEnum.PAY.getValue())
+				.transactionType(TransactionTypeEnum.RENT_PAY)
 				.paymentStatus(true)
 				.wallet(wallet)
-				.rentInfo(rentInfo)
 				.build();
 		
 		rentInfo.setTransaction(transaction);
@@ -131,10 +130,9 @@ public class WalletService {
 		Transaction transaction = Transaction.builder()
 				.paymentAmount(rentInfo.getTotal())
 				.transactionDate(LocalDateTime.now())
-				.transactionType(TransactionTypeEnum.PAY_REMAINING.getValue())
+				.transactionType(TransactionTypeEnum.RENT_PAY_REMAINING)
 				.paymentStatus(true)
 				.wallet(wallet)
-				.rentInfo(rentInfo)
 				.build();
 		
 		rentInfo.setTransaction(transaction);
@@ -158,7 +156,7 @@ public class WalletService {
 				.paymentAmount(request.getPaymentAmount())
 				.transactionDate(LocalDateTime.now())
 				.paymentStatus(true)
-				.transactionType(TransactionTypeEnum.ADMIN_DEPOSIT.getValue())
+				.transactionType(TransactionTypeEnum.ADMIN_ADD_MONEY_TO_USER)
 				.wallet(wallet)
 				.build();
 		

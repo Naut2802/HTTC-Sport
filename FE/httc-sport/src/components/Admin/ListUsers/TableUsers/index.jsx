@@ -119,6 +119,11 @@ export default function TableUsers({ dataUserTable }) {
                 rows={users}
                 columns={columns}
                 pageSize={5}
+                initialState={{
+                    pagination: {
+                        paginationModel: { page: 0, pageSize: 5 },
+                    },
+                }}
                 rowsPerPageOptions={[5, 10, 20, 50, 100]}
                 getRowId={(row) => row.id}
             />

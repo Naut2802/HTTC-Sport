@@ -150,6 +150,11 @@ export default function TableRentInfo({ userId }) {
                 columns={columns}
                 getRowId={(rows) => rows.id}
                 pageSizeOptions={[5, 10, 20, 50, 100]}
+                initialState={{
+                    pagination: {
+                        paginationModel: { page: 0, pageSize: 5 },
+                    },
+                }}
             />
             <Popup openPopup={openPopupDetail} setOpenPopup={setOpenPopupDetail}>
                 <Grid container>

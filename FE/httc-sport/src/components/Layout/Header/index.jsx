@@ -53,7 +53,6 @@ export default function Header() {
                     const response = await handleGetMyInfoAPI();
                     const moneyWallet = response.data.result.wallet.money;
                     const dataUser = response.data.result;
-                    console.log(dataUser);
                     setUser(dataUser);
                     setMoney(moneyWallet);
                 } catch (error) {

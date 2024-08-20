@@ -82,9 +82,9 @@ export const handleCreatePaymentLinkWallet = async (id) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/payment/user-top-up/${id}`);
 };
 
-export const handleConfirmTransaction = async (code, id, status) => {
+export const handleConfirmTransaction = async (code,orderCode, status) => {
     return await authorizedAxiosInstance.post(
-        `${API_ROOT}/api/v1/wallet/confirm-transaction?code=${code}&id=${id}&status=${status}`,
+        `${API_ROOT}/api/v1/wallet/confirm-transaction?code=${code}&orderCode=${orderCode}&status=${status}`,
     );
 };
 

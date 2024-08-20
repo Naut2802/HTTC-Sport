@@ -244,7 +244,7 @@ public class RentInfoService {
 		return rentInfoMapper.toRentInfoResponse(rentInfo);
 	}
 
-	public RentInfoResponse updateRentInfo(int id, RentInfoUpdateRequest request) {
+	public RentInfoResponse updateRentInfo(int id, int rentTime) {
 		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
@@ -253,7 +253,7 @@ public class RentInfoService {
 			throw new AppException(ErrorCode.RENT_INFO_EXCHANGED);
 		
 		LocalTime startTime = rentInfo.getStartTime();
-		LocalTime endTime = rentInfo.getEndTime().plusMinutes(request.getRentTime());
+		LocalTime endTime = rentInfo.getEndTime().plusMinutes(rentTime);
 		LocalDate dateNow = LocalDate.now();
 		LocalTime timeNow = LocalTime.now();
 		LocalTime startStopTime = LocalTime.of(23, 59);
@@ -275,10 +275,10 @@ public class RentInfoService {
 			throw new DateTimeException("Đặt sân thất bại, sân bóng không hoạt động trong khoảng thời gian này");
 		
 		int stepHour = 0;
-		int time = request.getRentTime();
+		int time = rentTime;
 		
 		while (time > 0) {
-			stepHour = request.getRentTime() - time;
+			stepHour = rentTime - time;
 			if (startTime.plusMinutes(stepHour).isAfter(startStopTime) || startTime.plusMinutes(stepHour).isBefore(endStopTime))
 				throw new DateTimeException("Đặt sân thất bại, sân bóng không hoạt động trong khoảng thời gian này");
 			time -= 60;
@@ -347,11 +347,11 @@ public class RentInfoService {
 		
 		var user = rentInfo.getUser();
 		
-		int total = getTotal(request.getRentTime(), user, rentInfo);
+		int total = getTotal(rentTime, user, rentInfo);
 		
 		rentInfo.setStartTime(startTime);
 		rentInfo.setEndTime(endTime);
-		rentInfo.setTotal(total);
+		rentInfo.setTotal(rentInfo.getTotal() + total);
 		
 		return rentInfoMapper.toRentInfoResponse(rentInfoRepository.save(rentInfo));
 	}

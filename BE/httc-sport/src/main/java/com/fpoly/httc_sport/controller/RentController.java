@@ -10,6 +10,7 @@ import com.fpoly.httc_sport.service.RentInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -131,9 +132,11 @@ public class RentController {
 	@Operation(summary = "Api update rent-info", description = "Admin use this api")
 	@PutMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<RentInfoResponse> updateRentInfo(@PathVariable int id, @Valid @RequestBody RentInfoUpdateRequest request) {
+	ApiResponse<RentInfoResponse> updateRentInfo(@PathVariable int id,
+	                                             @NotNull(message = "RENT_INFO_RENT_TIME_NULL")
+	                                             @RequestParam("rentTime") int rentTime) {
 		log.info("[Rent Controller - Delete a rent info] Admin updating a rent info with id: {}", id);
-		var response = rentInfoService.updateRentInfo(id, request);
+		var response = rentInfoService.updateRentInfo(id, rentTime);
 		log.info("[Rent Controller - Delete a rent info] Updated");
 		return ApiResponse.<RentInfoResponse>builder()
 				.result(response)

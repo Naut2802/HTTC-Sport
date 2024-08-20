@@ -1,6 +1,5 @@
 package com.fpoly.httc_sport.controller;
 
-import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;

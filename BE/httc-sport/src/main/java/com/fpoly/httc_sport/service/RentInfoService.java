@@ -14,7 +14,6 @@ import com.fpoly.httc_sport.entity.User;
 import com.fpoly.httc_sport.repository.*;
 import com.fpoly.httc_sport.utils.Enum.BillStatusEnum;
 import com.fpoly.httc_sport.utils.Enum.PaymentMethodEnum;
-import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
 import com.fpoly.httc_sport.dto.response.RentResponse;

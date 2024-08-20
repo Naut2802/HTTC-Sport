@@ -79,8 +79,10 @@ public class PaymentService {
 	}
 	
 	public PayOSResponse createRentPayRemainingLink(int orderCode, RentInfo rentInfo) throws NoSuchAlgorithmException, InvalidKeyException {
-		while (rentInfoRepository.existsById(orderCode) || transactionRepository.existsById(orderCode)) {
+		var paymentInfo = getPaymentInfo(orderCode);
+		while (rentInfoRepository.existsById(orderCode) || transactionRepository.existsById(orderCode) || paymentInfo.getCode().equals("00")) {
 			orderCode += 1;
+			paymentInfo = getPaymentInfo(orderCode);
 		}
 		
 		PayOSRequest request = PayOSRequest.builder()

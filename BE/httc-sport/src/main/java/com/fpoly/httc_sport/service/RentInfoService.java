@@ -398,11 +398,6 @@ public class RentInfoService {
 		
 		if (_paymentMethod.getMethod().equals(PaymentMethodEnum.QR)) {
 			var orderCode = rentInfo.getId();
-			var paymentInfo = paymentService.getPaymentInfo(orderCode);
-			
-			if (paymentInfo.getData() != null) {
-					orderCode += 1;
-			}
 			
 			var payOS = paymentService.createRentPayRemainingLink(orderCode, rentInfo);
 			return RentPayRemainingResponse.builder()

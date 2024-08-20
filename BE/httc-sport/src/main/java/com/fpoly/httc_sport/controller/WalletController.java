@@ -37,9 +37,9 @@ public class WalletController {
 	@Operation(summary = "Api confirm transaction", description = "User use this api to confirm top up transaction")
 	@PostMapping("confirm-transaction")
 	ApiResponse<TransactionResponse> confirmTransaction(@RequestParam("code") String code,
-	                                                @RequestParam("id") String id,
+	                                                @RequestParam("orderCode") int orderCode,
 	                                                @RequestParam("status") String status) {
-		var response = walletService.confirmTopUpTransaction(code, id, status);
+		var response = walletService.confirmTopUpTransaction(code, orderCode, status);
 		
 		return ApiResponse.<TransactionResponse>builder()
 				.message(response.getMessage())

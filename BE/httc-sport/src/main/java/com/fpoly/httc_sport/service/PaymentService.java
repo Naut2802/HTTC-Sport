@@ -138,7 +138,7 @@ public class PaymentService {
         return payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
 	}
 	
-	public PayOSPaymentResponse getPaymentInfo(String id) {
+	public PayOSPaymentResponse getPaymentInfo(int id) {
 		return payOSClient.getPaymentInfo(id, PAYOS_CLIENT_ID, PAYOS_API_KEY);
 	}
 	

@@ -58,8 +58,8 @@ public class WalletService {
 	}
 	
 	@Transactional
-	public TransactionResponse confirmTopUpTransaction(String code, String id, String status) {
-		var paymentInfo = paymentService.getPaymentInfo(id);
+	public TransactionResponse confirmTopUpTransaction(String code, int orderCode, String status) {
+		var paymentInfo = paymentService.getPaymentInfo(orderCode);
 		
 		if (paymentInfo.getData() == null)
 			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);

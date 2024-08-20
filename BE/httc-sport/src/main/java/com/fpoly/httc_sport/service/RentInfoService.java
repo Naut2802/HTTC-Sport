@@ -184,8 +184,8 @@ public class RentInfoService {
 				.build();
 	}
 	
-	public RentResponse confirmRent(String code, String id, String status) {
-		var paymentInfo = paymentService.getPaymentInfo(id);
+	public RentResponse confirmRent(String code, int orderCode, String status) {
+		var paymentInfo = paymentService.getPaymentInfo(orderCode);
 		
 		if (paymentInfo.getData() == null)
 			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);
@@ -398,7 +398,7 @@ public class RentInfoService {
 		
 		if (_paymentMethod.getMethod().equals(PaymentMethodEnum.QR)) {
 			var orderCode = rentInfo.getId();
-			var paymentInfo = paymentService.getPaymentInfo(String.valueOf(orderCode));
+			var paymentInfo = paymentService.getPaymentInfo(orderCode);
 			
 			if (paymentInfo.getData() != null) {
 					orderCode += 1;
@@ -432,8 +432,8 @@ public class RentInfoService {
 				.build();
 	}
 	
-	public RentResponse confirmPayRemaining(String code, String id, String status) {
-		var paymentInfo = paymentService.getPaymentInfo(id);
+	public RentResponse confirmPayRemaining(String code, int orderCode, String status) {
+		var paymentInfo = paymentService.getPaymentInfo(orderCode);
 		
 		if (paymentInfo.getData() == null)
 			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);

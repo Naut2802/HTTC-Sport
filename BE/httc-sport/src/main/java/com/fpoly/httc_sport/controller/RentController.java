@@ -42,12 +42,12 @@ public class RentController {
 	
 	@Operation(summary = "Api confirm rent-info",
 			description = "Api use to confirm rent-info after payment with payment link")
-	@PostMapping("confirm-pay-remaining")
-	ApiResponse<RentResponse> confirmPayRemaining(@RequestParam("code") String code,
-	                                      @RequestParam("id") String id,
+	@PostMapping("confirm-rent")
+	ApiResponse<RentResponse> confirmRent(@RequestParam("code") String code,
+	                                      @RequestParam("orderCode") int orderCode,
 	                                      @RequestParam("status") String status) {
 		return ApiResponse.<RentResponse>builder()
-				.result(rentInfoService.confirmPayRemaining(code, id, status))
+				.result(rentInfoService.confirmRent(code, orderCode, status))
 				.build();
 	}
 	
@@ -58,6 +58,17 @@ public class RentController {
 	                                                   @RequestParam("paymentMethod") String paymentMethod) throws NoSuchAlgorithmException, InvalidKeyException {
 		return ApiResponse.<RentPayRemainingResponse>builder()
 				.result(rentInfoService.payRemainingAmount(id, paymentMethod))
+				.build();
+	}
+	
+	@Operation(summary = "Api confirm pay remaining",
+			description = "Api use to confirm pay remaining after payment with payment link")
+	@PostMapping("confirm-pay-remaining")
+	ApiResponse<RentResponse> confirmPayRemaining(@RequestParam("code") String code,
+	                                      @RequestParam("orderCode") int orderCode,
+	                                      @RequestParam("status") String status) {
+		return ApiResponse.<RentResponse>builder()
+				.result(rentInfoService.confirmPayRemaining(code, orderCode, status))
 				.build();
 	}
 	

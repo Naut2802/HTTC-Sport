@@ -61,6 +61,7 @@ public enum ErrorCode {
 	RENT_INFO_TYPE_PITCH_NULL(1004, "Loại sân không được để trống", HttpStatus.BAD_REQUEST),
 	RENT_INFO_PAYMENT_METHOD_NULL(1004, "Phương thức thanh toán không được để trống", HttpStatus.BAD_REQUEST),
 	RENT_INFO_EXISTED(1004, "Sân đã được đặt", HttpStatus.BAD_REQUEST),
+	RENT_INFO_EXCHANGED(1004, "Thông tin đặt sân đã được đổi thành hóa đơn, không thể cập nhật", HttpStatus.BAD_REQUEST),
 	RENT_INFO_NOT_EXISTED(1004, "Không tìm thấy thông tin đặt sân", HttpStatus.NOT_FOUND),
 	UNPAID(1004, "Thông tin đặt sân này chưa được thanh toán tiền cọc", HttpStatus.NOT_ACCEPTABLE),
 	PAYMENT_METHOD_NOT_EXISTED(1005, "Phương thức thanh toán không hợp lệ", HttpStatus.NOT_FOUND),

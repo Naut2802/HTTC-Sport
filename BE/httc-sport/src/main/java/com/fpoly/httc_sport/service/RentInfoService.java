@@ -246,6 +246,9 @@ public class RentInfoService {
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
 		
+		if (rentInfo.getIsDone())
+			throw new AppException(ErrorCode.RENT_INFO_EXCHANGED);
+		
 		LocalTime startTime = request.getStartTime().plusMinutes(1);
 		LocalTime endTime = request.getStartTime().plusMinutes(request.getRentTime());
 		LocalDate dateNow = LocalDate.now();

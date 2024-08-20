@@ -346,7 +346,6 @@ public class RentInfoService {
 			throw new DateTimeException("Đặt sân thất bại, không còn sân trống trong khoảng thời gian này");
 		
 		var user = rentInfo.getUser();
-		rentInfoMapper.updateRentInfo(rentInfo, request);
 		
 		int total = getTotal(request.getRentTime(), user, rentInfo);
 		

@@ -19,25 +19,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RentInfoUpdateRequest {
-	@NotBlank(message = "RENT_INFO_EMAIL_NULL")
-	@NotNull(message = "RENT_INFO_EMAIL_NULL")
-	@Pattern(regexp = Constant.EMAIL_REGEX, message = "EMAIL_INVALID")
-	String email;
-	@NotNull(message = "RENT_INFO_PHONE_NUMBER_NULL")
-	@Pattern(regexp = Constant.PHONE_NUMBER_REGEX, message = "PHONE_NUMBER_INVALID")
-	String phoneNumber;
-	@NotNull(message = "RENT_INFO_FIRST_NAME_NULL")
-	@NotBlankAndSizeAndPattern(regexp = Constant.NAME_REGEX, message = "FIRST_NAME")
-	String firstName;
-	@NotBlankAndSizeAndPattern(regexp = Constant.NAME_REGEX, message = "LAST_NAME")
-	String lastName;
-	@NotNull(message = "RENT_INFO_RENT_DATE_NULL")
-	LocalDate rentedAt;
-	@NotNull(message = "RENT_INFO_START_TIME_NULL")
-	LocalTime startTime;
 	@NotNull(message = "RENT_INFO_RENT_TIME_NULL")
 	int rentTime;
-	@NotNull(message = "RENT_INFO_TYPE_PITCH_NULL")
-	int typePitch;
-	String note;
 }

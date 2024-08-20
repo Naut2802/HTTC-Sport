@@ -252,20 +252,20 @@ public class RentInfoService {
 		if (rentInfo.getIsDone())
 			throw new AppException(ErrorCode.RENT_INFO_EXCHANGED);
 		
-		LocalTime startTime = request.getStartTime().plusMinutes(1);
-		LocalTime endTime = request.getStartTime().plusMinutes(request.getRentTime());
+		LocalTime startTime = rentInfo.getStartTime();
+		LocalTime endTime = rentInfo.getEndTime().plusMinutes(request.getRentTime());
 		LocalDate dateNow = LocalDate.now();
 		LocalTime timeNow = LocalTime.now();
 		LocalTime startStopTime = LocalTime.of(23, 59);
 		LocalTime endStopTime = LocalTime.of(6, 1);
 		
-		if (request.getRentedAt().getYear() < dateNow.getYear()) {
+		if (rentInfo.getRentedAt().getYear() < dateNow.getYear()) {
 			throw new DateTimeException("Đặt sân thất bại, năm đặt không hợp lệ");
-		} else if (request.getRentedAt().getYear() == dateNow.getYear()) {
-			if (request.getRentedAt().getDayOfYear() < dateNow.getDayOfYear())
+		} else if (rentInfo.getRentedAt().getYear() == dateNow.getYear()) {
+			if (rentInfo.getRentedAt().getDayOfYear() < dateNow.getDayOfYear())
 				throw new DateTimeException("Đặt sân thất bại, ngày đặt không hợp lệ");
 			
-			if (request.getRentedAt().getDayOfYear() == dateNow.getDayOfYear())
+			if (rentInfo.getRentedAt().getDayOfYear() == dateNow.getDayOfYear())
 				if (timeNow.isAfter(startTime))
 					throw new DateTimeException("Đặt sân thất bại, thời gian đặt không hợp lệ");
 		}
@@ -284,15 +284,15 @@ public class RentInfoService {
 			time -= 60;
 		}
 		
-		int initCount = request.getTypePitch() == 5 ? 1
-				: request.getTypePitch() == 7 ? 3
-				: request.getTypePitch() == 11 ? 9 : 1;
+		int initCount = rentInfo.getTypePitch() == 5 ? 1
+				: rentInfo.getTypePitch() == 7 ? 3
+				: rentInfo.getTypePitch() == 11 ? 9 : 1;
 		
 		AtomicInteger countByStartTime = new AtomicInteger(initCount);
 		rentInfoRepository
 				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(
 						rentInfo.getPitch().getId(),
-						request.getRentedAt(),
+						rentInfo.getRentedAt(),
 						startTime.plusSeconds(1),
 						startTime.plusSeconds(1))
 				.forEach(_rentInfo -> {
@@ -307,7 +307,7 @@ public class RentInfoService {
 		rentInfoRepository
 				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(
 						rentInfo.getPitch().getId(),
-						request.getRentedAt(),
+						rentInfo.getRentedAt(),
 						endTime.minusSeconds(1),
 						endTime.minusSeconds(1))
 				.forEach(_rentInfo -> {
@@ -320,7 +320,7 @@ public class RentInfoService {
 		
 		AtomicInteger countByStartTimeBetween = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(rentInfo.getPitch().getId(), request.getRentedAt(), startTime, endTime)
+				.findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(rentInfo.getPitch().getId(), rentInfo.getRentedAt(), startTime, endTime)
 				.forEach(_rentInfo -> {
 					if (_rentInfo.getTypePitch() == 5)
 						countByStartTimeBetween.addAndGet(1);
@@ -331,7 +331,7 @@ public class RentInfoService {
 		
 		AtomicInteger countByEndTimeBetween = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(rentInfo.getPitch().getId(), request.getRentedAt(), startTime, endTime)
+				.findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(rentInfo.getPitch().getId(), rentInfo.getRentedAt(), startTime, endTime)
 				.forEach(_rentInfo -> {
 					if (_rentInfo.getTypePitch() == 5)
 						countByEndTimeBetween.addAndGet(1);

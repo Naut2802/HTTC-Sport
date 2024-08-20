@@ -119,6 +119,29 @@ public class WalletService {
 		transactionRepository.save(transaction);
 	}
 	
+	@Transactional
+	public void createPitchPayRemainingAmountTransaction(Wallet wallet, RentInfo rentInfo) {
+		var remainingAmount = rentInfo.getTotal() - rentInfo.getDeposit();
+		if (wallet.getMoney() < remainingAmount)
+			throw new AppException(ErrorCode.WALLET_NOT_ENOUGH);
+		
+		int totalRemaining = wallet.getMoney() - remainingAmount;
+		wallet.setMoney(totalRemaining);
+		
+		Transaction transaction = Transaction.builder()
+				.paymentAmount(rentInfo.getTotal())
+				.transactionDate(LocalDateTime.now())
+				.transactionType(TransactionTypeEnum.PAY_REMAINING.getValue())
+				.paymentStatus(true)
+				.wallet(wallet)
+				.rentInfo(rentInfo)
+				.build();
+		
+		rentInfo.setTransaction(transaction);
+		walletRepository.save(wallet);
+		transactionRepository.save(transaction);
+	}
+	
 	public TransactionResponse adminTopUpUser(String userId, TransactionRequest request) {
 		var user = userRepository.findById(userId).orElseThrow(
 				() -> new AppException(ErrorCode.USER_NOT_EXISTED)

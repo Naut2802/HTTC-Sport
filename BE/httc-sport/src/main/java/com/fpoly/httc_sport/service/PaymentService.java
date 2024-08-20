@@ -3,6 +3,7 @@ package com.fpoly.httc_sport.service;
 import com.fpoly.httc_sport.dto.request.PayOSRequest;
 import com.fpoly.httc_sport.dto.response.PayOSPaymentResponse;
 import com.fpoly.httc_sport.dto.response.PayOSResponse;
+import com.fpoly.httc_sport.entity.RentInfo;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
 import com.fpoly.httc_sport.repository.RentInfoRepository;
@@ -60,6 +61,37 @@ public class PaymentService {
 				.description("DAT SAN " + rentInfo.getId())
 				.buyerPhone(rentInfo.getPhoneNumber())
 				.amount((int) (rentInfo.getTotal() * deposit))
+				.build();
+		
+		Map<String, String> params = new TreeMap<>();
+		params.put("amount", String.valueOf(request.getAmount()));
+		params.put("cancelUrl", request.getCancelUrl());
+		params.put("description", request.getDescription());
+		params.put("orderCode", String.valueOf(request.getOrderCode()));
+		params.put("returnUrl", request.getReturnUrl());
+		
+		String data = generateData(params);
+		String signature = generateSignature(PAYOS_CHECKSUM_KEY, data);
+		
+		request.setSignature(signature);
+		
+		return payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
+	}
+	
+	public PayOSResponse createRentPayRemainingLink(int orderCode, RentInfo rentInfo) throws NoSuchAlgorithmException, InvalidKeyException {
+		while (rentInfoRepository.existsById(orderCode)) {
+			orderCode += 1;
+		}
+		
+		PayOSRequest request = PayOSRequest.builder()
+				.orderCode(orderCode)
+				.returnUrl(CROSS_ORIGIN + "/payment/rent/pay-remaining/success")
+				.cancelUrl(CROSS_ORIGIN + "/payment/rent/pay-remaining/error")
+				.buyerEmail(rentInfo.getEmail())
+				.buyerName(rentInfo.getLastName() + " " + rentInfo.getFirstName())
+				.description("DAT SAN " + rentInfo.getId())
+				.buyerPhone(rentInfo.getPhoneNumber())
+				.amount((int) (rentInfo.getTotal() - rentInfo.getDeposit()))
 				.build();
 		
 		Map<String, String> params = new TreeMap<>();

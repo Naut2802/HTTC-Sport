@@ -21,7 +21,8 @@ public final class Enum {
 	
 	public enum PaymentMethodEnum {
 		QR,
-		WALLET
+		WALLET,
+		CASH
 	}
 	
 	@Getter
@@ -42,7 +43,8 @@ public final class Enum {
 	public enum TransactionTypeEnum {
 		ADMIN_DEPOSIT("Admin nạp tiền vào ví"),
 		DEPOSIT("Nạp tiền vào ví"),
-		PAY("Thanh toán đặt sân");
+		PAY("Thanh toán đặt sân"),
+		PAY_REMAINING("Thanh toán tiền đặt sân còn lại");
 		
 		private final String value;
 	}

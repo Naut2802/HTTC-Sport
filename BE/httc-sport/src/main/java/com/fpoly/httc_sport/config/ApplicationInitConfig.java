@@ -92,6 +92,7 @@ public class ApplicationInitConfig {
 			
 			paymentMethodMap.put(PaymentMethodEnum.QR, 1.05f);
 			paymentMethodMap.put(PaymentMethodEnum.WALLET, 1f);
+			paymentMethodMap.put(PaymentMethodEnum.CASH, 1f);
 			
 			paymentMethodMap.forEach((key, value) -> {
 				if (!paymentMethodRepository.existsByMethod(key))

@@ -4,6 +4,7 @@ import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
+import com.fpoly.httc_sport.dto.response.RentPayRemainingResponse;
 import com.fpoly.httc_sport.dto.response.RentResponse;
 import com.fpoly.httc_sport.service.RentInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -39,12 +42,22 @@ public class RentController {
 	
 	@Operation(summary = "Api confirm rent-info",
 			description = "Api use to confirm rent-info after payment with payment link")
-	@PostMapping("confirm-rent")
-	ApiResponse<RentResponse> confirmRent(@RequestParam("code") String code,
+	@PostMapping("confirm-pay-remaining")
+	ApiResponse<RentResponse> confirmPayRemaining(@RequestParam("code") String code,
 	                                      @RequestParam("id") String id,
 	                                      @RequestParam("status") String status) {
 		return ApiResponse.<RentResponse>builder()
-				.result(rentInfoService.confirmRent(code, id, status))
+				.result(rentInfoService.confirmPayRemaining(code, id, status))
+				.build();
+	}
+	
+	@Operation(summary = "Api pay remaining rent-info",
+			description = "Api use to pay remaining rent-info after payment with payment link")
+	@PostMapping("pay-remaining/{id}")
+	ApiResponse<RentPayRemainingResponse> payRemaining(@PathVariable int id,
+	                                                   @RequestParam("paymentMethod") String paymentMethod) throws NoSuchAlgorithmException, InvalidKeyException {
+		return ApiResponse.<RentPayRemainingResponse>builder()
+				.result(rentInfoService.payRemainingAmount(id, paymentMethod))
 				.build();
 	}
 	

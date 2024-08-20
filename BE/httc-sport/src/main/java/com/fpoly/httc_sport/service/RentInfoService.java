@@ -1,11 +1,14 @@
 package com.fpoly.httc_sport.service;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.fpoly.httc_sport.dto.response.RentPayRemainingResponse;
 import com.fpoly.httc_sport.entity.RentInfo;
 import com.fpoly.httc_sport.entity.User;
 import com.fpoly.httc_sport.repository.*;
@@ -378,7 +381,7 @@ public class RentInfoService {
 		}
 	}
 
-	public void exchangeRentInfoToBill(int id) {
+	public RentPayRemainingResponse payRemainingAmount(int id, String paymentMethod) throws NoSuchAlgorithmException, InvalidKeyException {
 		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
@@ -388,6 +391,70 @@ public class RentInfoService {
 		
 		if (!rentInfo.getPaymentStatus())
 			throw new AppException(ErrorCode.UNPAID);
+		
+		var _paymentMethod = paymentMethodRepository.findByMethod(PaymentMethodEnum.valueOf(paymentMethod)).orElseThrow(
+				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
+		);
+		
+		if (_paymentMethod.getMethod().equals(PaymentMethodEnum.QR)) {
+			var orderCode = rentInfo.getId();
+			var paymentInfo = paymentService.getPaymentInfo(String.valueOf(orderCode));
+			
+			if (paymentInfo.getData() != null) {
+					orderCode += 1;
+			}
+			
+			var payOS = paymentService.createRentPayRemainingLink(orderCode, rentInfo);
+			return RentPayRemainingResponse.builder()
+					.id(rentInfo.getId())
+					.payOSResponse(payOS)
+					.message("Vui lòng thanh toán tiền sân còn lại thông qua mã QR")
+					.isPaySuccess(true)
+					.build();
+		} else if (_paymentMethod.getMethod().equals(PaymentMethodEnum.WALLET)) {
+			var user = rentInfo.getUser();
+			if (user == null)
+				throw new AppException(ErrorCode.RENT_INFO_PAY_REMAINING_USER_NOT_FOUND);
+			var wallet = user.getWallet();
+			walletService.createPitchPayRemainingAmountTransaction(wallet, rentInfo);
+			
+			return RentPayRemainingResponse.builder()
+					.id(rentInfo.getId())
+					.message("Thanh toán tiền sân còn lại thông qua ví thành công")
+					.isPaySuccess(true)
+					.build();
+		}
+		
+		return RentPayRemainingResponse.builder()
+				.id(rentInfo.getId())
+				.message("Thanh toán thất bại")
+				.isPaySuccess(false)
+				.build();
+	}
+	
+	public RentResponse confirmPayRemaining(String code, String id, String status) {
+		var paymentInfo = paymentService.getPaymentInfo(id);
+		
+		if (paymentInfo.getData() == null)
+			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);
+		
+		var rentInfo = rentInfoRepository.findById(paymentInfo.getData().getOrderCode()).orElseThrow(
+				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
+		);
+		
+		if (rentInfo.getIsDone())
+			throw new AppException(ErrorCode.BILL_EXISTED);
+		
+		if (!rentInfo.getPaymentStatus())
+			throw new AppException(ErrorCode.UNPAID);
+		
+		var paymentMethod = paymentMethodRepository.findByMethod(PaymentMethodEnum.QR).orElseThrow(
+				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
+		);
+		
+		if (!code.equals("00") || !status.equals("PAID")) {
+			return RentResponse.builder().message("Thanh toán thất bại").build();
+		}
 		
 		Bill bill = Bill.builder()
 				.email(rentInfo.getEmail())
@@ -402,7 +469,51 @@ public class RentInfoService {
 				.typePitch(rentInfo.getTypePitch())
 				.pitch(rentInfo.getPitch())
 				.user(rentInfo.getUser())
-				.paymentMethod(rentInfo.getPaymentMethod())
+				.paymentMethod(paymentMethod)
+				.build();
+		
+		rentInfo.setIsDone(true);
+		rentInfoRepository.save(rentInfo);
+		billService.createBill(bill);
+		
+		return RentResponse.builder()
+				.id(rentInfo.getId())
+				.total(rentInfo.getTotal())
+				.deposit(rentInfo.getDeposit())
+				.message("Thanh toán tiền sân còn lại thành công")
+				.isRentSuccess(true)
+				.build();
+	}
+	
+	public void exchangeRentInfoToBill(int id) {
+		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
+		);
+		
+		if (rentInfo.getIsDone())
+			throw new AppException(ErrorCode.BILL_EXISTED);
+		
+		if (!rentInfo.getPaymentStatus())
+			throw new AppException(ErrorCode.UNPAID);
+		
+		var paymentMethod = paymentMethodRepository.findByMethod(PaymentMethodEnum.CASH).orElseThrow(
+				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
+		);
+		
+		Bill bill = Bill.builder()
+				.email(rentInfo.getEmail())
+				.phoneNumber(rentInfo.getPhoneNumber())
+				.firstName(rentInfo.getFirstName())
+				.lastName(rentInfo.getLastName())
+				.rentedAt(rentInfo.getRentedAt())
+				.startTime(rentInfo.getStartTime())
+				.endTime(rentInfo.getEndTime())
+				.total(rentInfo.getTotal())
+				.billStatus(BillStatusEnum.DONE.getValue())
+				.typePitch(rentInfo.getTypePitch())
+				.pitch(rentInfo.getPitch())
+				.user(rentInfo.getUser())
+				.paymentMethod(paymentMethod)
 				.build();
 		
 		rentInfo.setIsDone(true);

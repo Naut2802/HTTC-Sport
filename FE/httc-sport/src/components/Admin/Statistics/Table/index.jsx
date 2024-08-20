@@ -27,7 +27,17 @@ export default function TableStatistics() {
     ];
     return (
         <div style={{ width: '100%' }}>
-            <DataGrid key={rows.id} rows={rows} columns={columns} pageSizeOptions={[5, 10, 20, 50, 100]} />
+            <DataGrid
+                key={rows.id}
+                rows={rows}
+                columns={columns}
+                initialState={{
+                    pagination: {
+                        paginationModel: { page: 0, pageSize: 5 },
+                    },
+                }}
+                pageSizeOptions={[5, 10, 20, 50, 100]}
+            />
         </div>
     );
 }

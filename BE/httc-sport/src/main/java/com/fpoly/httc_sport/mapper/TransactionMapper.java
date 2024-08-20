@@ -8,8 +8,5 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TransactionMapper {
 	@Mapping(source = "wallet.id", target = "walletId")
-	@Mapping(source = "rentInfo.pitch.id", target = "rentInfo.pitchId")
-	@Mapping(source = "rentInfo.pitch.pitchName", target = "rentInfo.pitchName")
-	@Mapping(source = "rentInfo.paymentMethod.method", target = "rentInfo.paymentMethod")
 	TransactionResponse toTransactionResponse(Transaction transaction);
 }

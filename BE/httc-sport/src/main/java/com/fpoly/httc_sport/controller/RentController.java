@@ -54,6 +54,7 @@ public class RentController {
 	@Operation(summary = "Api pay remaining rent-info",
 			description = "Api use to pay remaining rent-info after payment with payment link")
 	@PostMapping("pay-remaining/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<RentPayRemainingResponse> payRemaining(@PathVariable int id,
 	                                                   @RequestParam("paymentMethod") String paymentMethod) throws NoSuchAlgorithmException, InvalidKeyException {
 		return ApiResponse.<RentPayRemainingResponse>builder()
@@ -64,6 +65,7 @@ public class RentController {
 	@Operation(summary = "Api confirm pay remaining",
 			description = "Api use to confirm pay remaining after payment with payment link")
 	@PostMapping("confirm-pay-remaining")
+	@PreAuthorize("hasRole('ADMIN')")
 	ApiResponse<RentResponse> confirmPayRemaining(@RequestParam("code") String code,
 	                                      @RequestParam("orderCode") int orderCode,
 	                                      @RequestParam("status") String status) {

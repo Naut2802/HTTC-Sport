@@ -430,6 +430,7 @@ public class RentInfoService {
 				.build();
 	}
 	
+	@Transactional
 	public RentResponse confirmPayRemaining(String code, int orderCode, String status) {
 		var paymentInfo = paymentService.getPaymentInfo(orderCode);
 		
@@ -470,8 +471,8 @@ public class RentInfoService {
 				.paymentMethod(paymentMethod)
 				.build();
 		
-		rentInfoRepository.delete(rentInfo);
 		billService.createBill(bill);
+		rentInfoRepository.delete(rentInfo);
 		
 		return RentResponse.builder()
 				.id(rentInfo.getId())
@@ -482,6 +483,7 @@ public class RentInfoService {
 				.build();
 	}
 	
+	@Transactional
 	public void exchangeRentInfoToBill(int id) {
 		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
@@ -515,7 +517,7 @@ public class RentInfoService {
 				.paymentMethod(paymentMethod)
 				.build();
 		
-		rentInfoRepository.delete(rentInfo);
 		billService.createBill(bill);
+		rentInfoRepository.delete(rentInfo);
 	}
 }

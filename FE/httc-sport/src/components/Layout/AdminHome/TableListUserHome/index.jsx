@@ -59,6 +59,11 @@ export default function TableListUserHome() {
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5, 10, 20, 50, 100]}
+                initialState={{
+                    pagination: {
+                        paginationModel: { page: 0, pageSize: 5 },
+                    },
+                }}
                 getRowId={(row) => row.id}
             />
         </div>

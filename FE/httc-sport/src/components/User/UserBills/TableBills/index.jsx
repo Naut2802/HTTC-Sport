@@ -58,11 +58,74 @@ export default function TableBills() {
             tgKT: '19:30',
             tongTien: '490.000',
         },
+        {
+            id: '2',
+            email: 'leminhhoang241299@gmail.com',
+            sdt: '0901555123',
+            ngayThanhToan: '2024-02-06',
+            tgBD: '18:30',
+            tgKT: '19:30',
+            tongTien: '490.000',
+        },
+        {
+            id: '3',
+            email: 'leminhhoang241299@gmail.com',
+            sdt: '0901555123',
+            ngayThanhToan: '2024-02-06',
+            tgBD: '18:30',
+            tgKT: '19:30',
+            tongTien: '490.000',
+        },
+        {
+            id: '4',
+            email: 'leminhhoang241299@gmail.com',
+            sdt: '0901555123',
+            ngayThanhToan: '2024-02-06',
+            tgBD: '18:30',
+            tgKT: '19:30',
+            tongTien: '490.000',
+        },
+        {
+            id: '5',
+            email: 'leminhhoang241299@gmail.com',
+            sdt: '0901555123',
+            ngayThanhToan: '2024-02-06',
+            tgBD: '18:30',
+            tgKT: '19:30',
+            tongTien: '490.000',
+        },
+        {
+            id: '6',
+            email: 'leminhhoang241299@gmail.com',
+            sdt: '0901555123',
+            ngayThanhToan: '2024-02-06',
+            tgBD: '18:30',
+            tgKT: '19:30',
+            tongTien: '490.000',
+        },
+        {
+            id: '7',
+            email: 'leminhhoang241299@gmail.com',
+            sdt: '0901555123',
+            ngayThanhToan: '2024-02-06',
+            tgBD: '18:30',
+            tgKT: '19:30',
+            tongTien: '490.000',
+        },
     ];
 
     return (
         <div style={{ width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} pageSizeOptions={[5, 10, 20, 50, 100]} />
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSizeOptions={[5, 10, 20, 50, 100]}
+                initialState={{
+                    pagination: {
+                        paginationModel: { page: 0, pageSize: 5 },
+                    },
+                }}
+            />
             <ModalRating open={open} handleClose={handleClose} />
         </div>
     );

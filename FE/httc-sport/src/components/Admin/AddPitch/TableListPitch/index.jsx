@@ -67,6 +67,11 @@ export default function TableListPitch({ onRowClick }) {
                 rows={pitch}
                 columns={columns}
                 pageSize={10}
+                initialState={{
+                    pagination: {
+                        paginationModel: { page: 0, pageSize: 5 },
+                    },
+                }}
                 rowsPerPageOptions={[5, 10, 20, 50, 100]}
                 getRowId={(row) => row.id}
                 autoHeight

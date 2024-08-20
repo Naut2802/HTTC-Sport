@@ -99,7 +99,12 @@ export default function TableTransaction() {
                             rows={rows}
                             columns={columns}
                             pageSize={10}
-                            rowsPerPageOptions={[5, 10, 20, 50, 100]}
+                            initialState={{
+                                pagination: {
+                                    paginationModel: { page: 0, pageSize: 5 },
+                                },
+                            }}
+                            rowsPerPageOptions={[5, 10]}
                             getRowId={(row) => row.id}
                             autoHeight
                         />

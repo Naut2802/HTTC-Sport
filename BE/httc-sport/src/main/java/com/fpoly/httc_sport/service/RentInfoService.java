@@ -439,30 +439,30 @@ public class RentInfoService {
 			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);
 		
 		String _tempString = paymentInfo.getData().getTransactions().getFirst().getDescription().substring(
-				paymentInfo.getData().getTransactions().getFirst().getDescription().indexOf("DAT"),
-				paymentInfo.getData().getTransactions().getFirst().getDescription().indexOf(".")
+				0,
+				paymentInfo.getData().getTransactions().getFirst().getDescription().lastIndexOf(".")
 		);
 		
-		int id = Integer.parseInt(_tempString.substring(_tempString.lastIndexOf(" ")));
+		int id = Integer.parseInt(_tempString.substring(_tempString.lastIndexOf(" ") + 1));
 		
 		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
-		
+
 		if (rentInfo.getIsDone())
 			throw new AppException(ErrorCode.BILL_EXISTED);
-		
+
 		if (!rentInfo.getPaymentStatus())
 			throw new AppException(ErrorCode.UNPAID);
-		
+
 		var paymentMethod = paymentMethodRepository.findByMethod(PaymentMethodEnum.QR).orElseThrow(
 				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
 		);
-		
+
 		if (!code.equals("00") || !status.equals("PAID")) {
 			return RentResponse.builder().message("Thanh toán thất bại").build();
 		}
-		
+
 		Bill bill = Bill.builder()
 				.email(rentInfo.getEmail())
 				.phoneNumber(rentInfo.getPhoneNumber())
@@ -478,10 +478,10 @@ public class RentInfoService {
 				.user(rentInfo.getUser())
 				.paymentMethod(paymentMethod)
 				.build();
-		
+
 		billService.createBill(bill);
 		rentInfoRepository.delete(rentInfo);
-		
+
 		return RentResponse.builder()
 				.id(rentInfo.getId())
 				.total(rentInfo.getTotal())

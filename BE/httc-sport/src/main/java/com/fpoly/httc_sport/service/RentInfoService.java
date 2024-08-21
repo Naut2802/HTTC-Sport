@@ -438,8 +438,12 @@ public class RentInfoService {
 		if (paymentInfo.getData() == null)
 			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);
 		
-		int id = Integer.parseInt(paymentInfo.getData().getTransactions().getFirst().getDescription()
-				.substring(paymentInfo.getData().getTransactions().getFirst().getDescription().lastIndexOf(" ")));
+		String _tempString = paymentInfo.getData().getTransactions().getFirst().getDescription().substring(
+				paymentInfo.getData().getTransactions().getFirst().getDescription().indexOf("DAT"),
+				paymentInfo.getData().getTransactions().getFirst().getDescription().indexOf(".")
+		);
+		
+		int id = Integer.parseInt(_tempString.substring(_tempString.lastIndexOf(" ")));
 		
 		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)

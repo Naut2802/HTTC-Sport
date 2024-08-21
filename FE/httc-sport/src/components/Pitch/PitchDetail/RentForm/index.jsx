@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {
     Box,
@@ -31,6 +32,7 @@ export default function RentForm({ id }) {
     const [openPopup, setOpenPopup] = useState(false);
     const [dataPayment, setDataPayment] = useState(null);
     const [resPayment, setResPayment] = useState(null);
+    const checkUser = localStorage.getItem('userId');
 
     const { handleSubmit, control, reset, register } = useForm({
         defaultValues: {
@@ -42,15 +44,24 @@ export default function RentForm({ id }) {
         },
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await handleGetMyInfoAPI();
-                reset(res.data.result);
-            } catch (error) {}
-        };
-        fetchData();
-    }, [reset]);
+    if (checkUser) {
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const res = await handleGetMyInfoAPI();
+                    const userData = {
+                        lastName: res.data.result.lastName || '',
+                        firstName: res.data.result.firstName || '',
+                        phoneNumber: res.data.result.phoneNumber || '',
+                        email: res.data.result.email || '',
+                        note: res.data.result.note || '',
+                    };
+                    reset(userData);
+                } catch (error) {}
+            };
+            fetchData();
+        }, [reset]);
+    }
 
     const handleChangeTime = (event) => {
         setTime(event.target.value);
@@ -82,9 +93,13 @@ export default function RentForm({ id }) {
             console.log(data);
             setDataPayment(data);
             const res = await handleRentPitch(data);
-            setResPayment(res.data.result);
-            toast.info('Đã nhận thông tin đặt sân. Vui lòng hoàn tất thanh toán!');
-            setOpenPopup(true);
+            if (res.data.result.rentSuccess) {
+                setResPayment(res.data.result);
+                toast.info('Đã nhận thông tin đặt sân. Vui lòng hoàn tất thanh toán!');
+                setOpenPopup(true);
+            } else {
+                toast.error(res.data.result.message);
+            }
         } else {
             toast.error('Vui lòng chọn ngày và giờ hợp lệ!');
         }

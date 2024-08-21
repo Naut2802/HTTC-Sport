@@ -160,11 +160,13 @@ export const handleCreatePaymentLink = async (id, deposit) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/payment/rent-pitch/${id}?deposit=${deposit}`);
 };
 
-export const handleConfirmRent = async (code, id, status) => {
+export const handleConfirmRent = async (code, orderCode, status) => {
     return await authorizedAxiosInstance.post(
-        `${API_ROOT}/api/v1/rent-pitch/confirm-rent?code=${code}&id=${id}&status=${status}`,
+        `${API_ROOT}/api/v1/rent-pitch/confirm-rent?code=${code}&orderCode=${orderCode}&status=${status}`,
     );
 };
+
+// ----------------------------------- RENT INFO API--------------------------------------
 
 export const handleGetRentInfoById = async (id) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/${id}`);
@@ -178,13 +180,39 @@ export const handleDeleteRentInfo = async (id) => {
     return await authorizedAxiosInstance.delete(`${API_ROOT}/api/v1/rent-pitch/${id}`);
 };
 
-// -----------------------------------ADMIN RENT PITCH API--------------------------------------
+// -----------------------------------ADMIN RENT INFO API--------------------------------------
 
 export const handleGetAllRentInfoAdmin = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch`);
 };
 
+export const handleUpdateRentInfo = async (id, rentTime) => {
+    return await authorizedAxiosInstance.put(`${API_ROOT}/api/v1/rent-pitch/${id}?rentTime=${rentTime}`);
+};
+
+export const handleExchangeRentInfoToBill = async (id) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/rent-pitch/rent-info-to-bill/${id}`);
+};
+
+export const handlePayRemaining = async (id, paymentMethod) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/rent-pitch/pay-remaining/${id}?paymentMethod=${paymentMethod}`);
+};
+
+export const handleConfirmPayRemaining = async (code, orderCode, status) => {
+    return await authorizedAxiosInstance.post(
+        `${API_ROOT}/api/v1/rent-pitch/confirm-pay-remaining?code=${code}&orderCode=${orderCode}&status=${status}`,
+    );
+};
+
 // -----------------------------------REPORT API--------------------------------------
 export const handleAnalytics = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/report/analytics`);
+};
+
+export const handleGetAllBills = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/bill`);
+};
+
+export const handleGetAllBillsByUser = async (userId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/bill/get-all-bills-by-user/${userId}`);
 };

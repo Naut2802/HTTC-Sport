@@ -2,13 +2,13 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { handleConfirmRent } from '~/apis';
+import { handleConfirmPayRemaining } from '~/apis';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
 
-export default function PaymentSuccess() {
+export default function PayRemainingError() {
     const navigate = useNavigate();
     const query = useQuery();
     const code = query.get('code');
@@ -22,9 +22,9 @@ export default function PaymentSuccess() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await handleConfirmRent(code, orderCode, status);
-                toast.success(res.data.result.message);
-                navigate('/');
+                const res = await handleConfirmPayRemaining(code, orderCode, status);
+                toast.error(res.data.result.message);
+                navigate('/admin/thong-tin-dat-san');
             } catch (error) {
                 console.error(error);
             }

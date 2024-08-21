@@ -43,7 +43,7 @@ export default function ModalDetail({ rentInfo }) {
             </Typography>
             <Typography component={'span'} sx={{ mt: 2 }}>
                 <Grid container spacing={1}>
-                    <Grid item xs={5}>
+                    <Grid item xs={4}>
                         <Box className="card">
                             <Typography sx={{ width: '100%' }} component={'span'} className="card-body">
                                 {pitch && pitch.images && pitch.images.length > 0 ? (
@@ -54,7 +54,7 @@ export default function ModalDetail({ rentInfo }) {
                             </Typography>
                         </Box>
                     </Grid>
-                    <Grid item xs={7}>
+                    <Grid item xs={8}>
                         <Box className="card" noValidate>
                             <Typography component="div" className="card-body">
                                 <Grid container spacing={1}>

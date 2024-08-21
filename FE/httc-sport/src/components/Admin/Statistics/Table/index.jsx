@@ -17,7 +17,6 @@ export default function TableStatistics() {
         try {
             const res = await handleGetAllBills();
             setBills(res.data.result);
-            console.log(res.data.result);
         } catch (error) {
             console.error(error);
         }

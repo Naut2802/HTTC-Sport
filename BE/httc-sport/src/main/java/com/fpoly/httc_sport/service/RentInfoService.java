@@ -283,9 +283,7 @@ public class RentInfoService {
 			time -= 60;
 		}
 		
-		int initCount = rentInfo.getTypePitch() == 5 ? 1
-				: rentInfo.getTypePitch() == 7 ? 3
-				: rentInfo.getTypePitch() == 11 ? 9 : 1;
+		int initCount = 0;
 		
 		AtomicInteger countByStartTime = new AtomicInteger(initCount);
 		rentInfoRepository
@@ -319,7 +317,8 @@ public class RentInfoService {
 		
 		AtomicInteger countByStartTimeBetween = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(rentInfo.getPitch().getId(), rentInfo.getRentedAt(), startTime, endTime)
+				.findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(
+						rentInfo.getPitch().getId(), rentInfo.getRentedAt(), startTime, endTime)
 				.forEach(_rentInfo -> {
 					if (_rentInfo.getTypePitch() == 5)
 						countByStartTimeBetween.addAndGet(1);
@@ -330,7 +329,8 @@ public class RentInfoService {
 		
 		AtomicInteger countByEndTimeBetween = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(rentInfo.getPitch().getId(), rentInfo.getRentedAt(), startTime, endTime)
+				.findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(
+						rentInfo.getPitch().getId(), rentInfo.getRentedAt(), startTime, endTime)
 				.forEach(_rentInfo -> {
 					if (_rentInfo.getTypePitch() == 5)
 						countByEndTimeBetween.addAndGet(1);

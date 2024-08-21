@@ -403,10 +403,10 @@ public class RentInfoService {
 		if (_paymentMethod.getMethod().equals(PaymentMethodEnum.QR)) {
 			var orderCode = rentInfo.getId();
 			
-			var payOS = paymentService.createRentPayRemainingLink(orderCode, rentInfo);
+			var paymentLink = paymentService.createRentPayRemainingLink(orderCode, rentInfo);
 			return RentPayRemainingResponse.builder()
 					.id(rentInfo.getId())
-					.payOSResponse(payOS)
+					.paymentLink(paymentLink)
 					.message("Vui lòng thanh toán tiền sân còn lại thông qua mã QR")
 					.isPaySuccess(true)
 					.build();

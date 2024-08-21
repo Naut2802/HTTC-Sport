@@ -3,6 +3,7 @@ package com.fpoly.httc_sport.service;
 import com.fpoly.httc_sport.dto.request.PayOSRequest;
 import com.fpoly.httc_sport.dto.response.PayOSPaymentResponse;
 import com.fpoly.httc_sport.dto.response.PayOSResponse;
+import com.fpoly.httc_sport.dto.response.PaymentLinkResponse;
 import com.fpoly.httc_sport.entity.RentInfo;
 import com.fpoly.httc_sport.exception.AppException;
 import com.fpoly.httc_sport.exception.ErrorCode;
@@ -47,7 +48,7 @@ public class PaymentService {
 	@Value("${payos.checksum-key}")
 	String PAYOS_CHECKSUM_KEY;
 	
-	public PayOSResponse createRentPaymentLink(int rentInfoId, float deposit) throws NoSuchAlgorithmException, InvalidKeyException {
+	public PaymentLinkResponse createRentPaymentLink(int rentInfoId, float deposit) throws NoSuchAlgorithmException, InvalidKeyException {
 		var rentInfo = rentInfoRepository.findById(rentInfoId).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
@@ -74,11 +75,14 @@ public class PaymentService {
 		String signature = generateSignature(PAYOS_CHECKSUM_KEY, data);
 		
 		request.setSignature(signature);
-		
-		return payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
+		var payOSResponse = payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
+		return PaymentLinkResponse.builder()
+				.checkoutUrl(payOSResponse.getData() != null ? payOSResponse.getData().getCheckoutUrl() : null)
+				.isSuccess(payOSResponse.getData() != null)
+				.build();
 	}
 	
-	public PayOSResponse createRentPayRemainingLink(int orderCode, RentInfo rentInfo) throws NoSuchAlgorithmException, InvalidKeyException {
+	public PaymentLinkResponse createRentPayRemainingLink(int orderCode, RentInfo rentInfo) throws NoSuchAlgorithmException, InvalidKeyException {
 		var paymentInfo = getPaymentInfo(orderCode);
 		while (rentInfoRepository.existsById(orderCode) || transactionRepository.existsById(orderCode) || paymentInfo.getCode().equals("00")) {
 			orderCode += 1;
@@ -108,10 +112,14 @@ public class PaymentService {
 		
 		request.setSignature(signature);
 		
-		return payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
+		var payOSResponse = payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
+		return PaymentLinkResponse.builder()
+				.checkoutUrl(payOSResponse.getData() != null ? payOSResponse.getData().getCheckoutUrl() : null)
+				.isSuccess(payOSResponse.getData() != null)
+				.build();
 	}
 	
-	public PayOSResponse createTopUpPaymentLink(int transactionId) throws NoSuchAlgorithmException, InvalidKeyException {
+	public PaymentLinkResponse createTopUpPaymentLink(int transactionId) throws NoSuchAlgorithmException, InvalidKeyException {
 		var transaction = transactionRepository.findById(transactionId).orElseThrow(
 				() -> new AppException(ErrorCode.TRANSACTION_NOT_EXISTED)
 		);
@@ -137,7 +145,11 @@ public class PaymentService {
 		
 		request.setSignature(signature);
 		
-        return payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
+		var payOSResponse = payOSClient.generateQrCode(request, PAYOS_CLIENT_ID, PAYOS_API_KEY);
+		return PaymentLinkResponse.builder()
+				.checkoutUrl(payOSResponse.getData() != null ? payOSResponse.getData().getCheckoutUrl() : null)
+				.isSuccess(payOSResponse.getData() != null)
+				.build();
 	}
 	
 	public PayOSPaymentResponse getPaymentInfo(int id) {

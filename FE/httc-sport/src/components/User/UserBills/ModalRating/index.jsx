@@ -19,7 +19,7 @@ export default function ModalRating({ open, handleClose }) {
     };
 
     return (
-        <div>
+        <>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -35,6 +35,6 @@ export default function ModalRating({ open, handleClose }) {
                     </Typography>
                 </Box>
             </Modal>
-        </div>
+        </>
     );
 }

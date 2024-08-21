@@ -1,7 +1,7 @@
 import StarIcon from '@mui/icons-material/Star';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
-import * as React from 'react';
+import { useState } from 'react';
 
 import { Button, TextField, Typography } from '@mui/material';
 
@@ -17,9 +17,23 @@ function getLabelText(value) {
     return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
 }
 
-export default function RatingPitch() {
-    const [value, setValue] = React.useState(null);
-    const [hover, setHover] = React.useState(-1);
+export default function RatingPitch({ idBills }) {
+    const [value, setValue] = useState('');
+    const [hover, setHover] = useState(-1);
+    const [description, setDescription] = useState('');
+
+    const handleChangeValue = (e, newValue) => {
+        console.log(newValue);
+    };
+
+    const handleChangeActive = (e, newHover) => {
+        setHover(newHover);
+    };
+
+    const handleChangeDescription = (e) => {
+        setDescription(e.target.value);
+    };
+    const submitReview = () => {};
 
     return (
         <Box
@@ -34,19 +48,15 @@ export default function RatingPitch() {
                 name="hover-feedback"
                 value={value}
                 getLabelText={getLabelText}
-                onChange={(event, newValue) => {
-                    setValue(newValue);
-                }}
-                onChangeActive={(event, newHover) => {
-                    setHover(newHover);
-                }}
+                onChange={handleChangeValue}
+                onChangeActive={handleChangeActive}
                 emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
             />
             <Box sx={{ mt: 1 }}>
-                <p>{labels[hover !== -1 ? hover : value !== null ? value : 0]}</p>
+                <Typography variant="body2">{labels[hover !== -1 ? hover : value !== null ? value : 0]}</Typography>
             </Box>
             <Box sx={{ mt: 1 }}></Box>
-            <Typography component="div" className="w-100">
+            <Box sx={{ width: '100%', mt: 1 }}>
                 <TextField
                     label="Đánh Giá"
                     variant="outlined"
@@ -54,14 +64,23 @@ export default function RatingPitch() {
                     defaultValue=""
                     className="my-2 w-100"
                     type="text"
+                    value={description}
+                    onChange={handleChangeDescription}
                 />
-            </Typography>
-            <Typography component="div" className="d-flex w-100 justify-content-between align-items-center my-2">
-                <div className="d-flex align-items-center"></div>
-                <Button variant="contained" className="text-capitalize">
+            </Box>
+            <Box
+                sx={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mt: 2,
+                }}
+            >
+                <Button variant="contained" className="text-capitalize" onClick={submitReview}>
                     Đánh Giá
                 </Button>
-            </Typography>
+            </Box>
         </Box>
     );
 }

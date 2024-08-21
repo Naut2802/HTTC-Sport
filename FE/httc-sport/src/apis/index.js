@@ -92,6 +92,10 @@ export const handleGetTransactionsByUser = async (userId) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/transaction/${userId}`);
 };
 
+export const handleGetAllBillsUser = async (userId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/bill/get-all-bills-by-user/${userId}`);
+};
+
 // ----------------------------------PITCH API--------------------------------------
 
 export const handleGetPitchesAdmin = async () => {

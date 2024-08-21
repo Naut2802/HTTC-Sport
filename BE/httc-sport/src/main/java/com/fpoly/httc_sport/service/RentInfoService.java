@@ -251,6 +251,9 @@ public class RentInfoService {
 		if (rentInfo.getIsDone())
 			throw new AppException(ErrorCode.RENT_INFO_EXCHANGED);
 		
+		if (!rentInfo.getPaymentStatus())
+			throw new AppException(ErrorCode.UNPAID);
+		
 		LocalTime startTime = rentInfo.getStartTime();
 		LocalTime endTime = rentInfo.getEndTime().plusMinutes(rentTime);
 		LocalDate dateNow = LocalDate.now();

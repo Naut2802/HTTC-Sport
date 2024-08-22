@@ -53,10 +53,10 @@ export default function RentInfoDetails({ rentInfo, onRentInfoUpdate, closePopup
         const paymentMethod = rentInfo.paymentMethod;
         const res = await handlePayRemaining(id, paymentMethod);
         console.log(res);
-        if (res.data.result.paymentLink) {
+        if (res.data.result.isSuccess) {
             window.location.href = res.data.result.paymentLink.checkoutUrl;
         } else {
-            toast.warning(res.data.result.desc);
+            toast.warning('Có lỗi xảy ra !!!');
         }
     };
 

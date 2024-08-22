@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@mui/material';
+import { Button, TablePagination } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
 
 import { handleGetAllBillsByUser } from '~/apis';
 import ModalRating from '../ModalRating';
-import { handleGetAllBillsUser, handleGetMyInfoAPI } from '~/apis';
-import { useParams } from 'react-router-dom';
 
 function formatCurrency(amount) {
     return amount.toLocaleString('vi-VN', {
@@ -19,38 +16,38 @@ function formatCurrency(amount) {
 export default function TableBills() {
     const [bills, setBills] = useState([]);
     const [open, setOpen] = useState(false);
+    const [selectedBillId, setSelectedBillId] = useState(null);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [pageSize, setPageSize] = useState(5);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
 
-    const handleOpen = () => setOpen(true);
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+    const handleOpen = (id) => {
+        setSelectedBillId(id);
+        setOpen(true);
+    };
+
     const handleClose = () => setOpen(false);
     const userId = localStorage.getItem('userId');
 
-    const fetchData = async () => {
+    const fetchData = async (page, size) => {
         try {
-            const res = await handleGetAllBillsByUser(userId);
+            const res = await handleGetAllBillsByUser(userId, page, size);
             setBills(res.data.result);
-            console.log(res.data.result);
         } catch (error) {
             console.error(error);
         }
     };
 
     useEffect(() => {
-        fetchData();
-    }, []);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const reUser = await handleGetMyInfoAPI();
-            const userId = reUser.data.result.id;
-            console.log(reUser.data.result);
-
-            // try {
-            //     const re = await handleGetAllBillsUser(userId);
-            //     setUserBills(re.data.result);
-            // } catch (error) {}
-        };
-        fetchData();
-    }, []);
+        fetchData(page, pageSize);
+    }, [page, pageSize]);
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 20 },
@@ -75,10 +72,10 @@ export default function TableBills() {
             field: 'paymentMethod',
             headerName: 'Phương Thức Thanh Toán',
             width: 200,
-            renderCell: () => {
-                return bills.paymentMethod === 'QR'
+            renderCell: (params) => {
+                return params.value === 'QR'
                     ? 'Thanh Toán Bằng QR'
-                    : bills.paymentMethod === 'CASH'
+                    : params.value === 'CASH'
                     ? 'Thanh Toán Bằng Tiền Mặt'
                     : 'Thanh Toán Bằng Ví';
             },
@@ -88,29 +85,41 @@ export default function TableBills() {
             headerName: 'Đánh Giá',
             sortable: false,
             width: 90,
-
-            renderCell: () => (
-                <Button onClick={handleOpen} variant="text">
+            renderCell: (params) => (
+                <Button onClick={() => handleOpen(params.row.id)} variant="text">
                     Đánh Giá
                 </Button>
             ),
         },
-        { field: 'paymentMethod', headerName: 'Phương Thức Thanh Toán', width: 200 },
     ];
+
+    const rows = bills.map((info) => ({
+        id: info.id,
+        pitchName: info.pitchName,
+        name: info.lastName + ' ' + info.firstName,
+        email: info.email,
+        phoneNumber: info.phoneNumber,
+        rentedAt: info.rentedAt,
+        startTime: info.startTime,
+        endTime: info.endTime,
+        total: info.total,
+        paymentMethod: info.paymentMethod,
+    }));
 
     return (
         <>
-            <DataGrid
-                rows={rows}
-                columns={columns}
-                pageSizeOptions={[5, 10, 20, 50, 100]}
-                initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 5 },
-                    },
-                }}
-            />
-            <ModalRating idBills={userBills.id} open={open} handleClose={handleClose} />
+            <div className="my-5">
+                <DataGrid rows={rows} columns={columns} />
+                <TablePagination
+                    component="div"
+                    count={100}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </div>
+            <ModalRating open={open} handleClose={handleClose} selectedBillId={selectedBillId} />
         </>
     );
 }

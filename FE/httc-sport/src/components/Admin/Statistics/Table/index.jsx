@@ -1,3 +1,4 @@
+import { TablePagination } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
@@ -13,18 +14,31 @@ function formatCurrency(amount) {
 
 export default function TableStatistics() {
     const [bills, setBills] = useState([]);
-    const fetchData = async () => {
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [pageSize, setPageSize] = useState(5);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+    const fetchData = async (page, size) => {
         try {
-            const res = await handleGetAllBills();
+            const res = await handleGetAllBills(page, size);
             setBills(res.data.result);
+            console.log(res.data.result);
         } catch (error) {
             console.error(error);
         }
     };
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        fetchData(page, pageSize);
+    }, [page, pageSize]);
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 20 },
@@ -54,7 +68,7 @@ export default function TableStatistics() {
                 return bills.paymentMethod === 'QR'
                     ? 'Thanh Toán Bằng QR'
                     : bills.paymentMethod === 'CASH'
-                    ? 'Thanh Toán Bằng Tiền Mặt'
+                    ? 'Thanh Toán Tiền Mặt'
                     : 'Thanh Toán Bằng Ví';
             },
         },
@@ -75,16 +89,14 @@ export default function TableStatistics() {
 
     return (
         <div style={{ width: '100%' }}>
-            <DataGrid
-                key={rows.id}
-                rows={rows}
-                columns={columns}
-                initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 5 },
-                    },
-                }}
-                pageSizeOptions={[5, 10, 20, 50, 100]}
+            <DataGrid key={rows.id} rows={rows} columns={columns} />
+            <TablePagination
+                component="div"
+                count={100}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </div>
     );

@@ -4,6 +4,7 @@ import Rating from '@mui/material/Rating';
 import { useState } from 'react';
 
 import { Button, TextField, Typography } from '@mui/material';
+import { handleReviewPitch } from '~/apis';
 
 const labels = {
     1: 'Tôi Không Thích',
@@ -17,13 +18,14 @@ function getLabelText(value) {
     return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
 }
 
-export default function RatingPitch({ idBills }) {
+export default function RatingPitch({ billId }) {
+    // Receive the ID as a prop
     const [value, setValue] = useState('');
     const [hover, setHover] = useState(-1);
     const [description, setDescription] = useState('');
 
     const handleChangeValue = (e, newValue) => {
-        console.log(newValue);
+        setValue(newValue);
     };
 
     const handleChangeActive = (e, newHover) => {
@@ -33,7 +35,20 @@ export default function RatingPitch({ idBills }) {
     const handleChangeDescription = (e) => {
         setDescription(e.target.value);
     };
-    const submitReview = () => {};
+    const submitReview = async () => {
+        // console.log('Submitting review for bill ID:', billId, 'with description:', description);
+        const data = {
+            rate: value,
+            description: description,
+        };
+
+        try {
+            const re = await handleReviewPitch(billId, data);
+            console.log(re);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <Box

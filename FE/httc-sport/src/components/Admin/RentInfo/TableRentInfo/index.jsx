@@ -1,4 +1,4 @@
-import { Button, Grid } from '@mui/material';
+import { Button, Grid, TablePagination } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
@@ -18,16 +18,26 @@ export default function TableRentInfo() {
     const [rentInfo, setRentInfo] = useState([]);
     const [selectedRentInfo, setSelectedRentInfo] = useState(null);
     const [openPopupDetail, setOpenPopupDetail] = useState(false);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [pageSize, setPageSize] = useState(5);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
 
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
     const handleViewDetails = (number) => {
         const selectedInfo = rentInfo[number - 1];
         setSelectedRentInfo(selectedInfo);
         setOpenPopupDetail(true);
     };
 
-    const fetchData = async () => {
+    const fetchData = async (page, size) => {
         try {
-            const res = await handleGetAllRentInfoAdmin();
+            const res = await handleGetAllRentInfoAdmin(page, size);
             setRentInfo(res.data.result);
             console.log(res.data.result);
         } catch (error) {
@@ -36,8 +46,8 @@ export default function TableRentInfo() {
     };
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        fetchData(page, pageSize);
+    }, [page, pageSize]);
 
     const columns = [
         { field: 'number', headerName: 'STT', width: 10 },
@@ -108,16 +118,14 @@ export default function TableRentInfo() {
 
     return (
         <div className="my-3" sx={{ width: 'auto' }}>
-            <DataGrid
-                key={rows.id}
-                rows={rows}
-                columns={columns}
-                initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 5 },
-                    },
-                }}
-                pageSizeOptions={[5, 10, 20, 50, 100]}
+            <DataGrid key={rows.id} rows={rows} columns={columns} pageSizeOptions={[5, 10, 20, 50, 100]} />
+            <TablePagination
+                component="div"
+                count={100}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
             />
             <Popup openPopup={openPopupDetail} setOpenPopup={setOpenPopupDetail}>
                 <Grid container>

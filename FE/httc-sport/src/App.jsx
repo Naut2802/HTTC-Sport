@@ -46,6 +46,7 @@ import PayRemainingError from './components/Admin/RentInfo/PayRemainingError';
 import PayRemainingSuccess from './components/Admin/RentInfo/PayRemainingSuccess';
 import Statistics from './components/Admin/Statistics';
 import TableTransaction from './components/Wallet/TableTransaction';
+import Transactions from './components/Admin/Transactions';
 
 const ProtectedRoute = () => {
     const user = localStorage.getItem('accessToken');
@@ -114,6 +115,7 @@ function App() {
                         <Route path="/admin/thong-tin-dat-san" element={<RentInfo />} />
                         <Route path="/admin/danh-sach-san" element={<ListPitchs />} />
                         <Route path="/admin/thong-tin-tai-khoan" element={<UserInfo />} />
+                        <Route path="/admin/lich-su-giao-dich-vi" element={<Transactions />} />
                     </Route>
                 </Route>
             </Route>

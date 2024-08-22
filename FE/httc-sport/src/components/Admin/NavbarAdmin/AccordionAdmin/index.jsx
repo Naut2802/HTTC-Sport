@@ -10,6 +10,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import PriceChangeIcon from '@mui/icons-material/PriceChange';
 
 export default function AccordionAdmin() {
     return (
@@ -74,6 +75,14 @@ export default function AccordionAdmin() {
                                 sx={{ color: '#595C5F', '&:hover': { color: 'blue' } }}
                             >
                                 <SupervisorAccountIcon sx={{ marginBottom: '4px' }} /> Khách Hàng
+                            </Typography>
+                            <Typography
+                                component={Link}
+                                to="/admin/lich-su-giao-dich-vi"
+                                className="mx-2 my-2 text-decoration-none"
+                                sx={{ color: '#595C5F', '&:hover': { color: 'blue' } }}
+                            >
+                                <PriceChangeIcon sx={{ marginBottom: '4px' }} /> Giao Dịch Ví
                             </Typography>
                         </div>
                     </AccordionDetails>

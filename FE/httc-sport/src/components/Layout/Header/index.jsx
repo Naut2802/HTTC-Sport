@@ -253,7 +253,7 @@ export default function Header() {
                     ) : (
                         <Box sx={{ flexGrow: 0, marginLeft: 2 }} className="d-flex">
                             <Typography component="div" className="text-dark">
-                                Xin Chào : {user?.lastName} {user?.firstName}
+                                {user?.lastName ? user.lastName : user?.username}
                             </Typography>
                             <Tooltip title="Ví" className="mx-4">
                                 <IconButton sx={{ p: 0 }} onClick={handleOpenVi}>

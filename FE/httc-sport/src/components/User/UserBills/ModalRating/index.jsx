@@ -5,7 +5,7 @@ import * as React from 'react';
 
 import RatingPitch from '../RatingPitch';
 
-export default function ModalRating({ open, handleClose }) {
+export default function ModalRating({ open, handleClose, selectedBillId }) {
     const style = {
         position: 'absolute',
         top: '50%',
@@ -19,7 +19,7 @@ export default function ModalRating({ open, handleClose }) {
     };
 
     return (
-        <div>
+        <>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -31,10 +31,10 @@ export default function ModalRating({ open, handleClose }) {
                         Đánh Giá
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        <RatingPitch />
+                        <RatingPitch billId={selectedBillId} />
                     </Typography>
                 </Box>
             </Modal>
-        </div>
+        </>
     );
 }

@@ -1,17 +1,28 @@
 import { toast } from 'react-toastify';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
-import { Button, Tooltip } from '@mui/material';
+import { Button, TablePagination, Tooltip } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { handleGetUserAdmin, handleGetUsersAdmin, handleDeleteUserAdmin, handleActiveUserAdmin } from '~/apis';
 
 export default function TableUsers({ dataUserTable }) {
     const [users, setUsers] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [pageSize, setPageSize] = useState(5);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = async (page, size) => {
             try {
-                const response = await handleGetUserAdmin();
+                const response = await handleGetUserAdmin(page, size);
                 // console.log(response.data.result);
                 const dataUser = response.data.result;
                 const filteredUsers = dataUser.filter((user) => !user.roles.some((role) => role.roleName === 'ADMIN'));
@@ -20,8 +31,8 @@ export default function TableUsers({ dataUserTable }) {
                 console.error('Error fetching user data:', error);
             }
         };
-        fetchData();
-    }, []);
+        fetchData(page, pageSize);
+    }, [page, pageSize]);
 
     const handleEditUser = async (users) => {
         const userId = users.id;
@@ -115,17 +126,14 @@ export default function TableUsers({ dataUserTable }) {
 
     return (
         <div className="w-100 my-2">
-            <DataGrid
-                rows={users}
-                columns={columns}
-                pageSize={5}
-                initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 5 },
-                    },
-                }}
-                rowsPerPageOptions={[5, 10, 20, 50, 100]}
-                getRowId={(row) => row.id}
+            <DataGrid rows={users} columns={columns} getRowId={(row) => row.id} />
+            <TablePagination
+                component="div"
+                count={100}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </div>
     );

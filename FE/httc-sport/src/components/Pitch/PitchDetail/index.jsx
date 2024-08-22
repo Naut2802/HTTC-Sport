@@ -227,7 +227,7 @@ export default function PitchDetail() {
                     </Grid>
                     <Grid item xs={8}>
                         {/* List Time Per Days */}
-                        <Comments />
+                        <Comments id={pitch.id} />
                     </Grid>
                 </Grid>
             </Box>

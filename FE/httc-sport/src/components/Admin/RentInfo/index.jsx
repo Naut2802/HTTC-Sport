@@ -1,7 +1,6 @@
 import { Breadcrumbs, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-import FormRentInfo from './FormRentInfo';
 import TableRentInfo from './TableRentInfo';
 
 export default function RentInfo() {
@@ -17,9 +16,6 @@ export default function RentInfo() {
                 </Typography>
             </Breadcrumbs>
             <hr />
-            <div className="my-2">
-                <FormRentInfo />
-            </div>
             <div>
                 <TableRentInfo />
             </div>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import DeleteForeverTwoToneIcon from '@mui/icons-material/DeleteForeverTwoTone';
 import { Button, Grid } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
@@ -5,7 +6,7 @@ import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 
 import { toast } from 'react-toastify';
-import { handleDeleteRentInfo, handleGetAllRentInfoByUser } from '~/apis';
+import { handleDeleteRentInfo, handleGetAllRentInfoByUser, handleRentPitch } from '~/apis';
 import Popup from '~/components/Layout/Popup';
 import ModalDetail from '../ModalDetail';
 import RePayment from '../RePayment';
@@ -17,17 +18,40 @@ function formatCurrency(amount) {
     });
 }
 
+function calculateMinutesDifference(startTime, endTime) {
+    // Chuyển đổi chuỗi thời gian thành đối tượng Date cho cùng một ngày (ngày mặc định)
+    const today = new Date().toISOString().split('T')[0];
+    const startDate = new Date(`${today}T${startTime}`);
+    const endDate = new Date(`${today}T${endTime}`);
+    const diffInMs = endDate - startDate;
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+
+    return diffInMinutes;
+}
+
+function subtractMinutesFromTime(startTime, minutesToSubtract) {
+    const today = new Date().toISOString().split('T')[0];
+    const startDate = new Date(`${today}T${startTime}`);
+    startDate.setMinutes(startDate.getMinutes() - minutesToSubtract);
+    const hours = String(startDate.getHours()).padStart(2, '0');
+    const minutes = String(startDate.getMinutes()).padStart(2, '0');
+    const seconds = String(startDate.getSeconds()).padStart(2, '0');
+
+    return `${hours}:${minutes}:${seconds}`;
+}
+
 export default function TableRentInfo({ userId }) {
     const [rentInfo, setRentInfo] = useState([]);
     const [openPopupDetail, setOpenPopupDetail] = useState(false);
     const [openPopupRePayment, setOpenPopupRePayment] = useState(false);
     const [selectedRentInfo, setSelectedRentInfo] = useState(null);
+    const [rentInfoRePayment, setRentInfoRePayment] = useState(null);
+    const [resPayment, setResPayment] = useState(null);
 
     const fetchData = async () => {
         try {
             const res = await handleGetAllRentInfoByUser(userId);
             setRentInfo(res.data.result);
-            console.log(res.data.result);
         } catch (error) {
             console.error(error);
         }
@@ -37,27 +61,53 @@ export default function TableRentInfo({ userId }) {
         fetchData();
     }, [userId]);
 
-    const handleViewDetails = (id) => {
-        const selectedInfo = rentInfo[id - 1];
+    const handleViewDetails = (number) => {
+        const selectedInfo = rentInfo[number - 1];
         setSelectedRentInfo(selectedInfo);
         setOpenPopupDetail(true);
     };
 
-    const handleRePayment = (id) => {
-        const selectedInfo = rentInfo[id - 1];
-        setSelectedRentInfo(selectedInfo);
-        setOpenPopupRePayment(true);
+    const handleRePayment = async (number) => {
+        const selectedInfo = rentInfo[number - 1];
+        await handleDeleteRentInfo(selectedInfo.id);
+
+        const minutesToSubtract = 1;
+        const newStartTime = subtractMinutesFromTime(selectedInfo.startTime, minutesToSubtract);
+        const rentTime = calculateMinutesDifference(newStartTime, selectedInfo.endTime);
+        const data = {
+            email: selectedInfo.email,
+            firstName: selectedInfo.firstName,
+            lastName: selectedInfo.lastName,
+            note: selectedInfo.note,
+            paymentMethod: selectedInfo.paymentMethod,
+            phoneNumber: selectedInfo.phoneNumber,
+            pitchId: selectedInfo.pitchId,
+            rentTime: rentTime,
+            rentedAt: selectedInfo.rentedAt,
+            startTime: newStartTime,
+            typePitch: selectedInfo.typePitch,
+        };
+        const res = await handleRentPitch(data);
+        if (res.data.result.rentSuccess) {
+            setResPayment(res.data.result);
+            setRentInfoRePayment(data);
+            setOpenPopupRePayment(true);
+        } else {
+            toast.error('Không thể tiếp tục vì không còn sân trống trong thời gian này nữa. Vui lòng đặt lại!');
+        }
+        fetchData();
     };
 
-    const handleDeleteRentInfoByID = async (id) => {
-        const selectedInfo = rentInfo[id - 1];
+    const handleDeleteRentInfoByID = async (number) => {
+        const selectedInfo = rentInfo[number - 1];
         const res = await handleDeleteRentInfo(selectedInfo.id);
         toast.success(res.data.message);
         fetchData();
     };
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 70 },
+        { field: 'stt', headerName: 'STT', width: 20 },
+        { field: 'id', headerName: 'ID', width: 100 },
         { field: 'pitchName', headerName: 'Tên Sân', width: 130 },
         { field: 'email', headerName: 'Email', width: 250 },
         {
@@ -71,9 +121,9 @@ export default function TableRentInfo({ userId }) {
             headerName: 'Tiền Cọc',
             width: 160,
             renderCell: (params) => {
-                const { id } = params.row;
-                return rentInfo[id - 1].deposit === 0 ? (
-                    <span className="text-danger">Vui lòng thanh toán!</span>
+                const { number } = params.row;
+                return rentInfo[number - 1].deposit === 0 ? (
+                    <span className="text-danger">Chưa thanh toán cọc!</span>
                 ) : (
                     formatCurrency(params.value)
                 );
@@ -91,9 +141,9 @@ export default function TableRentInfo({ userId }) {
             sortable: false,
             width: 160,
             renderCell: (params) => {
-                const { id } = params.row;
-                return !rentInfo[id - 1].paymentStatus ? (
-                    <Button variant="text" onClick={() => handleRePayment(id)}>
+                const { number } = params.row;
+                return !rentInfo[number - 1].paymentStatus ? (
+                    <Button variant="text" onClick={() => handleRePayment(number)}>
                         Tiếp Tục
                     </Button>
                 ) : (
@@ -107,9 +157,9 @@ export default function TableRentInfo({ userId }) {
             sortable: false,
             width: 120,
             renderCell: (params) => {
-                const { id } = params.row;
+                const { number } = params.row;
                 return (
-                    <Button onClick={() => handleViewDetails(id)} variant="text">
+                    <Button onClick={() => handleViewDetails(number)} variant="text">
                         Xem Chi Tiết
                     </Button>
                 );
@@ -121,9 +171,9 @@ export default function TableRentInfo({ userId }) {
             sortable: false,
             width: 100,
             renderCell: (params) => {
-                const { id } = params.row;
-                return !rentInfo[id - 1].paymentStatus ? (
-                    <Button onClick={() => handleDeleteRentInfoByID(id)} color="error" variant="text">
+                const { number } = params.row;
+                return !rentInfo[number - 1].paymentStatus ? (
+                    <Button onClick={() => handleDeleteRentInfoByID(number)} color="error" variant="text">
                         <DeleteForeverTwoToneIcon sx={{ textAlign: 'start' }} />
                     </Button>
                 ) : (
@@ -134,7 +184,8 @@ export default function TableRentInfo({ userId }) {
     ];
 
     const rows = rentInfo.map((info, index) => ({
-        id: index + 1,
+        number: index + 1,
+        id: info.id,
         pitchName: info.pitchName,
         email: info.email,
         rentedAt: info.rentedAt,
@@ -148,7 +199,7 @@ export default function TableRentInfo({ userId }) {
                 rows={rows}
                 // sx={{ textAlign: 'center' }}
                 columns={columns}
-                getRowId={(rows) => rows.id}
+                getRowId={(rows) => rows.number}
                 pageSizeOptions={[5, 10, 20, 50, 100]}
                 initialState={{
                     pagination: {
@@ -163,7 +214,7 @@ export default function TableRentInfo({ userId }) {
             </Popup>
             <Popup openPopup={openPopupRePayment} setOpenPopup={setOpenPopupRePayment}>
                 <Grid container>
-                    <Grid item>{selectedRentInfo && <RePayment rentInfo={selectedRentInfo} />}</Grid>
+                    <Grid item>{rentInfoRePayment && <RePayment rentInfo={rentInfoRePayment} resPayment={resPayment} />}</Grid>
                 </Grid>
             </Popup>
         </div>

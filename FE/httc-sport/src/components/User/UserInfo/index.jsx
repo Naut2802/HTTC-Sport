@@ -1,11 +1,11 @@
 import { Box, Breadcrumbs, Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
+import logo from '~/components/Images/logo.png';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { handleChangeInfoUser, handleGetMyInfoAPI } from '~/apis';
-import logo from '~/components/Images/logo.png';
 import VipLevel from './VipLevel';
 
 export default function UserInfo() {
@@ -115,7 +115,13 @@ export default function UserInfo() {
                                                 name="lastName"
                                                 control={control}
                                                 render={({ field }) => (
-                                                    <TextField {...field} label="Họ" variant="outlined" fullWidth />
+                                                    <TextField
+                                                        {...field}
+                                                        label="Họ"
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        value={field.value || ''}
+                                                    />
                                                 )}
                                             />
                                         </Grid>
@@ -124,7 +130,13 @@ export default function UserInfo() {
                                                 name="firstName"
                                                 control={control}
                                                 render={({ field }) => (
-                                                    <TextField {...field} label="Tên" variant="outlined" fullWidth />
+                                                    <TextField
+                                                        {...field}
+                                                        label="Tên"
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        value={field.value || ''}
+                                                    />
                                                 )}
                                             />
                                         </Grid>
@@ -133,7 +145,13 @@ export default function UserInfo() {
                                                 name="phoneNumber"
                                                 control={control}
                                                 render={({ field }) => (
-                                                    <TextField {...field} label="Số Điện Thoại" variant="outlined" fullWidth />
+                                                    <TextField
+                                                        {...field}
+                                                        label="Số Điện Thoại"
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        value={field.value || ''}
+                                                    />
                                                 )}
                                             />
                                         </Grid>

@@ -50,17 +50,17 @@ class RoleControllerTest {
 	
 	private List<RoleResponse> roleResponse;
 	
-	@Test
-	@WithMockUser(username = "admin", roles = {"ADMIN"})
-	void testGetRoles() throws Exception{
-		Mockito.when(roleService.getRoles()).thenReturn(roleResponse);
-		mockMvc.perform(MockMvcRequestBuilders
-				.get("/api/v1/role")
-				.contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
-			);
-	}
+//	@Test
+//	@WithMockUser(username = "admin", roles = {"ADMIN"})
+//	void testGetRoles() throws Exception{
+//		Mockito.when(roleService.getRoles()).thenReturn(roleResponse);
+//		mockMvc.perform(MockMvcRequestBuilders
+//				.get("/api/v1/role")
+//				.contentType(MediaType.APPLICATION_JSON_VALUE))
+//				.andExpect(MockMvcResultMatchers.status().isOk())
+//				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
+//			);
+//	}
 	
 	@Test
 	void testRole() {

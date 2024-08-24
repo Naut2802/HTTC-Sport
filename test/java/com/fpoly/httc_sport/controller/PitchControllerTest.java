@@ -44,6 +44,7 @@ public class PitchControllerTest {
 	//Response
 	private PitchResponse pitResponse;
 	private PitchDetailsResponse pitDetailResponse;
+	private List<PitchResponse> listPitchResponse;
 	
 	@BeforeEach
 	void initData() {
@@ -132,6 +133,30 @@ public class PitchControllerTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	void testActivePitch() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders
+				.patch("/api/v1/pitch/active/{id}", "1")
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("code")
+						.value(1000)
+				);
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	void testDeleteImageFromPitch() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders
+				.patch("/api/v1/pitch/{id}/{publicId}", "1", "hxv49y3khx9tbjzlvpwc")
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("code")
+						.value(1000)
+				);
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
 	void testGetPitch() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders
 				.get("/api/v1/pitch/{id}", "1")
@@ -142,15 +167,43 @@ public class PitchControllerTest {
 				);
 	}
 	
+//	@Test
+//	@WithMockUser(username = "admin", roles = {"ADMIN"})
+//	void testGetPitchs() throws Exception {
+//		mockMvc.perform(MockMvcRequestBuilders
+//				.get("/api/v1/pitch")
+//				.contentType(MediaType.APPLICATION_JSON_VALUE))
+//				.andExpect(MockMvcResultMatchers.status().isOk())
+//				.andExpect(MockMvcResultMatchers.jsonPath("code")
+//						.value(1000)
+//				);
+//	}
+	
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
-	void testGetPitchs() throws Exception {
+	void testGetPitches() throws Exception {
+		Mockito.when(pitchService.getPitches(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
+		.thenReturn(listPitchResponse);
+		
 		mockMvc.perform(MockMvcRequestBuilders
 				.get("/api/v1/pitch")
 				.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.jsonPath("code")
-						.value(1000)
+				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
+				);
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	void testGetPitchesById() throws Exception {
+		Mockito.when(pitchService.getPitchesByAdmin(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
+		.thenReturn(listPitchResponse);
+		
+		mockMvc.perform(MockMvcRequestBuilders
+				.get("/api/v1/pitch/admin")
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
 				);
 	}
 	

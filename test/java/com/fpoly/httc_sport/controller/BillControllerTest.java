@@ -1,7 +1,9 @@
 package com.fpoly.httc_sport.controller;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -31,13 +33,18 @@ public class BillControllerTest {
 	private BillResponse billResponse;
 	private List<BillResponse> listBillResponse;
 	
+	@BeforeEach
+	void initData() {
+		listBillResponse = Collections.emptyList();
+	}
+	
 	@Test
 	@WithMockUser(username="chaunt", roles= {"USER"})
-	void testGetAllBillByUser() throws Exception {
-		Mockito.when(billService.getAllBillByUserId(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(listBillResponse);
+	void testGetAllBillsByUser() throws Exception {
+		Mockito.when(billService.getAllBillsByUserId(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(listBillResponse);
 		
 		mockMvc.perform(MockMvcRequestBuilders
-				.get("/api/v1/bill/get-all-by-user/{userId}", "662154df-ebe9-4732-900e-953bdbc22203")
+				.get("/api/v1/bill/get-all-bills-by-user/{userId}", "cc71c307-2b4a-40b0-86dc-9492e657f90c")
 				.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
@@ -57,9 +64,11 @@ public class BillControllerTest {
 	
 	@Test
 	@WithMockUser(username="admin", roles= {"ADMIN"})
-	void testGetAllByPitch() throws Exception {
+	void testGetAllBillsByPitch() throws Exception {
+		Mockito.when(billService.getAllBillsByPitchId(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
+		.thenReturn(listBillResponse);
 		mockMvc.perform(MockMvcRequestBuilders
-				.get("/api/v1/bill/get-all-by-pitch/{pitchId}", "1")
+				.get("/api/v1/bill/get-all-bills-by-pitch/{pitchId}", "1")
 				.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)				
@@ -68,6 +77,6 @@ public class BillControllerTest {
 	
 	@Test
 	void testBill() {
-		System.out.println("Test Bill Ne");
+		System.out.println("Test Bill");
 	}
 }

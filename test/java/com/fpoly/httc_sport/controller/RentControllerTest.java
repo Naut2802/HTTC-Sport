@@ -1,5 +1,7 @@
 package com.fpoly.httc_sport.controller;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,9 +22,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
+//import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
+import com.fpoly.httc_sport.dto.response.RentPayRemainingResponse;
 import com.fpoly.httc_sport.dto.response.RentResponse;
 import com.fpoly.httc_sport.service.RentInfoService;
 
@@ -38,15 +41,17 @@ public class RentControllerTest {
 	
 	// Request
 	private RentRequest rentRequest;
-	private RentInfoUpdateRequest rentInfoUpdateRequest;
+//	private RentInfoUpdateRequest rentInfoUpdateRequest;
 	
 	// Response
 	private RentResponse rentResponse;
 	private RentInfoResponse rentInfoResponse;
+	private RentPayRemainingResponse rentPayRemainingResponse;
 	
 	@BeforeEach
 	void initData() {
 		rentRequest = RentRequest.builder()
+				.pitchId((long)1)
 				.email("chaunt@gmail.com")
 				.phoneNumber("0902764256")
 				.firstName("Châu")
@@ -56,20 +61,20 @@ public class RentControllerTest {
 				.rentTime(2)
 				.typePitch(5)
 				.note("abc")
-				.paymentMethod("Ví")
+				.paymentMethod("QR")
 				.build();
 		
-		rentInfoUpdateRequest = RentInfoUpdateRequest.builder()
-				.email("chaunt@gmail.com")
-				.phoneNumber("0902764256")
-				.firstName("Châu")
-				.lastName("Nguyễn")
-				.rentedAt(LocalDate.now())		
-				.startTime(LocalTime.now())
-				.rentTime(2)
-				.typePitch(5)
-				.note("abc")
-				.build();
+//		rentInfoUpdateRequest = RentInfoUpdateRequest.builder()
+//				.email("chaunt@gmail.com")
+//				.phoneNumber("0902764256")
+//				.firstName("Châu")
+//				.lastName("Nguyễn")
+//				.rentedAt(LocalDate.now())		
+//				.startTime(LocalTime.now())
+//				.rentTime(2)
+//				.typePitch(5)
+//				.note("abc")
+//				.build();
 	}
 	
 //	@Test
@@ -94,11 +99,45 @@ public class RentControllerTest {
 //	@Test
 //	// Kiem thu xac nhan tien thue
 //	void testConfirmRent() throws Exception {
-//		Mockito.when(rentInfoService.confirmRent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), 
-//				ArgumentMatchers.anyString())).thenReturn(rentResponse);
+//		Mockito.when(rentInfoService.confirmRent(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyString()))
+//		.thenReturn(rentResponse);
 //		
 //		mockMvc.perform(MockMvcRequestBuilders
 //				.post("/api/v1/rent-pitch/confirm-rent")
+//				.param("code", "code")
+//				.param("orderCode", "00")
+//				.param("status", "status")
+//				.contentType(MediaType.APPLICATION_JSON_VALUE))
+//				.andExpect(MockMvcResultMatchers.status().isOk())
+//				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
+//				);
+//	}
+	
+//	@Test
+//	@WithMockUser(username = "admin", roles = {"ADMIN"})
+//	void testPayRemaining() throws Exception {
+//		Mockito.when(rentInfoService.payRemainingAmount(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString()))
+//		.thenReturn(rentPayRemainingResponse);
+//		
+//		mockMvc.perform(MockMvcRequestBuilders
+//				.post("/api/v1/rent-pitch/pay-remaining/{id}", "454384")
+//				.param("paymentMethod", "paymentMethod")
+//				.contentType(MediaType.APPLICATION_JSON_VALUE))
+//				.andExpect(MockMvcResultMatchers.status().isOk())
+//				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
+//				);
+//	}
+	
+//	@Test
+//	@WithMockUser(username = "admin", roles = {"ADMIN"})
+//	void testConfirmPayRemaining() throws Exception {
+//		Mockito.when(rentInfoService.confirmPayRemaining(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyString()))
+//		.thenReturn(rentResponse);	
+//		mockMvc.perform(MockMvcRequestBuilders
+//				.post("/api/v1/rent-pitch/confirm-pay-remaining")
+//				.param("code", "code")
+//				.param("orderCode", "00")
+//				.param("status", "status")
 //				.contentType(MediaType.APPLICATION_JSON_VALUE))
 //				.andExpect(MockMvcResultMatchers.status().isOk())
 //				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
@@ -118,7 +157,7 @@ public class RentControllerTest {
 	
 //	@Test
 //	void testGetRentInfo() throws Exception {
-//		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/rent-pitch/{id}", "1")
+//		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/rent-pitch/{id}", "454384")
 //					.contentType(MediaType.APPLICATION_JSON_VALUE))
 //					.andExpect(MockMvcResultMatchers.status().isOk())
 //					.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
@@ -128,7 +167,7 @@ public class RentControllerTest {
 //	@Test
 //	void testGetAllRentInfoByUser() throws Exception {
 //		mockMvc.perform(MockMvcRequestBuilders
-//				.get("/api/v1/rent-pitch/get-all-by-user/{userId}", "662154df-ebe9-4732-900e-953bdbc22203")
+//				.get("/api/v1/rent-pitch/get-all-by-user/{userId}", "918e527b-cdea-46b2-bee3-c4cdcf844da8")
 //				.contentType(MediaType.APPLICATION_JSON_VALUE))
 //				.andExpect(MockMvcResultMatchers.status().isOk())
 //				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
@@ -158,22 +197,16 @@ public class RentControllerTest {
 //	@Test
 //	@WithMockUser(username="admin", roles= {"ADMIN"})
 //	void testUpdateRentInfo() throws Exception {
-//		ObjectMapper objectMapper = new ObjectMapper();
-//		objectMapper.registerModule(new JavaTimeModule());
-//		String content = objectMapper.writeValueAsString(rentInfoUpdateRequest);
-//		
-//		Mockito.when(rentInfoService.updateRentInfo(ArgumentMatchers.anyInt(), ArgumentMatchers.any(RentInfoUpdateRequest.class)))
-//				.thenReturn(rentInfoResponse);	
+//		Mockito.when(rentInfoService.updateRentInfo(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
+//		.thenReturn(rentInfoResponse);
 //		
 //		mockMvc.perform(MockMvcRequestBuilders
 //				.put("/api/v1/rent-pitch/{id}", "1")
-//				.contentType(MediaType.APPLICATION_JSON_VALUE)
-//				.content(content))
+//				.param("rentTime", "3")
+//				.contentType(MediaType.APPLICATION_JSON_VALUE))
 //				.andExpect(MockMvcResultMatchers.status().isOk())
-//				.andExpect(MockMvcResultMatchers.jsonPath("code")
-//						.value(1000)
-//			);
-//		
+//				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
+//				);
 //	};
 	
 //	@Test

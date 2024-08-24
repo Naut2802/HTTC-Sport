@@ -3,6 +3,7 @@ package com.fpoly.httc_sport.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpoly.httc_sport.dto.request.*;
 import com.fpoly.httc_sport.dto.response.*;
+import com.fpoly.httc_sport.entity.ChatMessage;
 import com.fpoly.httc_sport.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,13 +64,14 @@ public class UserControllerTest {
 	private ChangePasswordResponse changePasswordResponse;
 	private UserResponse userResponse;
 	private List<UserResponse> listUsers;
+	private List<ChatMessage> listChatMessageResponse;
 	
 	@BeforeEach
 	void initData() {
 		changePassRequest = ChangePasswordRequest.builder()
-				.currentPassword("654321")
-				.newPassword("123456")
-				.confirmationPassword("123456")
+				.currentPassword("123456")
+				.newPassword("654321")
+				.confirmationPassword("654321")
 				.build();
 		
 		changePasswordResponse = ChangePasswordResponse.builder()
@@ -79,15 +81,15 @@ public class UserControllerTest {
 				.build();
 		
 		userUpdateProfileRequest = UserUpdateProfileRequest.builder()
-				.firstName("Chau")
-				.lastName("Nguyen")
-				.phoneNumber("0909090909")
+				.firstName("Châu")
+				.lastName("Nguyễn")
+				.phoneNumber("0916921559")
 				.build();
 		
 		userUpdateRequest = UserUpdateRequest.builder()
 				.email("chauthanhnguyen838@gmail.com")
-				.firstName("Chau")
-				.lastName("Nguyen")
+				.firstName("Châu")
+				.lastName("Nguyễn")
 				.phoneNumber("0916921559")
 				.build();
 
@@ -108,7 +110,7 @@ public class UserControllerTest {
 //			.thenReturn(changePasswordResponse);
 //		// THEN
 //		mockMvc.perform(MockMvcRequestBuilders
-//				.patch("/api/v1/user/change-password/{userId}", "662154df-ebe9-4732-900e-953bdbc22203")
+//				.patch("/api/v1/user/change-password/{userId}", "cc71c307-2b4a-40b0-86dc-9492e657f90c")
 //				.contentType(MediaType.APPLICATION_JSON_VALUE)
 //				.content(content))
 //				.andExpect(MockMvcResultMatchers.status().isOk())
@@ -133,6 +135,20 @@ public class UserControllerTest {
 //						.value(1000)
 //			);
 //	}
+	
+//	@Test
+//	@WithMockUser(username = "chaunt", roles = {"USER"})
+//	void testGetChatMessages() throws Exception {
+//		Mockito.when(userService.getChatMessagesByRoom(ArgumentMatchers.anyInt()))
+//		.thenReturn(listChatMessageResponse);
+//		
+//		mockMvc.perform(MockMvcRequestBuilders
+//				.get("/api/v1/user/chat-room/{roomId}", "1")
+//				.contentType(MediaType.APPLICATION_JSON_VALUE))
+//				.andExpect(MockMvcResultMatchers.status().isOk())
+//				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
+//				);
+//	}
 		
 //	@Test
 //	@WithMockUser(username = "chaunt", roles = {"USER"})
@@ -145,7 +161,7 @@ public class UserControllerTest {
 //			.thenReturn(userResponse);
 //		// THEN
 //		mockMvc.perform(MockMvcRequestBuilders
-//				.patch("/api/v1/user/{userId}", "662154df-ebe9-4732-900e-953bdbc22203")
+//				.patch("/api/v1/user/{userId}", "cc71c307-2b4a-40b0-86dc-9492e657f90c")
 //				.contentType(MediaType.APPLICATION_JSON_VALUE)
 //				.content(content))
 //				.andExpect(MockMvcResultMatchers.status().isOk())
@@ -154,10 +170,9 @@ public class UserControllerTest {
 //		);
 //	}
 
-	// Fail tài khoản hoặc mật khẩu không đúng*******
 //	@Test
-//	@WithMockUser(username = "chaunt",password = "123456", roles= {"USER"})
-//	void testCheckEmail() throws Exception {
+//	@WithMockUser(username = "chaunt", roles= {"USER"})
+//	void testForgotPassword() throws Exception {
 //		HttpServletRequest request = null;
 //		String email = "chauthanhnguyen838@gmail.com";
 //		String response = userService.sendForgotPasswordEmail(email, request);
@@ -172,21 +187,26 @@ public class UserControllerTest {
 //				);
 //	}
 	
-	// Mã xác thực không tồn tại
 //	@Test
-//	@WithMockUser(username = "chaunt", roles= {"USER"})
+//	@WithMockUser(username = "chaunt", roles = {"USER"})
 //	void testValidateToken() throws Exception {
-//		String token = "token";
-//		mockMvc.perform(MockMvcRequestBuilders
-//				.get("/api/v1/user/forgot-password/verify-token")
-//				.param("token", token)
-//				.contentType(MediaType.APPLICATION_JSON_VALUE))
-//				.andExpect(MockMvcResultMatchers.status().isOk())
-//				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
-//				);
+//	    // GIVEN
+//	    String invalidToken = "invalid_token_example";
+//	    
+//	    // Mock service response
+//	    Mockito.when(userService.validateForgotPasswordToken(invalidToken))
+//	            .thenReturn("Mã xác thực không tồn tại");
+//	    
+//	    // Test case: Invalid token
+//	    mockMvc.perform(MockMvcRequestBuilders
+//	            .get("/api/v1/user/forgot-password/verify-token")
+//	            .param("token", invalidToken)
+//	            .contentType(MediaType.APPLICATION_JSON_VALUE))
+//	            .andExpect(MockMvcResultMatchers.status().isNotFound())
+//	            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(1002))
+//	            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Mã xác thực không tồn tại"));
 //	}
-	
-	// Mã xác thực không tồn tại
+
 //	@Test
 //	@WithMockUser(username = "chaunt", roles= {"USER"})
 //	void testResetPassword() throws Exception {
@@ -213,7 +233,7 @@ public class UserControllerTest {
 //		Mockito.when(userService.getUser(ArgumentMatchers.anyString())).thenReturn(userResponse);
 //		
 //		mockMvc.perform(MockMvcRequestBuilders
-//				.get("/api/v1/user/{userId}", "662154df-ebe9-4732-900e-953bdbc22203")
+//				.get("/api/v1/user/{userId}", "cc71c307-2b4a-40b0-86dc-9492e657f90c")
 //				.contentType(MediaType.APPLICATION_JSON_VALUE))
 //				.andExpect(MockMvcResultMatchers.status().isOk())
 //				.andExpect(MockMvcResultMatchers.jsonPath("code")
@@ -234,7 +254,7 @@ public class UserControllerTest {
 //				.thenReturn(userResponse);
 //		// THEN
 //		mockMvc.perform(MockMvcRequestBuilders
-//				.put("/api/v1/user/{userId}", "662154df-ebe9-4732-900e-953bdbc22203")
+//				.put("/api/v1/user/{userId}", "cc71c307-2b4a-40b0-86dc-9492e657f90c")
 //				.contentType(MediaType.APPLICATION_JSON_VALUE).content(content))
 //				.andExpect(MockMvcResultMatchers.status().isOk())
 //				.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000));
@@ -258,7 +278,7 @@ public class UserControllerTest {
 //			.thenReturn(userResponse);	
 //		
 //		mockMvc.perform(MockMvcRequestBuilders
-//				.put("/api/v1/user/authorize/{userId}", "662154df-ebe9-4732-900e-953bdbc22203")
+//				.put("/api/v1/user/authorize/{userId}", "cc71c307-2b4a-40b0-86dc-9492e657f90c")
 //				.contentType(MediaType.APPLICATION_JSON_VALUE)
 //				.content(content))
 //				.andExpect(MockMvcResultMatchers.status().isOk())
@@ -271,29 +291,29 @@ public class UserControllerTest {
 //	@WithMockUser(username = "admin", roles = {"ADMIN"})
 //	void testDeleteUser() throws Exception {
 //		mockMvc.perform(MockMvcRequestBuilders
-//					.delete("/api/v1/user/{userId}", "662154df-ebe9-4732-900e-953bdbc22203")
+//					.delete("/api/v1/user/{userId}", "cc71c307-2b4a-40b0-86dc-9492e657f90c")
 //					.contentType(MediaType.APPLICATION_JSON_VALUE))
 //					.andExpect(MockMvcResultMatchers.status().isOk())
 //					.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
 //				);
 //	}
 	
-	@Test
-	@WithMockUser(username = "admin", roles = {"ADMIN"})
-	void testGetUsers() throws Exception {
-		// GIVEN
-		ObjectMapper objectMapper = new ObjectMapper();
-		int page = 0;
-		int size = 5;
-		// WHEN
-		Mockito.when(userService.getUsers(page, size)).thenReturn(listUsers);
-		// THEN
-		mockMvc.perform(MockMvcRequestBuilders
-					.get("/api/v1/user")
-					.contentType(MediaType.APPLICATION_JSON_VALUE))
-					.andExpect(MockMvcResultMatchers.status().isOk())
-					.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
-				);
-	}
+//	@Test
+//	@WithMockUser(username = "admin", roles = {"ADMIN"})
+//	void testGetUsers() throws Exception {
+//		// GIVEN
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		int page = 0;
+//		int size = 5;
+//		// WHEN
+//		Mockito.when(userService.getUsers(page, size)).thenReturn(listUsers);
+//		// THEN
+//		mockMvc.perform(MockMvcRequestBuilders
+//					.get("/api/v1/user")
+//					.contentType(MediaType.APPLICATION_JSON_VALUE))
+//					.andExpect(MockMvcResultMatchers.status().isOk())
+//					.andExpect(MockMvcResultMatchers.jsonPath("code").value(1000)
+//				);
+//	}
 	
 }

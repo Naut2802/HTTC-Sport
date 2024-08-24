@@ -28,11 +28,11 @@ public class ChatService {
 	SimpMessagingTemplate simpMessagingTemplate;
 	
 	public void processMessage(String senderId, ChatMessageRequest message) {
-		var chatRoom = chatRoomRepository.findByUserIdAndAdminId(senderId, "admin").getFirst();
+		var chatRoom = chatRoomRepository.findByUserIdAndAdminId(message.getUserId(), "admin").getFirst();
 		
 		if (chatRoom == null) {
 			chatRoom = ChatRoom.builder()
-					.userId(senderId)
+					.userId(message.getUserId())
 					.adminId("admin")
 					.build();
 			chatRoomRepository.save(chatRoom);

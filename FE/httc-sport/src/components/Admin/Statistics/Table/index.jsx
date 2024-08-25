@@ -64,10 +64,11 @@ export default function TableStatistics() {
             field: 'paymentMethod',
             headerName: 'Phương Thức Thanh Toán',
             width: 200,
-            renderCell: () => {
-                return bills.paymentMethod === 'QR'
+            renderCell: (params) => {
+                const { id } = params.row;
+                return bills[id - 1].paymentMethod === 'QR'
                     ? 'Thanh Toán Bằng QR'
-                    : bills.paymentMethod === 'CASH'
+                    : bills[id - 1].paymentMethod === 'CASH'
                     ? 'Thanh Toán Tiền Mặt'
                     : 'Thanh Toán Bằng Ví';
             },

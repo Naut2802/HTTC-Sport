@@ -1,19 +1,23 @@
-import * as React from 'react';
+import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
-import { Box, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, Fab, Grid, IconButton, Tooltip, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
+import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
+import HomeWorkIcon from '@mui/icons-material/HomeWork';
 
 import { handleLogoutAPI } from '~/apis';
+import Chat from '~/components/Chat';
+import Popup from '~/components/Layout/Popup';
 
 export default function AccordionAccount() {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [openPopupChat, setOpenPopupChat] = React.useState(false);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
 
@@ -23,6 +27,10 @@ export default function AccordionAccount() {
 
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleOpenChat = () => {
+        setOpenPopupChat(true);
     };
 
     const handleLogOut = async () => {
@@ -37,6 +45,21 @@ export default function AccordionAccount() {
 
     return (
         <>
+            <Fab
+                size="large"
+                color="success"
+                variant="extended"
+                sx={{
+                    position: 'fixed',
+                    bottom: 22,
+                    right: 22,
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                onClick={() => handleOpenChat()}
+            >
+                <ChatTwoToneIcon sx={{ mr: 1 }} />
+                Chat
+            </Fab>
             <Box sx={{ flexGrow: 1 }} />
             <Typography variant="h6" component="div">
                 <Tooltip title="Trang Chủ">
@@ -93,6 +116,14 @@ export default function AccordionAccount() {
                     </div>
                 </Menu>
             </Typography>
+
+            <Popup openPopup={openPopupChat} setOpenPopup={setOpenPopupChat}>
+                <Grid container>
+                    <Grid item>
+                        <Chat />
+                    </Grid>
+                </Grid>
+            </Popup>
         </>
     );
 }

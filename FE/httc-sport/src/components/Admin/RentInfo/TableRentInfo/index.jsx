@@ -51,7 +51,7 @@ export default function TableRentInfo() {
 
     const columns = [
         { field: 'number', headerName: 'STT', width: 10 },
-        { field: 'id', headerName: 'ID', width: 100 },
+        { field: 'id', headerName: 'ID', width: 80 },
         { field: 'pitchName', headerName: 'Tên Sân', width: 130 },
         { field: 'email', headerName: 'Email', width: 200 },
         { field: 'phoneNumber', headerName: 'Số Điện Thoại', width: 130 },
@@ -77,9 +77,9 @@ export default function TableRentInfo() {
         },
         {
             field: 'paymentStatus',
-            headerName: 'Tình Trạng Thanh Toán',
+            headerName: 'Tình Trạng Thanh Toán Cọc',
             sortable: false,
-            width: 180,
+            width: 200,
             renderCell: (params) => {
                 const { number } = params.row;
                 return !rentInfo[number - 1].paymentStatus ? (

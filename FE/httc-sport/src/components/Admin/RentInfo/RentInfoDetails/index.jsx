@@ -247,12 +247,20 @@ export default function RentInfoDetails({ rentInfo, onRentInfoUpdate, closePopup
             </Box>
             {rentInfo.paymentStatus ? (
                 <Box className="card-footer d-flex justify-content-end">
-                    <Button sx={{ mr: 1 }} variant="outlined" onClick={() => handleChangeRentInfoToBill()}>
-                        Hoàn Thành
-                    </Button>
-                    <Button sx={{ mr: 1 }} variant="outlined" onClick={() => handleCreatePayRemainingLink()}>
-                        Tạo Mã Thanh Toán
-                    </Button>
+                    {rentInfo.total - rentInfo.deposit === 0 ? (
+                        <Button variant="outlined" onClick={() => handleChangeRentInfoToBill()}>
+                            Hoàn Thành
+                        </Button>
+                    ) : (
+                        <>
+                            <Button sx={{ mr: 1 }} variant="outlined" onClick={() => handleChangeRentInfoToBill()}>
+                                Nhận Thanh Toán Tiền Mặt
+                            </Button>
+                            <Button variant="outlined" onClick={() => handleCreatePayRemainingLink()}>
+                                Tạo Mã Thanh Toán
+                            </Button>
+                        </>
+                    )}
                 </Box>
             ) : (
                 <></>

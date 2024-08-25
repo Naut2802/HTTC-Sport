@@ -76,7 +76,7 @@ public class SecurityConfig {
 				.securityMatcher(new AntPathRequestMatcher("/auth/**"))
 				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("**/httc-sport-ws/**").authenticated()
+						.requestMatchers("**/httc-sport-ws/**").permitAll()
 						.anyRequest().permitAll())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.httpBasic(AbstractHttpConfigurer::disable)

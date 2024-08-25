@@ -28,18 +28,18 @@ public class ChatService {
 	SimpMessagingTemplate simpMessagingTemplate;
 	
 	public void processMessage(String senderId, ChatMessageRequest message) {
-		var chatRoom = chatRoomRepository.findByUserIdAndAdminId(message.getUserId(), "admin").getFirst();
-		
-		if (chatRoom == null) {
+		var chatRoomInDb = chatRoomRepository.findByUserIdAndAdminId(message.getUserId(), "admin");
+		ChatRoom chatRoom = null;
+		if (chatRoomInDb.isEmpty()) {
 			chatRoom = ChatRoom.builder()
 					.userId(message.getUserId())
 					.adminId("admin")
 					.build();
 			chatRoomRepository.save(chatRoom);
-		}
+		} else
+			chatRoom = chatRoomInDb.getFirst();
 		
-		var context = SecurityContextHolder.getContext();
-		var user = userRepository.findByUsername(context.getAuthentication().getName());
+		var user = senderId.equals("admin") ? userRepository.findByUsername(senderId) : userRepository.findById(senderId);
 		
 		if (user.isEmpty())
 			throw new AppException(ErrorCode.UNAUTHENTICATED);

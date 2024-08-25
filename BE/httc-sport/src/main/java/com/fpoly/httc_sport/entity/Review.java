@@ -22,6 +22,7 @@ public class Review extends AbstractIdEntity {
 	@ManyToOne @JoinColumn(name = "pitch_id")
 	Pitch pitch;
 	
-	@ManyToOne @JoinColumn(name = "user_id")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_id")
 	User user;
 }

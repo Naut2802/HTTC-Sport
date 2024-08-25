@@ -11,6 +11,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReviewResponse {
+	String username;
+	String firstName;
 	int rate;
 	String description;
 }

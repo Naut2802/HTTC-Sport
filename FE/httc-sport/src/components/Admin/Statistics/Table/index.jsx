@@ -28,22 +28,28 @@ export default function TableStatistics() {
     };
 
     const handleExportWithExcel = async () => {
-        const billIds = bills.map((bill) => bill.id);
-        const payloadData = {
-            billIds: billIds,
-        };
-        console.log(payloadData);
-        const res = await handleExportExcel(payloadData);
-        if (res.data) {
-            const url = window.URL.createObjectURL(new Blob([res.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'bill-report.xlsx'); // Tên file khi tải về
-            document.body.appendChild(link);
-            link.click();
+        try {
+            const billIds = bills.map((bill) => bill.id);
+            const payloadData = { billIds };
 
-            document.body.removeChild(link);
-            toast.success('Đã xuất dữ liệu ra file excel');
+            const res = await handleExportExcel(payloadData);
+
+            if (res.data) {
+                const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'bill-report.xlsx'; // Set the file name for download
+
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+                toast.success('Đã xuất dữ liệu ra file excel');
+            }
+        } catch (error) {
+            toast.error('Có lỗi xảy ra khi xuất dữ liệu');
+            console.error('Export Excel Error:', error);
         }
     };
 

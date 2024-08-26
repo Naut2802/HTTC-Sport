@@ -9,7 +9,6 @@ export default function TableListPitch({ onRowClick }) {
     const [pitch, setPitch] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [pageSize, setPageSize] = useState(5);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -35,8 +34,8 @@ export default function TableListPitch({ onRowClick }) {
         }
     };
     useEffect(() => {
-        fetchData(page, pageSize);
-    }, [page, pageSize]);
+        fetchData(page, rowsPerPage);
+    }, [page, rowsPerPage]);
 
     const handleEditPitch = async (params) => {
         try {
@@ -72,10 +71,12 @@ export default function TableListPitch({ onRowClick }) {
     ];
 
     return (
-        <div style={{ width: '100%', height: '100%' }}>
-            <DataGrid rows={pitch} columns={columns} getRowId={(row) => row.id} autoHeight />
+        <div style={{ width: '100%', height: '370px' }}>
+            <DataGrid rows={pitch} columns={columns} getRowId={(row) => row.id} hideFooterPagination={true} />
             <TablePagination
                 component="div"
+                sx={{ border: 1, borderColor: 'divider' }}
+                rowsPerPageOptions={[5, 10, 25]}
                 count={100}
                 page={page}
                 onPageChange={handleChangePage}

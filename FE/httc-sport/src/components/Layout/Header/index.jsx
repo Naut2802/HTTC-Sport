@@ -1,34 +1,20 @@
 /* eslint-disable no-restricted-globals */
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
+// import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
-import {
-    AppBar,
-    Box,
-    Button,
-    Container,
-    Fab,
-    Grid,
-    IconButton,
-    Menu,
-    MenuItem,
-    Toolbar,
-    Tooltip,
-    Typography,
-} from '@mui/material';
+import { AppBar, Box, Button, Container, Grid, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import slugify from 'slugify'; // Import slugify nè
 
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { handleGetMyInfoAPI, handleLogoutAPI } from '~/apis';
-
 import LoginWithModal from '~/components/Account/LoginWithModal';
-import Chat from '~/components/Chat';
+// import Chat from '~/components/Chat';
 import Popup from '../Popup';
 
 const pages = ['Trang Chủ', 'Sân Bóng', 'Tin Tức', 'Liên Hệ']; // Mảng trang trên navbar nè
@@ -49,7 +35,7 @@ export default function Header() {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [openPopupLogin, setOpenPopupLogin] = useState(false);
-    const [openPopupChat, setOpenPopupChat] = useState(false);
+    // const [openPopupChat, setOpenPopupChat] = useState(false);
     const [userWallet, setUserWallet] = useState(null);
     const [money, setMoney] = useState(null);
     const [user, setUser] = useState(null);
@@ -93,9 +79,9 @@ export default function Header() {
         setOpenPopupLogin(true);
     };
 
-    const handleOpenChat = () => {
-        setOpenPopupChat(true);
-    };
+    // const handleOpenChat = () => {
+    //     setOpenPopupChat(true);
+    // };
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -121,51 +107,9 @@ export default function Header() {
         setUserWallet(null);
     };
 
-    // const Search = styled('div')(({ theme }) => ({
-    //     position: 'relative',
-    //     borderRadius: theme.shape.borderRadius,
-    //     backgroundColor: alpha(theme.palette.common.black, 0.15),
-    //     '&:hover': {
-    //         backgroundColor: alpha(theme.palette.common.black, 0.25),
-    //     },
-    //     marginLeft: 0,
-    //     width: '100%',
-    //     [theme.breakpoints.up('sm')]: {
-    //         marginLeft: theme.spacing(1),
-    //         width: 'auto',
-    //     },
-    //     color: 'black',
-    // }));
-
-    // const SearchIconWrapper = styled('div')(({ theme }) => ({
-    //     padding: theme.spacing(0, 2),
-    //     height: '100%',
-    //     position: 'absolute',
-    //     pointerEvents: 'none',
-    //     display: 'flex',
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //     color: 'black',
-    // }));
-
-    // const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    //     width: '100%',
-    //     '& .MuiInputBase-input': {
-    //         padding: theme.spacing(1, 1, 1, 0),
-    //         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    //         transition: theme.transitions.create('width'),
-    //         [theme.breakpoints.up('sm')]: {
-    //             width: '12ch',
-    //             '&:focus': {
-    //                 width: '20ch',
-    //             },
-    //         },
-    //     },
-    // }));
-
     return (
         <>
-            {checkUser ? (
+            {/* {checkUser ? (
                 <Fab
                     size="large"
                     color="success"
@@ -183,7 +127,7 @@ export default function Header() {
                 </Fab>
             ) : (
                 <></>
-            )}
+            )} */}
 
             <AppBar
                 position="sticky"
@@ -273,19 +217,6 @@ export default function Header() {
                                 );
                             })}
                         </Box>
-                        {/* <Box>
-                        <Search>
-                            <SearchIconWrapper>
-                                <SearchIcon
-                                    sx={{
-                                        // Tìm Kiếm
-                                        color: 'black',
-                                    }}
-                                />
-                            </SearchIconWrapper>
-                            <StyledInputBase placeholder="Tìm kiếm..." inputProps={{ 'aria-label': 'search' }} />
-                        </Search>
-                    </Box> */}
 
                         {!checkUser ? (
                             <Button
@@ -299,7 +230,7 @@ export default function Header() {
                         ) : (
                             <Box sx={{ flexGrow: 0, marginLeft: 2 }} className="d-flex">
                                 <Typography component="div" className="text-dark">
-                                    {user?.firstName}
+                                    {user?.firstName ? user?.firstName : user?.username}
                                 </Typography>
                                 <Tooltip title="Ví" className="mx-4">
                                     <IconButton sx={{ p: 0 }} onClick={handleOpenWallet}>
@@ -385,7 +316,7 @@ export default function Header() {
                                             <Typography component="div" textAlign="center">
                                                 <Typography
                                                     component={Link}
-                                                    to={`/${slugify(setting, { lower: true, strict: true, locale: 'wallet' })}`}
+                                                    to={`/${slugify(setting, { lower: true, strict: true, locale: 'vi' })}`}
                                                     className="text-decoration-none text-dark"
                                                 >
                                                     {setting}
@@ -420,13 +351,13 @@ export default function Header() {
                         </Grid>
                     </Grid>
                 </Popup>
-                <Popup openPopup={openPopupChat} setOpenPopup={setOpenPopupChat}>
+                {/* <Popup openPopup={openPopupChat} setOpenPopup={setOpenPopupChat}>
                     <Grid container>
                         <Grid item>
                             <Chat />
                         </Grid>
                     </Grid>
-                </Popup>
+                </Popup> */}
             </AppBar>
         </>
     );

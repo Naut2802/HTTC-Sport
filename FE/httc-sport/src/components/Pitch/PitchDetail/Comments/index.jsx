@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { Box, Card, CardContent, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -29,7 +30,7 @@ export default function Comments({ id }) {
                         <div className="row my-2">
                             <div className="col-6">
                                 <Typography sx={{ fontSize: 17 }} variant="subtitle2" color="text.dark">
-                                    từ Hoàng Lê {/* Thay tên người dùng theo thực tế */}
+                                    từ {review.firstname ? review.firstname : review.username}
                                 </Typography>
                             </div>
                             <div className="col-6 d-flex justify-content-end">

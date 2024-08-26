@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { TablePagination } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { format } from 'date-fns';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { handleGetAllTransactionsAdmin } from '~/apis';
-import { format } from 'date-fns';
-import { Breadcrumbs, TablePagination, Typography } from '@mui/material';
-import logo from '~/components/Images/logo.png';
-import { Link } from 'react-router-dom';
 function formatCurrency(amount) {
     return amount.toLocaleString('vi-VN', {
         style: 'currency',
@@ -16,7 +14,6 @@ function formatCurrency(amount) {
 export default function TableTransaction() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [pageSize, setPageSize] = useState(5);
     const [transaction, setTransaction] = useState([]);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -41,8 +38,8 @@ export default function TableTransaction() {
     };
 
     useEffect(() => {
-        fetchData(page, pageSize);
-    }, [page, pageSize]);
+        fetchData(page, rowsPerPage);
+    }, [page, rowsPerPage]);
 
     const rows = transaction.map((item) => ({
         id: item.id,
@@ -50,12 +47,12 @@ export default function TableTransaction() {
     }));
 
     const columns = [
-        { field: 'id', headerName: 'ID', flex: 1, minWidth: 100 },
+        { field: 'id', headerName: 'ID', flex: 1, minWidth: 120 },
         {
             field: 'transactionDate',
             headerName: 'Ngày thanh toán',
             flex: 1,
-            minWidth: 350,
+            minWidth: 200,
             renderCell: (params) => format(new Date(params.value), 'dd/MM/yyyy'),
         },
         {
@@ -70,7 +67,12 @@ export default function TableTransaction() {
             headerName: 'Loại Giao Dịch',
             flex: 2,
             minWidth: 200,
-            renderCell: (params) => (params.value === 'USER_DEPOSIT' ? 'Nạp tiền vào ví' : params.value),
+            renderCell: (params) =>
+                params.value === 'USER_DEPOSIT'
+                    ? 'Nạp tiền vào ví'
+                    : params.value === 'RENT_PAY'
+                    ? 'Thanh toán đặt sân'
+                    : 'Admin nạp tiền vào ví',
         },
         {
             field: 'paymentStatus',
@@ -86,10 +88,12 @@ export default function TableTransaction() {
 
     return (
         <div className="container">
-            <div className="my-5">
-                <DataGrid rows={rows} columns={columns} />
+            <div style={{ height: '370px', width: '100%' }}>
+                <DataGrid rows={rows} columns={columns} hideFooterPagination={true} />
                 <TablePagination
                     component="div"
+                    sx={{ border: 1, borderColor: 'divider' }}
+                    rowsPerPageOptions={[5, 10, 25]}
                     count={100}
                     page={page}
                     onPageChange={handleChangePage}

@@ -117,6 +117,10 @@ export const handleGetPitchesAdmin = async (page, size) => {
     });
 };
 
+export const handleGetTop3Pitches = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/get-top-3`);
+};
+
 export const handleGetPitches = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch`);
 };
@@ -191,8 +195,13 @@ export const handleGetRentInfoById = async (id) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/${id}`);
 };
 
-export const handleGetAllRentInfoByUser = async (userId) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/get-all-by-user/${userId}`);
+export const handleGetAllRentInfoByUser = async (userId, page, size) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/get-all-by-user/${userId}`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
 };
 
 export const handleDeleteRentInfo = async (id) => {
@@ -259,6 +268,10 @@ export const handleGetAllBillsByUser = async (userId, page, size) => {
             size: size,
         },
     });
+};
+
+export const handleExportExcel = async (billIds) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/report/export-excel`, billIds);
 };
 
 // -----------------------------------REVIEW API--------------------------------------

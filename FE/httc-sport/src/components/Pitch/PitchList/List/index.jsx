@@ -20,7 +20,7 @@ export default function List({ pitches }) {
                         component={Link}
                         to={`/chi-tiet-san/${pitch.id}`}
                         sx={{ width: 260 }}
-                        image={pitch.image && pitch.image.url ? pitch.image.url : 'default-image-url.jpg'}
+                        image={pitch.image ? pitch.image : 'default-image-url.jpg'}
                         alt={pitch.pitchName}
                         className="img-fluid"
                     />
@@ -61,7 +61,7 @@ export default function List({ pitches }) {
                             <Typography sx={{ fontSize: 18 }} variant="subtitle2" color="text.secondary">
                                 <strong>Địa Chỉ: </strong>
                                 <span className="text-dark">
-                                    {pitch.street + ' ' + pitch.ward + ' ' + pitch.district + ' ' + pitch.city}
+                                    {pitch.street + ', ' + pitch.ward + ', ' + pitch.district + ', ' + pitch.city}
                                 </span>
                             </Typography>
 

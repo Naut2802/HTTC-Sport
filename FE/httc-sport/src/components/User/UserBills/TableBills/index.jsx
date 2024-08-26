@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, TablePagination } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
 
 import { handleGetAllBillsByUser } from '~/apis';
 import ModalRating from '../ModalRating';
@@ -14,12 +15,12 @@ function formatCurrency(amount) {
 }
 
 export default function TableBills() {
+    const userId = localStorage.getItem('userId');
     const [bills, setBills] = useState([]);
     const [open, setOpen] = useState(false);
     const [selectedBillId, setSelectedBillId] = useState(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [pageSize, setPageSize] = useState(5);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -28,13 +29,13 @@ export default function TableBills() {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
     const handleOpen = (id) => {
         setSelectedBillId(id);
         setOpen(true);
     };
 
     const handleClose = () => setOpen(false);
-    const userId = localStorage.getItem('userId');
 
     const fetchData = async (page, size) => {
         try {
@@ -46,8 +47,8 @@ export default function TableBills() {
     };
 
     useEffect(() => {
-        fetchData(page, pageSize);
-    }, [page, pageSize]);
+        fetchData(page, rowsPerPage);
+    }, [page, rowsPerPage]);
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 20 },
@@ -84,12 +85,16 @@ export default function TableBills() {
             field: 'danhGia',
             headerName: 'Đánh Giá',
             sortable: false,
-            width: 90,
-            renderCell: (params) => (
-                <Button onClick={() => handleOpen(params.row.id)} variant="text">
-                    Đánh Giá
-                </Button>
-            ),
+            width: 120,
+            renderCell: (params) => {
+                return !params.row.rate ? (
+                    <Button variant="text" onClick={() => handleOpen(params.row.id)}>
+                        Đánh Giá
+                    </Button>
+                ) : (
+                    <Button disabled>Đã Đánh Giá</Button>
+                );
+            },
         },
     ];
 
@@ -104,14 +109,17 @@ export default function TableBills() {
         endTime: info.endTime,
         total: info.total,
         paymentMethod: info.paymentMethod,
+        rate: info.rate,
     }));
 
     return (
         <>
-            <div className="my-5">
-                <DataGrid rows={rows} columns={columns} />
+            <div style={{ height: '370px', width: '100%' }}>
+                <DataGrid rows={rows} columns={columns} hideFooterPagination={true} />
                 <TablePagination
                     component="div"
+                    sx={{ border: 1, borderColor: 'divider' }}
+                    rowsPerPageOptions={[5, 10, 25]}
                     count={100}
                     page={page}
                     onPageChange={handleChangePage}

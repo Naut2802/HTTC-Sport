@@ -1,9 +1,9 @@
-import { TablePagination } from '@mui/material';
+import { Box, Button, ButtonGroup, Grid, TablePagination } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 
-import { handleGetAllBills } from '~/apis';
+import { handleExportExcel, handleGetAllBills } from '~/apis';
 
 function formatCurrency(amount) {
     return amount.toLocaleString('vi-VN', {
@@ -17,7 +17,6 @@ export default function TableStatistics() {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [pageSize, setPageSize] = useState(5);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -26,6 +25,16 @@ export default function TableStatistics() {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
+    const handleExportWithExcel = async () => {
+        const billIds = bills.map((bill) => bill.id);
+        const payloadData = {
+            billIds: billIds,
+        };
+        console.log(payloadData);
+        await handleExportExcel(payloadData);
+    };
+
     const fetchData = async (page, size) => {
         try {
             const res = await handleGetAllBills(page, size);
@@ -37,8 +46,8 @@ export default function TableStatistics() {
     };
 
     useEffect(() => {
-        fetchData(page, pageSize);
-    }, [page, pageSize]);
+        fetchData(page, rowsPerPage);
+    }, [page, rowsPerPage]);
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 20 },
@@ -64,14 +73,12 @@ export default function TableStatistics() {
             field: 'paymentMethod',
             headerName: 'Phương Thức Thanh Toán',
             width: 200,
-            renderCell: (params) => {
-                const { id } = params.row;
-                return bills[id - 1].paymentMethod === 'QR'
+            renderCell: (params) =>
+                params.value === 'QR'
                     ? 'Thanh Toán Bằng QR'
-                    : bills[id - 1].paymentMethod === 'CASH'
+                    : params.value === 'CASH'
                     ? 'Thanh Toán Tiền Mặt'
-                    : 'Thanh Toán Bằng Ví';
-            },
+                    : 'Thanh Toán Bằng Ví',
         },
     ];
 
@@ -89,16 +96,37 @@ export default function TableStatistics() {
     }));
 
     return (
-        <div style={{ width: '100%' }}>
-            <DataGrid key={rows.id} rows={rows} columns={columns} />
-            <TablePagination
-                component="div"
-                count={100}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </div>
+        <>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    border: 1,
+                    borderColor: 'divider',
+                    '& > *': {
+                        m: 1,
+                    },
+                }}
+            >
+                <div style={{ marginRight: '20px' }} className="d-flex justify-content-end">
+                    <Button variant="contained" color="success" onClick={() => handleExportWithExcel()}>
+                        Xuất dữ liệu (Excel)
+                    </Button>
+                </div>
+            </Box>
+            <div style={{ height: '390px', width: '100%' }}>
+                <DataGrid key={rows.id} rows={rows} columns={columns} hideFooterPagination={true} />
+                <TablePagination
+                    component="div"
+                    sx={{ border: 1, borderColor: 'divider' }}
+                    rowsPerPageOptions={[5, 10, 25]}
+                    count={100}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </div>
+        </>
     );
 }

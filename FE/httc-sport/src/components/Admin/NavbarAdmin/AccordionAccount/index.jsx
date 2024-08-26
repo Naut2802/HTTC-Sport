@@ -1,23 +1,23 @@
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
+// import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
-import { Box, Fab, Grid, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
-import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
 
+import { useState } from 'react';
 import { handleLogoutAPI } from '~/apis';
-import Chat from '~/components/Chat';
-import Popup from '~/components/Layout/Popup';
+// import Chat from '~/components/Chat';
+// import Popup from '~/components/Layout/Popup';
 
 export default function AccordionAccount() {
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [openPopupChat, setOpenPopupChat] = React.useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    // const [openPopupChat, setOpenPopupChat] = useState(false);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
 
@@ -29,9 +29,9 @@ export default function AccordionAccount() {
         setAnchorEl(null);
     };
 
-    const handleOpenChat = () => {
-        setOpenPopupChat(true);
-    };
+    // const handleOpenChat = () => {
+    //     setOpenPopupChat(true);
+    // };
 
     const handleLogOut = async () => {
         await handleLogoutAPI();
@@ -45,7 +45,7 @@ export default function AccordionAccount() {
 
     return (
         <>
-            <Fab
+            {/* <Fab
                 size="large"
                 color="success"
                 variant="extended"
@@ -59,7 +59,7 @@ export default function AccordionAccount() {
             >
                 <ChatTwoToneIcon sx={{ mr: 1 }} />
                 Chat
-            </Fab>
+            </Fab> */}
             <Box sx={{ flexGrow: 1 }} />
             <Typography variant="h6" component="div">
                 <Tooltip title="Trang Chủ">
@@ -117,13 +117,13 @@ export default function AccordionAccount() {
                 </Menu>
             </Typography>
 
-            <Popup openPopup={openPopupChat} setOpenPopup={setOpenPopupChat}>
+            {/* <Popup openPopup={openPopupChat} setOpenPopup={setOpenPopupChat}>
                 <Grid container>
                     <Grid item>
                         <Chat />
                     </Grid>
                 </Grid>
-            </Popup>
+            </Popup> */}
         </>
     );
 }

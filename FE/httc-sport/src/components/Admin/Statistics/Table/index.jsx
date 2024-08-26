@@ -2,6 +2,7 @@ import { Box, Button, TablePagination } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { handleExportExcel, handleGetAllBills } from '~/apis';
 
@@ -14,9 +15,9 @@ function formatCurrency(amount) {
 
 export default function TableStatistics() {
     const [bills, setBills] = useState([]);
-
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -32,7 +33,18 @@ export default function TableStatistics() {
             billIds: billIds,
         };
         console.log(payloadData);
-        await handleExportExcel(payloadData);
+        const res = await handleExportExcel(payloadData);
+        if (res.data) {
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'bill-report.xlsx'); // Tên file khi tải về
+            document.body.appendChild(link);
+            link.click();
+
+            document.body.removeChild(link);
+            toast.success('Đã xuất dữ liệu ra file excel');
+        }
     };
 
     const fetchData = async (page, size) => {

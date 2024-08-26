@@ -271,7 +271,9 @@ export const handleGetAllBillsByUser = async (userId, page, size) => {
 };
 
 export const handleExportExcel = async (billIds) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/report/export-excel`, billIds);
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/report/export-excel`, billIds, {
+        responseType: 'blob',
+    });
 };
 
 // -----------------------------------REVIEW API--------------------------------------

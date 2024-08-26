@@ -1,11 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, TablePagination } from '@mui/material';
+import CancelPresentationRoundedIcon from '@mui/icons-material/CancelPresentationRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import { Box, Button, Grid, TablePagination, TextField, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { DatePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 
-import { handleGetAllBillsByUser } from '~/apis';
+import { useForm } from 'react-hook-form';
+import { handleGetAllBillsByUser, handleGetByUserReportAndDate } from '~/apis';
+import Popup from '~/components/Layout/Popup';
 import ModalRating from '../ModalRating';
+import ReviewDetail from '../ReviewDetail';
 
 function formatCurrency(amount) {
     return amount.toLocaleString('vi-VN', {
@@ -18,9 +24,15 @@ export default function TableBills() {
     const userId = localStorage.getItem('userId');
     const [bills, setBills] = useState([]);
     const [open, setOpen] = useState(false);
+    const [openPopup, setOpenPopup] = useState(false);
+    const [selectedBill, setSelectedBill] = useState(null);
     const [selectedBillId, setSelectedBillId] = useState(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [fromDateValue, setFromDateValue] = useState(null);
+    const [toDateValue, setToDateValue] = useState(null);
+    const { handleSubmit } = useForm();
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -36,6 +48,28 @@ export default function TableBills() {
     };
 
     const handleClose = () => setOpen(false);
+
+    const handleReviewDetail = (id, index) => {
+        setSelectedBill(bills[index]);
+        setSelectedBillId(id);
+        setOpenPopup(true);
+    };
+
+    const submitDateReport = async () => {
+        const formattedFromDate = format(fromDateValue.$d, 'yyyy-MM-dd');
+        const formattedToDate = format(toDateValue.$d, 'yyyy-MM-dd');
+        try {
+            const res = await handleGetByUserReportAndDate(userId, formattedFromDate, formattedToDate);
+            console.log(res);
+            setBills(res.data.result.bills);
+        } catch (error) {}
+    };
+
+    const cancelSearchForDate = () => {
+        setFromDateValue(null);
+        setToDateValue(null);
+        fetchData(page, rowsPerPage);
+    };
 
     const fetchData = async (page, size) => {
         try {
@@ -85,20 +119,24 @@ export default function TableBills() {
             field: 'danhGia',
             headerName: 'Đánh Giá',
             sortable: false,
-            width: 120,
+            width: 130,
             renderCell: (params) => {
+                const billIndex = params.row.index;
                 return !params.row.rate ? (
                     <Button variant="text" onClick={() => handleOpen(params.row.id)}>
                         Đánh Giá
                     </Button>
                 ) : (
-                    <Button disabled>Đã Đánh Giá</Button>
+                    <Button variant="text" onClick={() => handleReviewDetail(params.row.id, billIndex)}>
+                        Xem Chi Tiết
+                    </Button>
                 );
             },
         },
     ];
 
-    const rows = bills.map((info) => ({
+    const rows = bills.map((info, index) => ({
+        index: index,
         id: info.id,
         pitchName: info.pitchName,
         name: info.lastName + ' ' + info.firstName,
@@ -114,6 +152,43 @@ export default function TableBills() {
 
     return (
         <>
+            <Box
+                sx={{
+                    display: 'flex',
+                    border: 1,
+                    borderColor: 'divider',
+                    '& > *': {
+                        m: 1,
+                    },
+                }}
+            >
+                <Box sx={{ ml: 2 }} component="form" onSubmit={handleSubmit(submitDateReport)} className="d-flex">
+                    <Typography component={'span'} sx={{ mr: 1 }}>
+                        <DatePicker
+                            sx={{ width: '100%' }}
+                            label="Chọn khoảng bắt đầu"
+                            value={fromDateValue}
+                            onChange={(newFromDateValue) => setFromDateValue(newFromDateValue)}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </Typography>
+                    <Typography component={'span'} sx={{ mr: 1 }}>
+                        <DatePicker
+                            sx={{ width: '100%' }}
+                            label="Chọn khoảng kết thúc"
+                            value={toDateValue}
+                            onChange={(newToDateValue) => setToDateValue(newToDateValue)}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </Typography>
+                    <Button variant="text" type="submit" color="success">
+                        Tìm Kiếm <SearchRoundedIcon />
+                    </Button>
+                </Box>
+                <Button variant="text" color="error" onClick={cancelSearchForDate}>
+                    Hủy <CancelPresentationRoundedIcon />
+                </Button>
+            </Box>
             <div style={{ height: '370px', width: '100%' }}>
                 <DataGrid rows={rows} columns={columns} hideFooterPagination={true} />
                 <TablePagination
@@ -128,6 +203,12 @@ export default function TableBills() {
                 />
             </div>
             <ModalRating open={open} handleClose={handleClose} selectedBillId={selectedBillId} />
+
+            <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
+                <Grid container>
+                    <Grid item>{selectedBillId && <ReviewDetail selectedBill={selectedBill} />}</Grid>
+                </Grid>
+            </Popup>
         </>
     );
 }

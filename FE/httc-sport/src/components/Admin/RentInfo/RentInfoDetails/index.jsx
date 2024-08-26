@@ -49,15 +49,17 @@ export default function RentInfoDetails({ rentInfo, onRentInfoUpdate, closePopup
     };
 
     const handleCreatePayRemainingLink = async () => {
-        const id = rentInfo.id;
-        const paymentMethod = rentInfo.paymentMethod;
-        const res = await handlePayRemaining(id, paymentMethod);
-        console.log(res);
-        if (res.data.result.isSuccess) {
-            window.location.href = res.data.result.paymentLink.checkoutUrl;
-        } else {
-            toast.warning('Có lỗi xảy ra !!!');
-        }
+        try {
+            const id = rentInfo.id;
+            const paymentMethod = rentInfo.paymentMethod;
+            const res = await handlePayRemaining(id, paymentMethod);
+            console.log(res);
+            if (res.data.result.paymentLink.success) {
+                window.location.href = res.data.result.paymentLink.checkoutUrl;
+            } else {
+                toast.warning('Có lỗi xảy ra !!!');
+            }
+        } catch (error) {}
     };
 
     return (

@@ -1,10 +1,11 @@
 import { Breadcrumbs, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import FormAddPitch from './FormAddPitch';
 import TableListPitch from './TableListPitch';
 
 export default function AddField() {
+    const onRefresh = useRef(null);
     const [selectedPitch, setSelectedPitch] = useState(null);
 
     const handleRowClick = (pitch) => {
@@ -24,9 +25,9 @@ export default function AddField() {
             </Breadcrumbs>
             <hr />
 
-            <FormAddPitch selectedPitch={selectedPitch} />
+            <FormAddPitch selectedPitch={selectedPitch} onRefresh={onRefresh} />
 
-            <TableListPitch onRowClick={handleRowClick} />
+            <TableListPitch onRowClick={handleRowClick} onRefresh={onRefresh} />
         </div>
     );
 }

@@ -2,10 +2,11 @@ import { Breadcrumbs, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import FormUpdateUser from './FormUpdateUser';
 import TableUsers from './TableUsers';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export default function ListUsers() {
     const [selectedUser, setSelectedUser] = useState(null);
+    const onRefresh = useRef(null);
 
     const handleClick = (users) => {
         setSelectedUser(users);
@@ -29,9 +30,9 @@ export default function ListUsers() {
             </Breadcrumbs>
             <hr />
 
-            <FormUpdateUser selectedUser={selectedUser} />
+            <FormUpdateUser selectedUser={selectedUser} onRefresh={onRefresh} />
 
-            <TableUsers dataUserTable={handleClick} />
+            <TableUsers dataUserTable={handleClick} onRefresh={onRefresh}/>
         </div>
     );
 }

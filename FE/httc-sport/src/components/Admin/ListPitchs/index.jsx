@@ -2,7 +2,7 @@ import { Breadcrumbs, Button, Card, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { handleDeletePitch, handleGetPitch, handleGetPitchesAdmin, handleActivePitch } from '~/apis';
+import { handleActivePitch, handleDeletePitch, handleGetPitch, handleGetPitchesAdmin } from '~/apis';
 
 function formatCurrency(amount) {
     return amount.toLocaleString('vi-VN', {
@@ -19,8 +19,6 @@ export default function ListPitchs() {
         const fetchData = async () => {
             try {
                 const re = await handleGetPitchesAdmin();
-                // console.log(re.data.result);
-
                 setPitch(re.data.result);
             } catch (error) {
                 console.error(error);
@@ -108,7 +106,7 @@ export default function ListPitchs() {
                     <div className="row">
                         <Typography className="col-4 " component="div">
                             <img
-                                src={pitch.image && pitch.image.url ? pitch.image.url : 'default-image-url.jpg'}
+                                src={pitch.image ? pitch.image : 'default-image-url.jpg'}
                                 alt={pitch.image ? pitch.pitchName : 'Không có ảnh'}
                                 style={{
                                     width: '100%',

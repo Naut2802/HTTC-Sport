@@ -1,7 +1,7 @@
 import { Breadcrumbs, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CardInfoHome from './CardInfoHome';
-import DashboardHome from './DashboardHome';
+// import DashboardHome from './DashboardHome';
 import TableListUserHome from './TableListUserHome';
 
 export default function AdminHome() {
@@ -17,7 +17,7 @@ export default function AdminHome() {
 
             <CardInfoHome />
 
-            <DashboardHome />
+            {/* <DashboardHome /> */}
 
             <TableListUserHome />
         </div>

@@ -1,11 +1,17 @@
-import { Breadcrumbs, TablePagination, Typography } from '@mui/material';
+import CancelPresentationRoundedIcon from '@mui/icons-material/CancelPresentationRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import { Box, Breadcrumbs, Button, TablePagination, TextField, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { DatePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { handleGetMyInfoAPI, handleGetTransactionsByUser } from '~/apis';
+
+import { handleGetAllTransactionsByUserAndDate, handleGetMyInfoAPI, handleGetTransactionsByUser } from '~/apis';
 import logo from '~/components/Images/logo.png';
+
 function formatCurrency(amount) {
     return amount.toLocaleString('vi-VN', {
         style: 'currency',
@@ -14,9 +20,14 @@ function formatCurrency(amount) {
 }
 
 export default function TableTransaction() {
+    const userId = localStorage.getItem('userId');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [transaction, setTransaction] = useState([]);
+    const [fromDateValue, setFromDateValue] = useState(null);
+    const [toDateValue, setToDateValue] = useState(null);
+    const { handleSubmit } = useForm();
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -24,6 +35,21 @@ export default function TableTransaction() {
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
+    };
+
+    const submitDateReport = async () => {
+        const formattedFromDate = format(fromDateValue.$d, 'yyyy-MM-dd');
+        const formattedToDate = format(toDateValue.$d, 'yyyy-MM-dd');
+        try {
+            const res = await handleGetAllTransactionsByUserAndDate(userId, formattedFromDate, formattedToDate);
+            setTransaction(res.data.result);
+        } catch (error) {}
+    };
+
+    const cancelSearchForDate = () => {
+        setFromDateValue(null);
+        setToDateValue(null);
+        fetchData(page, rowsPerPage);
     };
 
     const fetchData = async (page, size) => {
@@ -111,6 +137,43 @@ export default function TableTransaction() {
                 </Typography>
             </Breadcrumbs>
             <hr />
+            <Box
+                sx={{
+                    display: 'flex',
+                    border: 1,
+                    borderColor: 'divider',
+                    '& > *': {
+                        m: 1,
+                    },
+                }}
+            >
+                <Box sx={{ ml: 2 }} component="form" onSubmit={handleSubmit(submitDateReport)} className="d-flex">
+                    <Typography component={'span'} sx={{ mr: 1 }}>
+                        <DatePicker
+                            sx={{ width: '100%' }}
+                            label="Chọn khoảng bắt đầu"
+                            value={fromDateValue}
+                            onChange={(newFromDateValue) => setFromDateValue(newFromDateValue)}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </Typography>
+                    <Typography component={'span'} sx={{ mr: 1 }}>
+                        <DatePicker
+                            sx={{ width: '100%' }}
+                            label="Chọn khoảng kết thúc"
+                            value={toDateValue}
+                            onChange={(newToDateValue) => setToDateValue(newToDateValue)}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </Typography>
+                    <Button variant="text" type="submit" color="success">
+                        Tìm Kiếm <SearchRoundedIcon />
+                    </Button>
+                </Box>
+                <Button variant="text" color="error" onClick={cancelSearchForDate}>
+                    Hủy <CancelPresentationRoundedIcon />
+                </Button>
+            </Box>
             <div style={{ height: '370px', width: '100%' }}>
                 <DataGrid rows={rows} columns={columns} hideFooterPagination={true} />
                 <TablePagination

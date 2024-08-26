@@ -1,19 +1,17 @@
 package com.fpoly.httc_sport.dto.response;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Builder
 @Getter
 @Setter
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PitchResponse {
-	int id;
+	long id;
 	String pitchName;
-	Double price;
+	int price;
 	String street;
 	String ward;
 	String district;
@@ -22,6 +20,6 @@ public class PitchResponse {
 	Boolean isEnabled;
 	String type;
 	int total;
-	ImageResponse image;
+	String image;
 	double rate;
 }

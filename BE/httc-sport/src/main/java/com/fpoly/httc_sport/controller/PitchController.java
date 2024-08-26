@@ -80,11 +80,11 @@ public class PitchController {
 	@Operation(summary = "Api delete image", description = "Admin use this api delete a image from a pitch")
 	@PatchMapping("{id}/{publicId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<PitchResponse> deleteImageFromPitch(@PathVariable long id, @PathVariable String publicId) throws Exception {
+	ApiResponse<PitchDetailsResponse> deleteImageFromPitch(@PathVariable long id, @PathVariable String publicId) throws Exception {
 		log.info("[Pitch Controller - Delete a image from pitch] Admin deleting a image from a pitch with pitch-id: {}", id);
 		var response = pitchService.deleteImageFromPitch(id, publicId);
 		log.info("[Pitch Controller - Delete a image from pitch] Image deleted");
-		return ApiResponse.<PitchResponse>builder()
+		return ApiResponse.<PitchDetailsResponse>builder()
 				.message("Xóa ảnh thành công")
 				.result(response)
 				.build();
@@ -95,6 +95,14 @@ public class PitchController {
 	ApiResponse<PitchDetailsResponse> getPitch(@PathVariable long id) {
 		return ApiResponse.<PitchDetailsResponse>builder()
 				.result(pitchService.getPitch(id))
+				.build();
+	}
+	
+	@Operation(summary = "Api get top 3 pitches")
+	@GetMapping("get-top-3")
+	ApiResponse<List<PitchResponse>> getTop3Pitches() {
+		return ApiResponse.<List<PitchResponse>>builder()
+				.result(pitchService.getTop3Pitches())
 				.build();
 	}
 	

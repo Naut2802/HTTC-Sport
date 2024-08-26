@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -76,8 +75,8 @@ public class ReportService {
 				.build();
 	}
 	
-	public void exportExcel(HttpServletResponse response, List<Long> billIds) throws IOException {
-		var bills = billRepository.findAllById(billIds).stream().map(billMapper::toBillResponse).toList();
+	public void exportExcel(HttpServletResponse response, BillExportExcelRequest request) throws IOException {
+		var bills = billRepository.findAllById(request.getBillIds()).stream().map(billMapper::toBillResponse).toList();
 		
 		if (bills.isEmpty())
 			throw new AppException(ErrorCode.BILL_NOT_EXISTED);

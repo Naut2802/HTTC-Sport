@@ -1,21 +1,8 @@
-import {
-    Box,
-    Button,
-    FormControl,
-    FormControlLabel,
-    FormLabel,
-    InputLabel,
-    MenuItem,
-    Radio,
-    RadioGroup,
-    Select,
-    TextField,
-    Typography,
-} from '@mui/material';
+import { Box, Button, FormControl, FormLabel, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { handleCreatePitch, handleDelImgs, handleGetPitch, handleProvinces, handleUpdatePitch } from '~/apis';
@@ -36,13 +23,12 @@ const ValidationTextField = styled(TextField)({
     },
 });
 
-export default function FormAddPitch({ selectedPitch }) {
+export default function FormAddPitch({ selectedPitch, onRefresh }) {
     const { register, handleSubmit, control, setValue, reset } = useForm();
     // const savedPitch = JSON.parse(sessionStorage.getItem('selectedPitch'));
-    const navigate = useNavigate();
     const location = useLocation();
     const { dataPitch } = location.state || {};
-
+    const [onSelectedPitch, setOnSelectedPitch] = useState(dataPitch);
     const [dataCity, setDataCity] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
@@ -162,7 +148,7 @@ export default function FormAddPitch({ selectedPitch }) {
         formData.append('district', data.district);
         formData.append('city', data.city);
         formData.append('description', data.description);
-        formData.append('type', data.type);
+        formData.append('type', 5);
         formData.append('total', data.total);
 
         if (data.images) {
@@ -174,6 +160,9 @@ export default function FormAddPitch({ selectedPitch }) {
         try {
             await handleCreatePitch(formData);
             toast.success('Thêm sân thành công!');
+            if (onRefresh.current) {
+                onRefresh.current();
+            }
         } catch (error) {
             console.error('Failed to add pitch:', error);
             toast.error('Không thể thêm sân!');
@@ -193,7 +182,7 @@ export default function FormAddPitch({ selectedPitch }) {
             formData.append('district', data.district);
             formData.append('city', data.city);
             formData.append('description', data.description);
-            formData.append('type', data.type);
+            formData.append('type', 5);
             formData.append('total', data.total);
 
             // Thêm các ảnh vào FormData nếu có
@@ -207,7 +196,9 @@ export default function FormAddPitch({ selectedPitch }) {
 
             const res = await handleUpdatePitch(pitchId, formData);
             toast.success(res?.data?.message || 'Cập nhật sân thành công!');
-            sessionStorage.removeItem('selectedPitch');
+            if (onRefresh.current) {
+                onRefresh.current();
+            }
         } catch (error) {
             console.error('Error updating pitch:', error);
             toast.error('Cập nhật sân thất bại!');
@@ -224,7 +215,6 @@ export default function FormAddPitch({ selectedPitch }) {
 
     const submitReset = () => {
         // sessionStorage.removeItem('selectedPitch');
-        navigate('/admin/them-san', { replace: true, state: {} });
         reset({
             id: '',
             pitchName: '',
@@ -239,6 +229,7 @@ export default function FormAddPitch({ selectedPitch }) {
             images: [],
         });
         setSelectedImages([]);
+        setOnSelectedPitch(null);
     };
 
     return (
@@ -419,19 +410,6 @@ export default function FormAddPitch({ selectedPitch }) {
                                     />
                                 </div>
                             </div>
-                            <FormLabel id="demo-radio-buttons-group-label">Loại Sân</FormLabel>
-                            <Controller
-                                name="type"
-                                control={control}
-                                defaultValue="5"
-                                render={({ field }) => (
-                                    <RadioGroup {...field} aria-labelledby="demo-radio-buttons-group-label">
-                                        <Typography component="div" className="d-flex">
-                                            <FormControlLabel value="Sân 5" control={<Radio />} label="Sân 5" />
-                                        </Typography>
-                                    </RadioGroup>
-                                )}
-                            />
                             <FormLabel id="demo-radio-buttons-group-label">Ảnh Sân</FormLabel>
                             <input
                                 type="file"
@@ -452,7 +430,7 @@ export default function FormAddPitch({ selectedPitch }) {
                     </Typography>
                     <Typography component="div" className="d-flex w-100 align-items-center my-2 card-footer">
                         <Button variant="outlined" color="success" className="text-capitalize mx-1" type="submit">
-                            {selectedPitch?.id || dataPitch?.id ? 'Cập Nhật' : 'Thêm'}
+                            {selectedPitch?.id || onSelectedPitch ? 'Cập Nhật' : 'Thêm'}
                         </Button>
                         <Button variant="outlined" color="inherit" type="button" onClick={submitReset}>
                             Làm Mới

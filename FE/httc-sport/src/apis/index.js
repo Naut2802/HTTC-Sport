@@ -276,6 +276,26 @@ export const handleExportExcel = async (billIds) => {
     });
 };
 
+export const handleGetByUserReportAndDate = async (userId, fromDate, toDate) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/report/${userId}?fromDate=${fromDate}&toDate=${toDate}`);
+};
+
+export const handleGetReportByDate = async (fromDate, toDate) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/report?fromDate=${fromDate}&toDate=${toDate}`);
+};
+
+export const handleGetAllTransactionsByUserAndDate = async (userId, fromDate, toDate) => {
+    return await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/v1/transaction/get-all-by-user-and-date/${userId}?fromDate=${fromDate}&toDate=${toDate}`,
+    );
+};
+
+export const handleGetAllTransactionsByDate = async (fromDate, toDate) => {
+    return await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/v1/transaction/get-all-by-date?fromDate=${fromDate}&toDate=${toDate}`,
+    );
+};
+
 // -----------------------------------REVIEW API--------------------------------------
 
 export const handleReviewPitch = async (billId, data) => {
@@ -284,6 +304,10 @@ export const handleReviewPitch = async (billId, data) => {
 
 export const handleGetAllReviewsUser = async (userId) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/review/get-all-reviews-by-user/${userId}`);
+};
+
+export const handleGetReviewByBill = async (billId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/review/${billId}`);
 };
 
 // -----------------------------------CHAT API--------------------------------------

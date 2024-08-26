@@ -16,7 +16,13 @@ export default function Transactions() {
                 <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/admin/trang-chu">
                     Trang Chủ
                 </Typography>
-                <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/admin/thong-ke">
+                <Typography
+                    className="text-decoration-none text-dark"
+                    variant="h6"
+                    noWrap
+                    component={Link}
+                    to="/admin/lich-su-giao-dich-vi"
+                >
                     Lịch Sử Giao Dịch Ví
                 </Typography>
             </Breadcrumbs>

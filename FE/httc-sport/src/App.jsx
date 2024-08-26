@@ -1,4 +1,5 @@
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 //ACCOUNT
 import ChangePassword from './components/Account/ChangePassword';
@@ -41,8 +42,11 @@ import AddPitch from './components/Admin/AddPitch';
 import ListPitchs from './components/Admin/ListPitchs';
 import ListUsers from './components/Admin/ListUsers';
 import RentInfo from './components/Admin/RentInfo';
+import PayRemainingError from './components/Admin/RentInfo/PayRemainingError';
+import PayRemainingSuccess from './components/Admin/RentInfo/PayRemainingSuccess';
 import Statistics from './components/Admin/Statistics';
 import TableTransaction from './components/Wallet/TableTransaction';
+import Transactions from './components/Admin/Transactions';
 
 const ProtectedRoute = () => {
     const user = localStorage.getItem('accessToken');
@@ -50,6 +54,16 @@ const ProtectedRoute = () => {
         return <Navigate to="/login" replace={true} />;
     }
     return <Outlet />;
+};
+
+const AdminRoute = () => {
+    const checkRole = localStorage.getItem('role');
+    if (checkRole === 'ADMIN') {
+        return <Outlet />;
+    } else {
+        toast.warning('Bạn không đủ quyền hạn để truy cập đến đường dẫn này!!!');
+        return <Navigate to="/" replace={true} />;
+    }
 };
 
 const UnauthorizedRoute = () => {
@@ -69,6 +83,9 @@ function App() {
             <Route path="/payment/rent/error" element={<PaymentError />} />
             <Route path="/payment/deposit/success" element={<PaymentSuccessTransaction />} />
             <Route path="/payment/deposit/error" element={<PaymentErrorTransaction />} />
+            <Route path="/payment/rent/pay-remaining/success" element={<PayRemainingSuccess />} />
+            <Route path="/payment/rent/pay-remaining/error" element={<PayRemainingError />} />
+
             <Route element={<UserHomePage />}>
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -89,14 +106,17 @@ function App() {
                     <Route path="/lich-su-giao-dich" element={<UserBills />} />
                 </Route>
 
-                <Route element={<AdminHomePage />}>
-                    <Route path="/admin/trang-chu" element={<AdminHome />} />
-                    <Route path="/admin/them-san" element={<AddPitch />} />
-                    <Route path="/admin/khach-hang" element={<ListUsers />} />
-                    <Route path="/admin/thong-ke" element={<Statistics />} />
-                    <Route path="/admin/thong-tin-dat-san" element={<RentInfo />} />
-                    <Route path="/admin/danh-sach-san" element={<ListPitchs />} />
-                    <Route path="/admin/thong-tin-tai-khoan" element={<UserInfo />} />
+                <Route element={<AdminRoute />}>
+                    <Route element={<AdminHomePage />}>
+                        <Route path="/admin/trang-chu" element={<AdminHome />} />
+                        <Route path="/admin/them-san" element={<AddPitch />} />
+                        <Route path="/admin/khach-hang" element={<ListUsers />} />
+                        <Route path="/admin/thong-ke" element={<Statistics />} />
+                        <Route path="/admin/thong-tin-dat-san" element={<RentInfo />} />
+                        <Route path="/admin/danh-sach-san" element={<ListPitchs />} />
+                        <Route path="/admin/thong-tin-tai-khoan" element={<UserInfo />} />
+                        <Route path="/admin/lich-su-giao-dich-vi" element={<Transactions />} />
+                    </Route>
                 </Route>
             </Route>
             <Route element={<UnauthorizedRoute />}>

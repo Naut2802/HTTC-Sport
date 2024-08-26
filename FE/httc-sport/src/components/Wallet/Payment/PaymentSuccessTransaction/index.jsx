@@ -12,17 +12,15 @@ export default function PaymentSuccessTransaction() {
     const navigate = useNavigate();
     const query = useQuery();
     const code = query.get('code');
-    const id = query.get('id');
+    const orderCode = query.get('orderCode');
     const status = query.get('status');
 
-    console.log(code);
-    console.log(id);
     console.log(status);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await handleConfirmTransaction(code, id, status);
+                const res = await handleConfirmTransaction(code, orderCode, status);
                 toast.success(res.data.result.message);
                 navigate('/');
             } catch (error) {
@@ -30,7 +28,7 @@ export default function PaymentSuccessTransaction() {
             }
         };
         fetchData();
-    }, [code, id, status, navigate]);
+    }, [code, orderCode, status, navigate]);
 
     return (
         <Box

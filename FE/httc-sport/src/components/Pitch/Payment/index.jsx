@@ -17,11 +17,10 @@ export default function Payment({ resData, resPayment, resDate }) {
         const id = resPayment.id;
         const deposit = 0.35;
         const res = await handleCreatePaymentLink(id, deposit);
-        console.log(res.data.result.data);
-        if (res.data.result.data) {
-            window.location.href = res.data.result.data.checkoutUrl;
+        if (res.data.result.success) {
+            window.location.href = res.data.result.checkoutUrl;
         } else {
-            toast.warning(res.data.result.desc);
+            toast.warning('Có lỗi xảy ra !!!');
         }
     };
 
@@ -29,11 +28,10 @@ export default function Payment({ resData, resPayment, resDate }) {
         const id = resPayment.id;
         const deposit = 1;
         const res = await handleCreatePaymentLink(id, deposit);
-        console.log(res.data.result);
-        if (res.data.result.data) {
-            window.location.href = res.data.result.data.checkoutUrl;
+        if (res.data.result.success) {
+            window.location.href = res.data.result.checkoutUrl;
         } else {
-            toast.warning(res.data.result.desc);
+            toast.warning('Có lỗi xảy ra !!!');
         }
     };
 

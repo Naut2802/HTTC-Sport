@@ -1,5 +1,5 @@
 import CreateIcon from '@mui/icons-material/Create';
-import { Button, Tooltip } from '@mui/material';
+import { Button, TablePagination, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -7,26 +7,35 @@ import { handleGetPitch, handleGetPitchesAdmin } from '~/apis';
 
 export default function TableListPitch({ onRowClick }) {
     const [pitch, setPitch] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
 
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+    const fetchData = async (page, size) => {
+        try {
+            const response = await handleGetPitchesAdmin(page, size);
+            const dataWithId = response.data.result
+                .filter((item) => item.isEnabled)
+                .map((item, index) => ({
+                    ...item,
+                    id: item.id || index,
+                    address: `${item.street || ''}, ${item.ward || ''}, ${item.district || ''}, ${item.city || ''}`,
+                }));
+            setPitch(dataWithId);
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to fetch data');
+        }
+    };
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await handleGetPitchesAdmin();
-                const dataWithId = response.data.result
-                    .filter((item) => item.isEnabled)
-                    .map((item, index) => ({
-                        ...item,
-                        id: item.id || index,
-                        address: `${item.street || ''}, ${item.ward || ''}, ${item.district || ''}, ${item.city || ''}`,
-                    }));
-                setPitch(dataWithId);
-            } catch (error) {
-                console.error(error);
-                toast.error('Failed to fetch data');
-            }
-        };
-        fetchData();
-    }, []);
+        fetchData(page, rowsPerPage);
+    }, [page, rowsPerPage]);
 
     const handleEditPitch = async (params) => {
         try {
@@ -62,14 +71,17 @@ export default function TableListPitch({ onRowClick }) {
     ];
 
     return (
-        <div style={{ width: '100%', height: '100%' }}>
-            <DataGrid
-                rows={pitch}
-                columns={columns}
-                pageSize={10}
-                rowsPerPageOptions={[5, 10, 20, 50, 100]}
-                getRowId={(row) => row.id}
-                autoHeight
+        <div style={{ width: '100%', height: '370px' }}>
+            <DataGrid rows={pitch} columns={columns} getRowId={(row) => row.id} hideFooterPagination={true} />
+            <TablePagination
+                component="div"
+                sx={{ border: 1, borderColor: 'divider' }}
+                rowsPerPageOptions={[5, 10, 25]}
+                count={100}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </div>
     );

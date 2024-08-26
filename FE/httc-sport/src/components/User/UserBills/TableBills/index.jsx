@@ -1,69 +1,133 @@
-import * as React from 'react';
-// import XemChiTiet from '../Modal';
-import { Button } from '@mui/material';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Button, TablePagination } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
 
+import { handleGetAllBillsByUser } from '~/apis';
 import ModalRating from '../ModalRating';
 
+function formatCurrency(amount) {
+    return amount.toLocaleString('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+}
+
 export default function TableBills() {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
+    const userId = localStorage.getItem('userId');
+    const [bills, setBills] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [selectedBillId, setSelectedBillId] = useState(null);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const handleOpen = (id) => {
+        setSelectedBillId(id);
+        setOpen(true);
+    };
+
     const handleClose = () => setOpen(false);
 
+    const fetchData = async (page, size) => {
+        try {
+            const res = await handleGetAllBillsByUser(userId, page, size);
+            setBills(res.data.result);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData(page, rowsPerPage);
+    }, [page, rowsPerPage]);
+
     const columns = [
-        { field: 'id', headerName: 'Mã Hóa Đơn', width: 100 },
-        { field: 'email', headerName: 'Email', width: 250 },
-        { field: 'sdt', headerName: 'Số Điện Thoại', width: 120 },
+        { field: 'id', headerName: 'ID', width: 20 },
+        { field: 'pitchName', headerName: 'Tên Sân', width: 140 },
+        { field: 'email', headerName: 'Email', width: 200 },
+        { field: 'phoneNumber', headerName: 'Số Điện Thoại', width: 130 },
         {
-            field: 'ngayThanhToan',
-            headerName: 'Ngày Thanh Toán',
-            width: 160,
+            field: 'rentedAt',
+            headerName: 'Ngày Đá',
+            width: 120,
+            renderCell: (params) => format(new Date(params.value), 'dd/MM/yyyy'),
         },
+        { field: 'startTime', headerName: 'Bắt Đầu', width: 100 },
+        { field: 'endTime', headerName: 'Kết Thúc', width: 100 },
         {
-            field: 'tgBD',
-            headerName: 'Thời Gian Bắt Đầu',
-            width: 160,
-        },
-        {
-            field: 'tgKT',
-            headerName: 'Thời Gian Kết Thúc',
-            width: 160,
-        },
-        {
-            field: 'tongTien',
+            field: 'total',
             headerName: 'Tổng Tiền',
-            sortable: false,
-            width: 160,
+            width: 120,
+            renderCell: (params) => formatCurrency(params.value),
+        },
+        {
+            field: 'paymentMethod',
+            headerName: 'Phương Thức Thanh Toán',
+            width: 200,
+            renderCell: (params) => {
+                return params.value === 'QR'
+                    ? 'Thanh Toán Bằng QR'
+                    : params.value === 'CASH'
+                    ? 'Thanh Toán Bằng Tiền Mặt'
+                    : 'Thanh Toán Bằng Ví';
+            },
         },
         {
             field: 'danhGia',
             headerName: 'Đánh Giá',
             sortable: false,
-            width: 160,
-            renderCell: () => (
-                <Button onClick={handleOpen} variant="text">
-                    Đánh Giá
-                </Button>
-            ),
+            width: 120,
+            renderCell: (params) => {
+                return !params.row.rate ? (
+                    <Button variant="text" onClick={() => handleOpen(params.row.id)}>
+                        Đánh Giá
+                    </Button>
+                ) : (
+                    <Button disabled>Đã Đánh Giá</Button>
+                );
+            },
         },
     ];
 
-    const rows = [
-        {
-            id: '1',
-            email: 'leminhhoang241299@gmail.com',
-            sdt: '0901555123',
-            ngayThanhToan: '2024-02-06',
-            tgBD: '18:30',
-            tgKT: '19:30',
-            tongTien: '490.000',
-        },
-    ];
+    const rows = bills.map((info) => ({
+        id: info.id,
+        pitchName: info.pitchName,
+        name: info.lastName + ' ' + info.firstName,
+        email: info.email,
+        phoneNumber: info.phoneNumber,
+        rentedAt: info.rentedAt,
+        startTime: info.startTime,
+        endTime: info.endTime,
+        total: info.total,
+        paymentMethod: info.paymentMethod,
+        rate: info.rate,
+    }));
 
     return (
-        <div style={{ width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} pageSizeOptions={[5, 10, 20, 50, 100]} />
-            <ModalRating open={open} handleClose={handleClose} />
-        </div>
+        <>
+            <div style={{ height: '370px', width: '100%' }}>
+                <DataGrid rows={rows} columns={columns} hideFooterPagination={true} />
+                <TablePagination
+                    component="div"
+                    sx={{ border: 1, borderColor: 'divider' }}
+                    rowsPerPageOptions={[5, 10, 25]}
+                    count={100}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </div>
+            <ModalRating open={open} handleClose={handleClose} selectedBillId={selectedBillId} />
+        </>
     );
 }

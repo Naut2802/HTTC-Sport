@@ -54,8 +54,13 @@ export const handleResetPasswordUser = async (token, data) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/user/forgot-password/reset-password?token=${token}`, data);
 };
 
-export const handleGetUserAdmin = async () => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user`);
+export const handleGetUserAdmin = async (page, size) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
 };
 
 export const handleGetUsersAdmin = async (userId) => {
@@ -82,20 +87,38 @@ export const handleCreatePaymentLinkWallet = async (id) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/payment/user-top-up/${id}`);
 };
 
-export const handleConfirmTransaction = async (code, id, status) => {
+export const handleConfirmTransaction = async (code, orderCode, status) => {
     return await authorizedAxiosInstance.post(
-        `${API_ROOT}/api/v1/wallet/confirm-transaction?code=${code}&id=${id}&status=${status}`,
+        `${API_ROOT}/api/v1/wallet/confirm-transaction?code=${code}&orderCode=${orderCode}&status=${status}`,
     );
 };
 
-export const handleGetTransactionsByUser = async (userId) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/transaction/${userId}`);
+export const handleGetTransactionsByUser = async (userId, page, size) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/transaction/${userId}`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
+};
+
+export const handleGetAllBillsUser = async (userId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/bill/get-all-bills-by-user/${userId}`);
 };
 
 // ----------------------------------PITCH API--------------------------------------
 
-export const handleGetPitchesAdmin = async () => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/admin`);
+export const handleGetPitchesAdmin = async (page, size) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/admin`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
+};
+
+export const handleGetTop3Pitches = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/get-top-3`);
 };
 
 export const handleGetPitches = async () => {
@@ -160,31 +183,111 @@ export const handleCreatePaymentLink = async (id, deposit) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/payment/rent-pitch/${id}?deposit=${deposit}`);
 };
 
-export const handleConfirmRent = async (code, id, status) => {
+export const handleConfirmRent = async (code, orderCode, status) => {
     return await authorizedAxiosInstance.post(
-        `${API_ROOT}/api/v1/rent-pitch/confirm-rent?code=${code}&id=${id}&status=${status}`,
+        `${API_ROOT}/api/v1/rent-pitch/confirm-rent?code=${code}&orderCode=${orderCode}&status=${status}`,
     );
 };
+
+// ----------------------------------- RENT INFO API--------------------------------------
 
 export const handleGetRentInfoById = async (id) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/${id}`);
 };
 
-export const handleGetAllRentInfoByUser = async (userId) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/get-all-by-user/${userId}`);
+export const handleGetAllRentInfoByUser = async (userId, page, size) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/get-all-by-user/${userId}`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
 };
 
 export const handleDeleteRentInfo = async (id) => {
     return await authorizedAxiosInstance.delete(`${API_ROOT}/api/v1/rent-pitch/${id}`);
 };
 
-// -----------------------------------ADMIN RENT PITCH API--------------------------------------
+// -----------------------------------ADMIN RENT INFO API--------------------------------------
 
-export const handleGetAllRentInfoAdmin = async () => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch`);
+export const handleGetAllRentInfoAdmin = async (page, size) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
+};
+
+export const handleUpdateRentInfo = async (id, rentTime) => {
+    return await authorizedAxiosInstance.put(`${API_ROOT}/api/v1/rent-pitch/${id}?rentTime=${rentTime}`);
+};
+
+export const handleExchangeRentInfoToBill = async (id) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/rent-pitch/rent-info-to-bill/${id}`);
+};
+
+export const handlePayRemaining = async (id, paymentMethod) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/rent-pitch/pay-remaining/${id}?paymentMethod=${paymentMethod}`);
+};
+
+export const handleConfirmPayRemaining = async (code, orderCode, status) => {
+    return await authorizedAxiosInstance.post(
+        `${API_ROOT}/api/v1/rent-pitch/confirm-pay-remaining?code=${code}&orderCode=${orderCode}&status=${status}`,
+    );
+};
+
+export const handleGetAllTransactionsAdmin = async (page, size) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/transaction`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
 };
 
 // -----------------------------------REPORT API--------------------------------------
+
 export const handleAnalytics = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/report/analytics`);
+};
+
+export const handleGetAllBills = async (page, size) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/bill`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
+};
+
+export const handleGetAllBillsByUser = async (userId, page, size) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/bill/get-all-bills-by-user/${userId}`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
+};
+
+export const handleExportExcel = async (billIds) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/report/export-excel`, billIds, {
+        responseType: 'blob',
+    });
+};
+
+// -----------------------------------REVIEW API--------------------------------------
+
+export const handleReviewPitch = async (billId, data) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/review/${billId}`, data);
+};
+
+export const handleGetAllReviewsUser = async (userId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/review/get-all-reviews-by-user/${userId}`);
+};
+
+// -----------------------------------CHAT API--------------------------------------
+
+export const handleGetChatMessages = async (roomId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user/chat-room/${roomId}`);
 };

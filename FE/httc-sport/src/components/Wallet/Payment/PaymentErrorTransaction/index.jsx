@@ -12,17 +12,16 @@ export default function PaymentErrorTransaction() {
     const navigate = useNavigate();
     const query = useQuery();
     const code = query.get('code');
-    const id = query.get('id');
+    const orderCode = query.get('orderCode');
     const status = query.get('status');
 
-    console.log(code);
-    console.log(id);
+    console.log(orderCode);
     console.log(status);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await handleConfirmTransaction(code, id, status);
+                const res = await handleConfirmTransaction(code, orderCode, status);
                 console.log(res.data);
 
                 toast.error(res.data.result.message);
@@ -32,7 +31,7 @@ export default function PaymentErrorTransaction() {
             }
         };
         fetchData();
-    }, [code, id, status, navigate]);
+    }, [code, orderCode, status, navigate]);
 
     return (
         <Box

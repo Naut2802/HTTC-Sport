@@ -44,10 +44,11 @@ export default function Payment() {
         console.log('Nạp Thành Công', response.data);
         try {
             const res = await handleCreatePaymentLinkWallet(idPayment);
-            if (res.data.result.data) {
-                window.location.href = res.data.result.data.checkoutUrl;
+            console.log(res);
+            if (res.data.result.success) {
+                window.location.href = res.data.result.checkoutUrl;
             } else {
-                toast.warning(res.data.result.desc);
+                toast.warning('Có lỗi xảy ra !!!');
             }
         } catch (error) {
             console.error('Lỗi nạp tiền: ', error);

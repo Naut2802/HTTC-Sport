@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {
     Box,
@@ -31,6 +32,7 @@ export default function RentForm({ id }) {
     const [openPopup, setOpenPopup] = useState(false);
     const [dataPayment, setDataPayment] = useState(null);
     const [resPayment, setResPayment] = useState(null);
+    const checkUser = localStorage.getItem('userId');
 
     const { handleSubmit, control, reset, register } = useForm({
         defaultValues: {
@@ -42,15 +44,24 @@ export default function RentForm({ id }) {
         },
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await handleGetMyInfoAPI();
-                reset(res.data.result);
-            } catch (error) {}
-        };
-        fetchData();
-    }, [reset]);
+    if (checkUser) {
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const res = await handleGetMyInfoAPI();
+                    const userData = {
+                        lastName: res.data.result.lastName || '',
+                        firstName: res.data.result.firstName || '',
+                        phoneNumber: res.data.result.phoneNumber || '',
+                        email: res.data.result.email || '',
+                        note: res.data.result.note || '',
+                    };
+                    reset(userData);
+                } catch (error) {}
+            };
+            fetchData();
+        }, [reset]);
+    }
 
     const handleChangeTime = (event) => {
         setTime(event.target.value);
@@ -68,8 +79,6 @@ export default function RentForm({ id }) {
         if (dateValue && timeValue) {
             const formattedDate = format(dateValue.$d, 'yyyy-MM-dd');
             const formattedTime = format(timeValue.$d, 'HH:mm:ss');
-            console.log(data);
-
             data = {
                 ...data,
                 pitchId: id,
@@ -79,12 +88,16 @@ export default function RentForm({ id }) {
                 typePitch: type,
                 paymentMethod: payment,
             };
-            console.log(data);
             setDataPayment(data);
             const res = await handleRentPitch(data);
-            setResPayment(res.data.result);
-            toast.info('Đã nhận thông tin đặt sân. Vui lòng hoàn tất thanh toán!');
-            setOpenPopup(true);
+            console.log(res);
+            if (res.data.result.deposit === 0) {
+                setResPayment(res.data.result);
+                toast.info('Đã nhận thông tin đặt sân. Vui lòng hoàn tất thanh toán!');
+                setOpenPopup(true);
+            } else {
+                toast.success('Đặt sân thành công với số dư trong Ví HTTC !!!');
+            }
         } else {
             toast.error('Vui lòng chọn ngày và giờ hợp lệ!');
         }
@@ -220,7 +233,7 @@ export default function RentForm({ id }) {
                                             onChange={handleChangePayment}
                                         >
                                             <MenuItem value={'QR'}>Thanh toán bằng QR</MenuItem>
-                                            <MenuItem value={'Ví'}>Thanh toán bằng Ví HTTC</MenuItem>
+                                            <MenuItem value={'WALLET'}>Thanh toán bằng Ví HTTC</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Typography>

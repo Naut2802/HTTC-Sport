@@ -113,8 +113,7 @@ export default function NavbarAdmin() {
             >
                 <DrawerHeader className="bg-dark" sx={{ color: 'white' }}>
                     <Typography component="div" className="mx-4 my-2 text-decoration-none">
-                        Quản Lý : {account.lastName} {account.firstName} <br />
-                        {/* {account.username} */}
+                        Quản Lý : {account?.lastName ? account.lastName : account?.username} <br />
                     </Typography>
                     <IconButton onClick={handleDrawerClose} sx={{ color: 'white', marginLeft: '25px' }}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}

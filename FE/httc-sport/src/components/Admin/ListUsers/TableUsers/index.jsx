@@ -1,18 +1,28 @@
-import { toast } from 'react-toastify';
-import { DataGrid } from '@mui/x-data-grid';
-import { useEffect, useState } from 'react';
-import { Button, Tooltip } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { handleGetUserAdmin, handleGetUsersAdmin, handleDeleteUserAdmin, handleActiveUserAdmin } from '~/apis';
+import { Button, TablePagination, Tooltip } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { handleActiveUserAdmin, handleDeleteUserAdmin, handleGetUserAdmin, handleGetUsersAdmin } from '~/apis';
 
 export default function TableUsers({ dataUserTable }) {
     const [users, setUsers] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = async (page, size) => {
             try {
-                const response = await handleGetUserAdmin();
-                // console.log(response.data.result);
+                const response = await handleGetUserAdmin(page, size);
+                console.log(response.data.result);
                 const dataUser = response.data.result;
                 const filteredUsers = dataUser.filter((user) => !user.roles.some((role) => role.roleName === 'ADMIN'));
                 setUsers(filteredUsers);
@@ -20,8 +30,8 @@ export default function TableUsers({ dataUserTable }) {
                 console.error('Error fetching user data:', error);
             }
         };
-        fetchData();
-    }, []);
+        fetchData(page, rowsPerPage);
+    }, [page, rowsPerPage]);
 
     const handleEditUser = async (users) => {
         const userId = users.id;
@@ -69,15 +79,20 @@ export default function TableUsers({ dataUserTable }) {
     };
 
     const columns = [
-        { field: 'email', headerName: 'Email', width: 280 },
-        { field: 'username', headerName: 'Tên Tài Khoản', width: 150 },
-        { field: 'lastName', headerName: 'Họ', width: 150 },
-        { field: 'firstName', headerName: 'Tên', width: 100 },
-        { field: 'phoneNumber', headerName: 'Số Điện Thoại', width: 180 },
+        { field: 'email', headerName: 'Email', width: 250 },
+        { field: 'username', headerName: 'Tên Tài Khoản', width: 250 },
+        { field: 'lastName', headerName: 'Họ', width: 140 },
+        { field: 'firstName', headerName: 'Tên', width: 140 },
+        {
+            field: 'phoneNumber',
+            headerName: 'Số Điện Thoại',
+            width: 180,
+            renderCell: (users) => (users.phoneNumber ? users.phoneNumber : 'Chưa có thông tin'),
+        },
         {
             field: 'isEnabled',
             headerName: 'Trạng Thái',
-            width: 200,
+            width: 150,
             renderCell: (users) => (users.value ? 'Hoạt Động' : 'Không Hoạt Động'),
         },
         {
@@ -114,13 +129,17 @@ export default function TableUsers({ dataUserTable }) {
     ];
 
     return (
-        <div className="w-100 my-2">
-            <DataGrid
-                rows={users}
-                columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5, 10, 20, 50, 100]}
-                getRowId={(row) => row.id}
+        <div style={{ height: '370px', width: '100%' }}>
+            <DataGrid rows={users} columns={columns} hideFooterPagination={true} getRowId={(row) => row.id} />
+            <TablePagination
+                component="div"
+                sx={{ border: 1, borderColor: 'divider' }}
+                rowsPerPageOptions={[5, 10, 25]}
+                count={100}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </div>
     );

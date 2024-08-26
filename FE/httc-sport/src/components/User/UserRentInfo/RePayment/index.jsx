@@ -1,8 +1,8 @@
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
-import { format } from 'date-fns';
+import { addMinutes, format } from 'date-fns';
 import { toast } from 'react-toastify';
-import { handleCreatePaymentLink } from '~/apis';
 
+import { handleCreatePaymentLink } from '~/apis';
 import logo from '~/components/Images/logo.png';
 
 function formatCurrency(amount) {
@@ -17,31 +17,36 @@ function formatDate(dateString) {
     return format(date, 'dd/MM/yyyy');
 }
 
-// { resData, resPayment, resDate }
-export default function RePayment({ rentInfo }) {
-    console.log(rentInfo);
+function addMinutesToTime(startTime, minutesToAdd) {
+    const today = new Date().toISOString().split('T')[0];
+    const startDate = new Date(`${today}T${startTime}`);
+    const newTime = addMinutes(startDate, minutesToAdd);
+    return format(newTime, 'HH:mm:ss');
+}
 
+export default function RePayment({ rentInfo, resPayment }) {
+    const endTime = addMinutesToTime(rentInfo.startTime, rentInfo.rentTime);
     const handlePayPercent = async () => {
-        const id = rentInfo.id;
+        const id = resPayment.id;
         const deposit = 0.35;
         const res = await handleCreatePaymentLink(id, deposit);
-        console.log(res.data.result.data);
-        if (res.data.result.data) {
-            window.location.href = res.data.result.data.checkoutUrl;
+        console.log(res);
+        if (res.data.result.success) {
+            window.location.href = res.data.result.checkoutUrl;
         } else {
-            toast.warning(res.data.result.desc);
+            toast.warning('Có lỗi xảy ra !!!');
         }
     };
 
     const handlePayAll = async () => {
-        const id = rentInfo.id;
+        const id = resPayment.id;
         const deposit = 1;
         const res = await handleCreatePaymentLink(id, deposit);
-        console.log(res.data.result.data);
-        if (res.data.result.data) {
-            window.location.href = res.data.result.data.checkoutUrl;
+        console.log(res);
+        if (res.data.result.success) {
+            window.location.href = res.data.result.checkoutUrl;
         } else {
-            toast.warning(res.data.result.desc);
+            toast.warning('Có lỗi xảy ra !!!');
         }
     };
 
@@ -117,7 +122,7 @@ export default function RePayment({ rentInfo }) {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <Typography component={'span'}>
-                                        <TextField label="Giờ kết thúc" variant="outlined" fullWidth value={rentInfo.endTime} />
+                                        <TextField label="Giờ kết thúc" variant="outlined" fullWidth value={endTime} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12}>
@@ -136,7 +141,7 @@ export default function RePayment({ rentInfo }) {
                                             label="Tổng tiền"
                                             variant="outlined"
                                             fullWidth
-                                            value={formatCurrency(rentInfo.total)}
+                                            value={formatCurrency(resPayment.total)}
                                         />
                                     </Typography>
                                 </Grid>

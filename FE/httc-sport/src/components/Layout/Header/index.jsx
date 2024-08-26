@@ -6,6 +6,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { AppBar, Box, Button, Container, Grid, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -229,8 +230,15 @@ export default function Header() {
                             </Button>
                         ) : (
                             <Box sx={{ flexGrow: 0, marginLeft: 2 }} className="d-flex">
-                                <Typography component="div" className="text-dark">
-                                    {user?.firstName ? user?.firstName : user?.username}
+                                <Typography
+                                    sx={{ borderRight: 2, paddingRight: 2, height: '40px' }}
+                                    component="div"
+                                    className="text-dark text-end"
+                                >
+                                    <VerifiedUserIcon sx={{ mt: 1 }} color="success" />{' '}
+                                    <Typography component="sub" style={{ fontSize: 19, fontWeight: 'bolder' }}>
+                                        {user?.firstName ? user?.firstName : user?.username}
+                                    </Typography>
                                 </Typography>
                                 <Tooltip title="Ví" className="mx-4">
                                     <IconButton sx={{ p: 0 }} onClick={handleOpenWallet}>

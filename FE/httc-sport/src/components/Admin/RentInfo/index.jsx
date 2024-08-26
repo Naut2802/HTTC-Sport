@@ -11,7 +11,13 @@ export default function RentInfo() {
                 <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/admin/trang-chu">
                     Trang Chủ
                 </Typography>
-                <Typography className="text-decoration-none text-dark" variant="h6" noWrap component={Link} to="/admin/them-san">
+                <Typography
+                    className="text-decoration-none text-dark"
+                    variant="h6"
+                    noWrap
+                    component={Link}
+                    to="/admin/thong-tin-dat-san"
+                >
                     Thông Tin Sân
                 </Typography>
             </Breadcrumbs>

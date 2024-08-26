@@ -1,10 +1,14 @@
-import { Box, Button, TablePagination } from '@mui/material';
+import CancelPresentationRoundedIcon from '@mui/icons-material/CancelPresentationRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import { Box, Button, TablePagination, TextField, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { DatePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { handleExportExcel, handleGetAllBills } from '~/apis';
+import { handleExportExcel, handleGetAllBills, handleGetReportByDate } from '~/apis';
 
 function formatCurrency(amount) {
     return amount.toLocaleString('vi-VN', {
@@ -17,6 +21,9 @@ export default function TableStatistics() {
     const [bills, setBills] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [fromDateValue, setFromDateValue] = useState(null);
+    const [toDateValue, setToDateValue] = useState(null);
+    const { handleSubmit } = useForm();
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -51,6 +58,22 @@ export default function TableStatistics() {
             toast.error('Có lỗi xảy ra khi xuất dữ liệu');
             console.error('Export Excel Error:', error);
         }
+    };
+
+    const submitDateReport = async () => {
+        const formattedFromDate = format(fromDateValue.$d, 'yyyy-MM-dd');
+        const formattedToDate = format(toDateValue.$d, 'yyyy-MM-dd');
+        try {
+            const res = await handleGetReportByDate(formattedFromDate, formattedToDate);
+            console.log(res);
+            setBills(res.data.result.bills);
+        } catch (error) {}
+    };
+
+    const cancelSearchForDate = () => {
+        setFromDateValue(null);
+        setToDateValue(null);
+        fetchData(page, rowsPerPage);
     };
 
     const fetchData = async (page, size) => {
@@ -118,7 +141,6 @@ export default function TableStatistics() {
             <Box
                 sx={{
                     display: 'flex',
-                    flexDirection: 'column',
                     border: 1,
                     borderColor: 'divider',
                     '& > *': {
@@ -126,12 +148,39 @@ export default function TableStatistics() {
                     },
                 }}
             >
+                <Box sx={{ ml: 2 }} component="form" onSubmit={handleSubmit(submitDateReport)} className="d-flex">
+                    <Typography component={'span'} sx={{ mr: 1 }}>
+                        <DatePicker
+                            sx={{ width: '100%' }}
+                            label="Chọn khoảng bắt đầu"
+                            value={fromDateValue}
+                            onChange={(newFromDateValue) => setFromDateValue(newFromDateValue)}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </Typography>
+                    <Typography component={'span'} sx={{ mr: 1 }}>
+                        <DatePicker
+                            sx={{ width: '100%' }}
+                            label="Chọn khoảng kết thúc"
+                            value={toDateValue}
+                            onChange={(newToDateValue) => setToDateValue(newToDateValue)}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </Typography>
+                    <Button variant="text" type="submit" color="success">
+                        Tìm Kiếm <SearchRoundedIcon />
+                    </Button>
+                </Box>
+                <Button variant="text" color="error" onClick={cancelSearchForDate}>
+                    Hủy <CancelPresentationRoundedIcon />
+                </Button>
                 <div style={{ marginRight: '20px' }} className="d-flex justify-content-end">
                     <Button variant="contained" color="success" onClick={() => handleExportWithExcel()}>
                         Xuất dữ liệu (Excel)
                     </Button>
                 </div>
             </Box>
+
             <div style={{ height: '390px', width: '100%' }}>
                 <DataGrid key={rows.id} rows={rows} columns={columns} hideFooterPagination={true} />
                 <TablePagination

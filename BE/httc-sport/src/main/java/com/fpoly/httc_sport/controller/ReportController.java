@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/report")
@@ -62,10 +63,10 @@ public class ReportController {
 	
 	@Operation(summary = "Api export list bills to excel")
 	@GetMapping("export-excel")
-	void exportExcel(HttpServletResponse response, @RequestBody BillExportExcelRequest request) throws IOException {
+	void exportExcel(HttpServletResponse response, @RequestBody List<Long> billIds) throws IOException {
 		response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
 		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=bill-report.xlsx");
 		
-		reportService.exportExcel(response, request);
+		reportService.exportExcel(response, billIds);
 	}
 }

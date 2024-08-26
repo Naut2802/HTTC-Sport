@@ -1,6 +1,10 @@
 name: CICD BE Pipeline
 
 on:
+  push:
+    branches: [main]
+    paths: 
+      - '**/cicd-be.yml'
   pull_request:
     branches: [main]
     types: [closed]
@@ -25,7 +29,6 @@ jobs:
     steps:
       - name: Set up Docker on EC2
         run: |
-          sudo yum update -y
           sudo amazon-linux-extras install docker -y
           sudo service docker start
           sudo systemctl enable docker

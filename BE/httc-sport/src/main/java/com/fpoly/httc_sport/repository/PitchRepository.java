@@ -18,6 +18,6 @@ public interface PitchRepository extends JpaRepository<Pitch, Long>, JpaSpecific
 			"b.pitch.address.street, b.pitch.address.ward, b.pitch.address.district, b.pitch.address.city, " +
 			"b.pitch.description, b.pitch.isEnabled, b.pitch.type, b.pitch.total, " +
 			"(SELECT img.url FROM Image img WHERE img.pitch.id = b.pitch.id ORDER BY img.id ASC LIMIT 1), b.pitch.rate) " +
-			"FROM Bill b GROUP BY b.pitch.id ORDER BY COUNT(b) DESC", nativeQuery = true)
+			"FROM Bill b GROUP BY b.pitch.id ORDER BY COUNT(b) DESC")
 	List<PitchResponse> findTop3MostRentedPitch(Pageable pageable);
 }

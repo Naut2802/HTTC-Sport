@@ -85,7 +85,7 @@ public class PitchService {
 		return pitchMapper.toPitchDetailsResponse(pitchRepository.save(pitch));
 	}
 	
-	public PitchResponse deleteImageFromPitch(long id, String publicId) throws Exception {
+	public PitchDetailsResponse deleteImageFromPitch(long id, String publicId) throws Exception {
 		var pitch = pitchRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
@@ -97,7 +97,7 @@ public class PitchService {
 		pitch.getImages().remove(imageToRemove);
 		imageRepository.delete(imageToRemove);
 		imageService.deleteImages(List.of(imageToRemove.getPublicId()));
-		return pitchMapper.toPitchResponse(pitchRepository.save(pitch));
+		return pitchMapper.toPitchDetailsResponse(pitchRepository.save(pitch));
 	}
 	
 	public String deletePitch(long id) {
@@ -131,6 +131,11 @@ public class PitchService {
 				() -> new AppException(ErrorCode.PITCH_NOT_EXISTED));
 		
 		return pitchMapper.toPitchDetailsResponse(pitch);
+	}
+	
+	public List<PitchResponse> getTop3Pitches() {
+		Pageable pageable = PageRequest.of(0, 3);
+		return pitchRepository.findTop3MostRentedPitch(pageable);
 	}
 	
 	public List<PitchResponse> getPitches(String rates, String district, String city,
@@ -192,7 +197,7 @@ public class PitchService {
 				int index = 0;
 				for(Optional<Image> image: images) {
 					if (image.isPresent())
-						responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+						responses.get(index).setImage(image.get().getUrl());
 					
 					index++;
 				}
@@ -260,7 +265,7 @@ public class PitchService {
 				int index = 0;
 				for(Optional<Image> image: images) {
 					if (image.isPresent())
-						responses.get(index).setImage(imageMapper.toImageResponse(image.get()));
+						responses.get(index).setImage(image.get().getUrl());
 					
 					index++;
 				}

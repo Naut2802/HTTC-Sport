@@ -1,17 +1,19 @@
 package com.fpoly.httc_sport.service;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.fpoly.httc_sport.dto.response.RentPayRemainingResponse;
 import com.fpoly.httc_sport.entity.RentInfo;
 import com.fpoly.httc_sport.entity.User;
 import com.fpoly.httc_sport.repository.*;
 import com.fpoly.httc_sport.utils.Enum.BillStatusEnum;
 import com.fpoly.httc_sport.utils.Enum.PaymentMethodEnum;
-import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
 import com.fpoly.httc_sport.dto.response.RentResponse;
@@ -65,7 +67,7 @@ public class RentInfoService {
 			return RentResponse.builder().message("Đặt sân thất bại, năm đặt không hợp lệ").build();
 		} else if (request.getRentedAt().getYear() == dateNow.getYear()) {
 			if (request.getRentedAt().getDayOfYear() < dateNow.getDayOfYear())
-				return RentResponse.builder().message("Đặt sân thất bại, ngày đặt không hợp lệ").build();;
+				return RentResponse.builder().message("Đặt sân thất bại, ngày đặt không hợp lệ").build();
 			
 			if (request.getRentedAt().getDayOfYear() == dateNow.getDayOfYear())
 				if (timeNow.isAfter(startTime))
@@ -176,12 +178,13 @@ public class RentInfoService {
 				.id(rentInfo.getId())
 				.deposit(rentInfo.getDeposit())
 				.total(rentInfo.getTotal())
+				.isRentSuccess(true)
 				.message("Đặt sân thành công")
 				.build();
 	}
 	
-	public RentResponse confirmRent(String code, String id, String status) {
-		var paymentInfo = paymentService.getPaymentInfo(id);
+	public RentResponse confirmRent(String code, int orderCode, String status) {
+		var paymentInfo = paymentService.getPaymentInfo(orderCode);
 		
 		if (paymentInfo.getData() == null)
 			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);
@@ -213,6 +216,7 @@ public class RentInfoService {
 				.total(rentInfo.getTotal())
 				.deposit(rentInfo.getDeposit())
 				.message("Thanh toán đặt cọc thành công, vui lòng kiểm tra thông tin đặt sân được gửi qua Email")
+				.isRentSuccess(true)
 				.build();
 	}
 
@@ -239,25 +243,31 @@ public class RentInfoService {
 		return rentInfoMapper.toRentInfoResponse(rentInfo);
 	}
 
-	public RentInfoResponse updateRentInfo(int id, RentInfoUpdateRequest request) {
+	public RentInfoResponse updateRentInfo(int id, int rentTime) {
 		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
 		);
 		
-		LocalTime startTime = request.getStartTime().plusMinutes(1);
-		LocalTime endTime = request.getStartTime().plusMinutes(request.getRentTime());
+		if (rentInfo.getIsDone())
+			throw new AppException(ErrorCode.RENT_INFO_EXCHANGED);
+		
+		if (!rentInfo.getPaymentStatus())
+			throw new AppException(ErrorCode.UNPAID);
+		
+		LocalTime startTime = rentInfo.getStartTime();
+		LocalTime endTime = rentInfo.getEndTime().plusMinutes(rentTime);
 		LocalDate dateNow = LocalDate.now();
 		LocalTime timeNow = LocalTime.now();
 		LocalTime startStopTime = LocalTime.of(23, 59);
 		LocalTime endStopTime = LocalTime.of(6, 1);
 		
-		if (request.getRentedAt().getYear() < dateNow.getYear()) {
+		if (rentInfo.getRentedAt().getYear() < dateNow.getYear()) {
 			throw new DateTimeException("Đặt sân thất bại, năm đặt không hợp lệ");
-		} else if (request.getRentedAt().getYear() == dateNow.getYear()) {
-			if (request.getRentedAt().getDayOfYear() < dateNow.getDayOfYear())
+		} else if (rentInfo.getRentedAt().getYear() == dateNow.getYear()) {
+			if (rentInfo.getRentedAt().getDayOfYear() < dateNow.getDayOfYear())
 				throw new DateTimeException("Đặt sân thất bại, ngày đặt không hợp lệ");
 			
-			if (request.getRentedAt().getDayOfYear() == dateNow.getDayOfYear())
+			if (rentInfo.getRentedAt().getDayOfYear() == dateNow.getDayOfYear())
 				if (timeNow.isAfter(startTime))
 					throw new DateTimeException("Đặt sân thất bại, thời gian đặt không hợp lệ");
 		}
@@ -267,24 +277,22 @@ public class RentInfoService {
 			throw new DateTimeException("Đặt sân thất bại, sân bóng không hoạt động trong khoảng thời gian này");
 		
 		int stepHour = 0;
-		int time = request.getRentTime();
+		int time = rentTime;
 		
 		while (time > 0) {
-			stepHour = request.getRentTime() - time;
+			stepHour = rentTime - time;
 			if (startTime.plusMinutes(stepHour).isAfter(startStopTime) || startTime.plusMinutes(stepHour).isBefore(endStopTime))
 				throw new DateTimeException("Đặt sân thất bại, sân bóng không hoạt động trong khoảng thời gian này");
 			time -= 60;
 		}
 		
-		int initCount = request.getTypePitch() == 5 ? 1
-				: request.getTypePitch() == 7 ? 3
-				: request.getTypePitch() == 11 ? 9 : 1;
+		int initCount = 0;
 		
 		AtomicInteger countByStartTime = new AtomicInteger(initCount);
 		rentInfoRepository
 				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(
 						rentInfo.getPitch().getId(),
-						request.getRentedAt(),
+						rentInfo.getRentedAt(),
 						startTime.plusSeconds(1),
 						startTime.plusSeconds(1))
 				.forEach(_rentInfo -> {
@@ -299,7 +307,7 @@ public class RentInfoService {
 		rentInfoRepository
 				.findByPitchIdAndRentedAtEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndPaymentStatusTrue(
 						rentInfo.getPitch().getId(),
-						request.getRentedAt(),
+						rentInfo.getRentedAt(),
 						endTime.minusSeconds(1),
 						endTime.minusSeconds(1))
 				.forEach(_rentInfo -> {
@@ -312,7 +320,8 @@ public class RentInfoService {
 		
 		AtomicInteger countByStartTimeBetween = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(rentInfo.getPitch().getId(), request.getRentedAt(), startTime, endTime)
+				.findByPitchIdAndRentedAtEqualsAndStartTimeBetweenAndPaymentStatusTrue(
+						rentInfo.getPitch().getId(), rentInfo.getRentedAt(), startTime, endTime)
 				.forEach(_rentInfo -> {
 					if (_rentInfo.getTypePitch() == 5)
 						countByStartTimeBetween.addAndGet(1);
@@ -323,7 +332,8 @@ public class RentInfoService {
 		
 		AtomicInteger countByEndTimeBetween = new AtomicInteger(initCount);
 		rentInfoRepository
-				.findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(rentInfo.getPitch().getId(), request.getRentedAt(), startTime, endTime)
+				.findByPitchIdAndRentedAtEqualsAndEndTimeBetweenAndPaymentStatusTrue(
+						rentInfo.getPitch().getId(), rentInfo.getRentedAt(), startTime, endTime)
 				.forEach(_rentInfo -> {
 					if (_rentInfo.getTypePitch() == 5)
 						countByEndTimeBetween.addAndGet(1);
@@ -338,13 +348,12 @@ public class RentInfoService {
 			throw new DateTimeException("Đặt sân thất bại, không còn sân trống trong khoảng thời gian này");
 		
 		var user = rentInfo.getUser();
-		rentInfoMapper.updateRentInfo(rentInfo, request);
 		
-		int total = getTotal(request.getRentTime(), user, rentInfo);
+		int total = getTotal(rentTime, user, rentInfo);
 		
 		rentInfo.setStartTime(startTime);
 		rentInfo.setEndTime(endTime);
-		rentInfo.setTotal(total);
+		rentInfo.setTotal(rentInfo.getTotal() + total);
 		
 		return rentInfoMapper.toRentInfoResponse(rentInfoRepository.save(rentInfo));
 	}
@@ -373,6 +382,116 @@ public class RentInfoService {
 		}
 	}
 
+	public RentPayRemainingResponse payRemainingAmount(int id, String paymentMethod) throws NoSuchAlgorithmException, InvalidKeyException {
+		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
+		);
+		
+		if (rentInfo.getIsDone())
+			throw new AppException(ErrorCode.BILL_EXISTED);
+		
+		if (!rentInfo.getPaymentStatus())
+			throw new AppException(ErrorCode.UNPAID);
+		
+		if (rentInfo.getTotal() == rentInfo.getDeposit())
+			throw new AppException(ErrorCode.PAID);
+		
+		var _paymentMethod = paymentMethodRepository.findByMethod(PaymentMethodEnum.valueOf(paymentMethod)).orElseThrow(
+				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
+		);
+		
+		if (_paymentMethod.getMethod().equals(PaymentMethodEnum.QR)) {
+			var orderCode = rentInfo.getId();
+			
+			var paymentLink = paymentService.createRentPayRemainingLink(orderCode, rentInfo);
+			return RentPayRemainingResponse.builder()
+					.id(rentInfo.getId())
+					.paymentLink(paymentLink)
+					.message("Vui lòng thanh toán tiền sân còn lại thông qua mã QR")
+					.isPaySuccess(true)
+					.build();
+		} else if (_paymentMethod.getMethod().equals(PaymentMethodEnum.WALLET)) {
+			var user = rentInfo.getUser();
+			if (user == null)
+				throw new AppException(ErrorCode.RENT_INFO_PAY_REMAINING_USER_NOT_FOUND);
+			var wallet = user.getWallet();
+			walletService.createPitchPayRemainingAmountTransaction(wallet, rentInfo);
+			
+			return RentPayRemainingResponse.builder()
+					.id(rentInfo.getId())
+					.message("Thanh toán tiền sân còn lại thông qua ví thành công")
+					.isPaySuccess(true)
+					.build();
+		}
+		
+		return RentPayRemainingResponse.builder()
+				.id(rentInfo.getId())
+				.message("Thanh toán thất bại")
+				.isPaySuccess(false)
+				.build();
+	}
+	
+	@Transactional
+	public RentResponse confirmPayRemaining(String code, int orderCode, String status) {
+		var paymentInfo = paymentService.getPaymentInfo(orderCode);
+		
+		if (paymentInfo.getData() == null)
+			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);
+		
+		String _tempString = paymentInfo.getData().getTransactions().getFirst().getDescription().substring(
+				0,
+				paymentInfo.getData().getTransactions().getFirst().getDescription().lastIndexOf(".")
+		);
+		
+		int id = Integer.parseInt(_tempString.substring(_tempString.lastIndexOf(" ") + 1));
+		
+		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
+				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
+		);
+
+		if (rentInfo.getIsDone())
+			throw new AppException(ErrorCode.BILL_EXISTED);
+
+		if (!rentInfo.getPaymentStatus())
+			throw new AppException(ErrorCode.UNPAID);
+
+		var paymentMethod = paymentMethodRepository.findByMethod(PaymentMethodEnum.QR).orElseThrow(
+				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
+		);
+
+		if (!code.equals("00") || !status.equals("PAID")) {
+			return RentResponse.builder().message("Thanh toán thất bại").build();
+		}
+
+		Bill bill = Bill.builder()
+				.email(rentInfo.getEmail())
+				.phoneNumber(rentInfo.getPhoneNumber())
+				.firstName(rentInfo.getFirstName())
+				.lastName(rentInfo.getLastName())
+				.rentedAt(rentInfo.getRentedAt())
+				.startTime(rentInfo.getStartTime())
+				.endTime(rentInfo.getEndTime())
+				.total(rentInfo.getTotal())
+				.billStatus(BillStatusEnum.DONE.getValue())
+				.typePitch(rentInfo.getTypePitch())
+				.pitch(rentInfo.getPitch())
+				.user(rentInfo.getUser())
+				.paymentMethod(paymentMethod)
+				.build();
+
+		billService.createBill(bill);
+		rentInfoRepository.delete(rentInfo);
+
+		return RentResponse.builder()
+				.id(rentInfo.getId())
+				.total(rentInfo.getTotal())
+				.deposit(rentInfo.getDeposit())
+				.message("Thanh toán tiền sân còn lại thành công")
+				.isRentSuccess(true)
+				.build();
+	}
+	
+	@Transactional
 	public void exchangeRentInfoToBill(int id) {
 		var rentInfo = rentInfoRepository.findById(id).orElseThrow(
 				() -> new AppException(ErrorCode.RENT_INFO_NOT_EXISTED)
@@ -383,6 +502,12 @@ public class RentInfoService {
 		
 		if (!rentInfo.getPaymentStatus())
 			throw new AppException(ErrorCode.UNPAID);
+		
+		var paymentMethod = rentInfo.getPaymentMethod().getMethod().equals(PaymentMethodEnum.WALLET) ?
+				rentInfo.getPaymentMethod() :
+				paymentMethodRepository.findByMethod(PaymentMethodEnum.CASH).orElseThrow(
+				() -> new AppException(ErrorCode.PAYMENT_METHOD_NOT_EXISTED)
+		);
 		
 		Bill bill = Bill.builder()
 				.email(rentInfo.getEmail())
@@ -397,11 +522,10 @@ public class RentInfoService {
 				.typePitch(rentInfo.getTypePitch())
 				.pitch(rentInfo.getPitch())
 				.user(rentInfo.getUser())
-				.paymentMethod(rentInfo.getPaymentMethod())
+				.paymentMethod(paymentMethod)
 				.build();
 		
-		rentInfo.setIsDone(true);
-		rentInfoRepository.save(rentInfo);
 		billService.createBill(bill);
+		rentInfoRepository.delete(rentInfo);
 	}
 }

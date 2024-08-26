@@ -15,7 +15,7 @@ public interface PayOSClient {
 			, @RequestHeader("x-api-key") String apiKey);
 	
 	@GetMapping(value = "/v2/payment-requests/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	PayOSPaymentResponse getPaymentInfo(@PathVariable String id
+	PayOSPaymentResponse getPaymentInfo(@PathVariable int id
 			, @RequestHeader("x-client-id") String clientId
 			, @RequestHeader("x-api-key") String apiKey);
 }

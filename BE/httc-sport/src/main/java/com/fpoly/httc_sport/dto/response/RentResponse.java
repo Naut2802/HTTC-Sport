@@ -15,5 +15,7 @@ public class RentResponse {
 	int total;
 	@Builder.Default
 	int deposit = 0;
+	@Builder.Default
+	boolean isRentSuccess = false;
 	String message;
 }

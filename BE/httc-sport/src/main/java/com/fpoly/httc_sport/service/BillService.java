@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,20 +25,23 @@ public class BillService {
 	BillRepository billRepository;
 	BillMapper billMapper;
 	
+	@Transactional
 	public void createBill(Bill bill) {
 		var user = bill.getUser();
-		var bills = billRepository.findByUserId(user.getId());
-		var vips = vipRepository.findAll();
-		
-		int total = bills.stream().mapToInt(Bill::getTotal).sum() + bill.getTotal();
-		
-		vips.forEach(vip -> {
-			if (total >= vip.getMin() && total <= vip.getMax()) {
-				user.setVip(vip);
-			}
-		});
-		
-		userRepository.save(user);
+		if (user != null) {
+			var bills = billRepository.findByUserId(user.getId());
+			var vips = vipRepository.findAll();
+			
+			int total = bills.stream().mapToInt(Bill::getTotal).sum() + bill.getTotal();
+			
+			vips.forEach(vip -> {
+				if (total >= vip.getMin() && total <= vip.getMax()) {
+					user.setVip(vip);
+				}
+			});
+			
+			userRepository.save(user);
+		}
 		billRepository.save(bill);
 	}
 	

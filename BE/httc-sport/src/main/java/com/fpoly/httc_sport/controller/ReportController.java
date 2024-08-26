@@ -61,7 +61,7 @@ public class ReportController {
 	}
 	
 	@Operation(summary = "Api export list bills to excel")
-	@GetMapping("export-excel")
+	@PostMapping("export-excel")
 	void exportExcel(HttpServletResponse response, @RequestBody BillExportExcelRequest request) throws IOException {
 		response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
 		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=bill-report.xlsx");

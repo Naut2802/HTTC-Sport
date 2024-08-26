@@ -1,5 +1,6 @@
 package com.fpoly.httc_sport.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,9 +11,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ReviewResponse {
-	String username;
-	String firstName;
-	int rate;
-	String description;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class RentPayRemainingResponse {
+	int id;
+	PaymentLinkResponse paymentLink;
+	String message;
+	boolean isPaySuccess;
 }

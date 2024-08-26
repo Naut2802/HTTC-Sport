@@ -1,14 +1,15 @@
 package com.fpoly.httc_sport.controller;
 
-import com.fpoly.httc_sport.dto.request.RentInfoUpdateRequest;
 import com.fpoly.httc_sport.dto.request.RentRequest;
 import com.fpoly.httc_sport.dto.response.ApiResponse;
 import com.fpoly.httc_sport.dto.response.RentInfoResponse;
+import com.fpoly.httc_sport.dto.response.RentPayRemainingResponse;
 import com.fpoly.httc_sport.dto.response.RentResponse;
 import com.fpoly.httc_sport.service.RentInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,6 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -41,10 +44,33 @@ public class RentController {
 			description = "Api use to confirm rent-info after payment with payment link")
 	@PostMapping("confirm-rent")
 	ApiResponse<RentResponse> confirmRent(@RequestParam("code") String code,
-	                                      @RequestParam("id") String id,
+	                                      @RequestParam("orderCode") int orderCode,
 	                                      @RequestParam("status") String status) {
 		return ApiResponse.<RentResponse>builder()
-				.result(rentInfoService.confirmRent(code, id, status))
+				.result(rentInfoService.confirmRent(code, orderCode, status))
+				.build();
+	}
+	
+	@Operation(summary = "Api pay remaining rent-info",
+			description = "Api use to pay remaining rent-info after payment with payment link")
+	@PostMapping("pay-remaining/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<RentPayRemainingResponse> payRemaining(@PathVariable int id,
+	                                                   @RequestParam("paymentMethod") String paymentMethod) throws NoSuchAlgorithmException, InvalidKeyException {
+		return ApiResponse.<RentPayRemainingResponse>builder()
+				.result(rentInfoService.payRemainingAmount(id, paymentMethod))
+				.build();
+	}
+	
+	@Operation(summary = "Api confirm pay remaining",
+			description = "Api use to confirm pay remaining after payment with payment link")
+	@PostMapping("confirm-pay-remaining")
+	@PreAuthorize("hasRole('ADMIN')")
+	ApiResponse<RentResponse> confirmPayRemaining(@RequestParam("code") String code,
+	                                      @RequestParam("orderCode") int orderCode,
+	                                      @RequestParam("status") String status) {
+		return ApiResponse.<RentResponse>builder()
+				.result(rentInfoService.confirmPayRemaining(code, orderCode, status))
 				.build();
 	}
 	
@@ -105,9 +131,11 @@ public class RentController {
 	@Operation(summary = "Api update rent-info", description = "Admin use this api")
 	@PutMapping("{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	ApiResponse<RentInfoResponse> updateRentInfo(@PathVariable int id, @Valid @RequestBody RentInfoUpdateRequest request) {
+	ApiResponse<RentInfoResponse> updateRentInfo(@PathVariable int id,
+	                                             @NotNull(message = "RENT_INFO_RENT_TIME_NULL")
+	                                             @RequestParam("rentTime") int rentTime) {
 		log.info("[Rent Controller - Delete a rent info] Admin updating a rent info with id: {}", id);
-		var response = rentInfoService.updateRentInfo(id, request);
+		var response = rentInfoService.updateRentInfo(id, rentTime);
 		log.info("[Rent Controller - Delete a rent info] Updated");
 		return ApiResponse.<RentInfoResponse>builder()
 				.result(response)

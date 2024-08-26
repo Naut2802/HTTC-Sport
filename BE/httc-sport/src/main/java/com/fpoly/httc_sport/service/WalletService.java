@@ -48,7 +48,7 @@ public class WalletService {
 		Transaction transaction = Transaction.builder()
 				.transactionDate(LocalDateTime.now())
 				.wallet(wallet)
-				.transactionType(TransactionTypeEnum.DEPOSIT.getValue())
+				.transactionType(TransactionTypeEnum.USER_DEPOSIT)
 				.paymentAmount(request.getPaymentAmount())
 				.build();
 		
@@ -58,8 +58,8 @@ public class WalletService {
 	}
 	
 	@Transactional
-	public TransactionResponse confirmTopUpTransaction(String code, String id, String status) {
-		var paymentInfo = paymentService.getPaymentInfo(id);
+	public TransactionResponse confirmTopUpTransaction(String code, int orderCode, String status) {
+		var paymentInfo = paymentService.getPaymentInfo(orderCode);
 		
 		if (paymentInfo.getData() == null)
 			throw new AppException(ErrorCode.PAYMENT_NOT_EXISTED);
@@ -108,10 +108,31 @@ public class WalletService {
 		Transaction transaction = Transaction.builder()
 				.paymentAmount(rentInfo.getTotal())
 				.transactionDate(LocalDateTime.now())
-				.transactionType(TransactionTypeEnum.PAY.getValue())
+				.transactionType(TransactionTypeEnum.RENT_PAY)
 				.paymentStatus(true)
 				.wallet(wallet)
-				.rentInfo(rentInfo)
+				.build();
+		
+		rentInfo.setTransaction(transaction);
+		walletRepository.save(wallet);
+		transactionRepository.save(transaction);
+	}
+	
+	@Transactional
+	public void createPitchPayRemainingAmountTransaction(Wallet wallet, RentInfo rentInfo) {
+		var remainingAmount = rentInfo.getTotal() - rentInfo.getDeposit();
+		if (wallet.getMoney() < remainingAmount)
+			throw new AppException(ErrorCode.WALLET_NOT_ENOUGH);
+		
+		int totalRemaining = wallet.getMoney() - remainingAmount;
+		wallet.setMoney(totalRemaining);
+		
+		Transaction transaction = Transaction.builder()
+				.paymentAmount(rentInfo.getTotal())
+				.transactionDate(LocalDateTime.now())
+				.transactionType(TransactionTypeEnum.RENT_PAY_REMAINING)
+				.paymentStatus(true)
+				.wallet(wallet)
 				.build();
 		
 		rentInfo.setTransaction(transaction);
@@ -135,7 +156,7 @@ public class WalletService {
 				.paymentAmount(request.getPaymentAmount())
 				.transactionDate(LocalDateTime.now())
 				.paymentStatus(true)
-				.transactionType(TransactionTypeEnum.ADMIN_DEPOSIT.getValue())
+				.transactionType(TransactionTypeEnum.ADMIN_ADD_MONEY_TO_USER)
 				.wallet(wallet)
 				.build();
 		

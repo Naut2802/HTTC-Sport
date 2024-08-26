@@ -1,5 +1,6 @@
 package com.fpoly.httc_sport.entity;
 
+import com.fpoly.httc_sport.utils.Enum.TransactionTypeEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,15 +18,14 @@ public class Transaction extends AbstractEntity {
 	Integer id;
 	int paymentAmount;
 	LocalDateTime transactionDate;
-	String transactionType;
+	@Enumerated(EnumType.STRING)
+	TransactionTypeEnum transactionType;
 	@Builder.Default
 	boolean paymentStatus = false;
 	
 	@ManyToOne
 	@JoinColumn(name = "wallet_id")
 	Wallet wallet;
-	@OneToOne(mappedBy = "transaction", fetch = FetchType.EAGER)
-	RentInfo rentInfo;
 	
 	@PrePersist
 	void generateId() {

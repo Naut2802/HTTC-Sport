@@ -79,8 +79,6 @@ export default function RentForm({ id }) {
         if (dateValue && timeValue) {
             const formattedDate = format(dateValue.$d, 'yyyy-MM-dd');
             const formattedTime = format(timeValue.$d, 'HH:mm:ss');
-            console.log(data);
-
             data = {
                 ...data,
                 pitchId: id,
@@ -90,15 +88,15 @@ export default function RentForm({ id }) {
                 typePitch: type,
                 paymentMethod: payment,
             };
-            console.log(data);
             setDataPayment(data);
             const res = await handleRentPitch(data);
-            if (res.data.result.rentSuccess) {
+            console.log(res);
+            if (res.data.result.deposit === 0) {
                 setResPayment(res.data.result);
                 toast.info('Đã nhận thông tin đặt sân. Vui lòng hoàn tất thanh toán!');
                 setOpenPopup(true);
             } else {
-                toast.error(res.data.result.message);
+                toast.success('Đặt sân thành công với số dư trong Ví HTTC !!!');
             }
         } else {
             toast.error('Vui lòng chọn ngày và giờ hợp lệ!');
@@ -235,7 +233,7 @@ export default function RentForm({ id }) {
                                             onChange={handleChangePayment}
                                         >
                                             <MenuItem value={'QR'}>Thanh toán bằng QR</MenuItem>
-                                            <MenuItem value={'Ví'}>Thanh toán bằng Ví HTTC</MenuItem>
+                                            <MenuItem value={'WALLET'}>Thanh toán bằng Ví HTTC</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Typography>

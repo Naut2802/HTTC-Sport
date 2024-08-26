@@ -55,13 +55,12 @@ export const handleResetPasswordUser = async (token, data) => {
 };
 
 export const handleGetUserAdmin = async (page, size) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user` ,
-        {
-       params: {
-           page: page,
-           size: size,
-       }
-   });
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
 };
 
 export const handleGetUsersAdmin = async (userId) => {
@@ -88,22 +87,19 @@ export const handleCreatePaymentLinkWallet = async (id) => {
     return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/payment/user-top-up/${id}`);
 };
 
-export const handleConfirmTransaction = async (code,orderCode, status) => {
+export const handleConfirmTransaction = async (code, orderCode, status) => {
     return await authorizedAxiosInstance.post(
         `${API_ROOT}/api/v1/wallet/confirm-transaction?code=${code}&orderCode=${orderCode}&status=${status}`,
     );
 };
 
 export const handleGetTransactionsByUser = async (userId, page, size) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/transaction/${userId}`
-        ,
-         {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/transaction/${userId}`, {
         params: {
             page: page,
             size: size,
-        }
+        },
     });
-     
 };
 
 export const handleGetAllBillsUser = async (userId) => {
@@ -117,8 +113,12 @@ export const handleGetPitchesAdmin = async (page, size) => {
         params: {
             page: page,
             size: size,
-        }
-    })
+        },
+    });
+};
+
+export const handleGetTop3Pitches = async () => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/get-top-3`);
 };
 
 export const handleGetPitches = async () => {
@@ -132,7 +132,7 @@ export const handleGetPitchesWithFilter = async (data) => {
 };
 
 export const handleGetPitch = async (id) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${id}`)
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/pitch/${id}`);
 };
 
 export const handleChangePitchInfo = async (pitchId, data) => {
@@ -195,8 +195,13 @@ export const handleGetRentInfoById = async (id) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/${id}`);
 };
 
-export const handleGetAllRentInfoByUser = async (userId) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/get-all-by-user/${userId}`);
+export const handleGetAllRentInfoByUser = async (userId, page, size) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch/get-all-by-user/${userId}`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
 };
 
 export const handleDeleteRentInfo = async (id) => {
@@ -206,13 +211,12 @@ export const handleDeleteRentInfo = async (id) => {
 // -----------------------------------ADMIN RENT INFO API--------------------------------------
 
 export const handleGetAllRentInfoAdmin = async (page, size) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch` ,
-        {
-       params: {
-           page: page,
-           size: size,
-       }
-   });
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/rent-pitch`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
 };
 
 export const handleUpdateRentInfo = async (id, rentTime) => {
@@ -234,16 +238,16 @@ export const handleConfirmPayRemaining = async (code, orderCode, status) => {
 };
 
 export const handleGetAllTransactionsAdmin = async (page, size) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/transaction` ,
-        {
-       params: {
-           page: page,
-           size: size,
-       }
-   });
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/transaction`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
 };
 
 // -----------------------------------REPORT API--------------------------------------
+
 export const handleAnalytics = async () => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/report/analytics`);
 };
@@ -253,18 +257,23 @@ export const handleGetAllBills = async (page, size) => {
         params: {
             page: page,
             size: size,
-        }
+        },
     });
 };
 
 export const handleGetAllBillsByUser = async (userId, page, size) => {
-    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/bill/get-all-bills-by-user/${userId}` ,
-        {
-       params: {
-           page: page,
-           size: size,
-       }
-   });
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/bill/get-all-bills-by-user/${userId}`, {
+        params: {
+            page: page,
+            size: size,
+        },
+    });
+};
+
+export const handleExportExcel = async (billIds) => {
+    return await authorizedAxiosInstance.post(`${API_ROOT}/api/v1/report/export-excel`, billIds, {
+        responseType: 'blob',
+    });
 };
 
 // -----------------------------------REVIEW API--------------------------------------
@@ -275,4 +284,10 @@ export const handleReviewPitch = async (billId, data) => {
 
 export const handleGetAllReviewsUser = async (userId) => {
     return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/review/get-all-reviews-by-user/${userId}`);
+};
+
+// -----------------------------------CHAT API--------------------------------------
+
+export const handleGetChatMessages = async (roomId) => {
+    return await authorizedAxiosInstance.get(`${API_ROOT}/api/v1/user/chat-room/${roomId}`);
 };

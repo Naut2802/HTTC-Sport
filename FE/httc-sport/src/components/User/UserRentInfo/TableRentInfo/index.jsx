@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import DeleteForeverTwoToneIcon from '@mui/icons-material/DeleteForeverTwoTone';
-import { Button, Grid } from '@mui/material';
+import { Button, Grid, TablePagination } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
@@ -47,10 +47,20 @@ export default function TableRentInfo({ userId }) {
     const [selectedRentInfo, setSelectedRentInfo] = useState(null);
     const [rentInfoRePayment, setRentInfoRePayment] = useState(null);
     const [resPayment, setResPayment] = useState(null);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
 
-    const fetchData = async () => {
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const fetchData = async (page, size) => {
         try {
-            const res = await handleGetAllRentInfoByUser(userId);
+            const res = await handleGetAllRentInfoByUser(userId, page, size);
             setRentInfo(res.data.result);
         } catch (error) {
             console.error(error);
@@ -58,8 +68,8 @@ export default function TableRentInfo({ userId }) {
     };
 
     useEffect(() => {
-        fetchData();
-    }, [userId]);
+        fetchData(page, rowsPerPage);
+    }, [page, rowsPerPage]);
 
     const handleViewDetails = (number) => {
         const selectedInfo = rentInfo[number - 1];
@@ -106,14 +116,14 @@ export default function TableRentInfo({ userId }) {
     };
 
     const columns = [
-        { field: 'stt', headerName: 'STT', width: 20 },
-        { field: 'id', headerName: 'ID', width: 100 },
-        { field: 'pitchName', headerName: 'Tên Sân', width: 130 },
-        { field: 'email', headerName: 'Email', width: 250 },
+        { field: 'number', headerName: 'STT', width: 20 },
+        { field: 'id', headerName: 'ID', width: 80 },
+        { field: 'pitchName', headerName: 'Tên Sân', width: 170 },
+        { field: 'email', headerName: 'Email', width: 220 },
         {
             field: 'rentedAt',
             headerName: 'Ngày Đá',
-            width: 160,
+            width: 120,
             renderCell: (params) => format(new Date(params.value), 'dd/MM/yyyy'),
         },
         {
@@ -132,7 +142,7 @@ export default function TableRentInfo({ userId }) {
         {
             field: 'total',
             headerName: 'Tổng Tiền',
-            width: 100,
+            width: 120,
             renderCell: (params) => formatCurrency(params.value),
         },
         {
@@ -155,12 +165,12 @@ export default function TableRentInfo({ userId }) {
             field: 'detail',
             headerName: 'Chi Tiết',
             sortable: false,
-            width: 120,
+            width: 90,
             renderCell: (params) => {
                 const { number } = params.row;
                 return (
                     <Button onClick={() => handleViewDetails(number)} variant="text">
-                        Xem Chi Tiết
+                        Xem
                     </Button>
                 );
             },
@@ -169,7 +179,7 @@ export default function TableRentInfo({ userId }) {
             field: 'delelte',
             headerName: 'Xóa',
             sortable: false,
-            width: 100,
+            width: 90,
             renderCell: (params) => {
                 const { number } = params.row;
                 return !rentInfo[number - 1].paymentStatus ? (
@@ -194,19 +204,20 @@ export default function TableRentInfo({ userId }) {
     }));
 
     return (
-        <div style={{ width: '100%', height: '350px' }}>
-            <DataGrid
-                rows={rows}
-                // sx={{ textAlign: 'center' }}
-                columns={columns}
-                getRowId={(rows) => rows.number}
-                pageSizeOptions={[5, 10, 20, 50, 100]}
-                initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 5 },
-                    },
-                }}
-            />
+        <>
+            <div style={{ width: '100%', height: '370px' }}>
+                <DataGrid rows={rows} columns={columns} hideFooterPagination={true} />
+                <TablePagination
+                    component="div"
+                    sx={{ border: 1, borderColor: 'divider' }}
+                    rowsPerPageOptions={[5, 10, 25]}
+                    count={100}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </div>
             <Popup openPopup={openPopupDetail} setOpenPopup={setOpenPopupDetail}>
                 <Grid container>
                     <Grid item>{selectedRentInfo && <ModalDetail rentInfo={selectedRentInfo} />}</Grid>
@@ -217,6 +228,6 @@ export default function TableRentInfo({ userId }) {
                     <Grid item>{rentInfoRePayment && <RePayment rentInfo={rentInfoRePayment} resPayment={resPayment} />}</Grid>
                 </Grid>
             </Popup>
-        </div>
+        </>
     );
 }

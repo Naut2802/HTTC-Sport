@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 import { handleLogInAPI } from '~/apis';
 import gg from '~/components/Images/google-logo.jpg';
 import logo from '~/components/Images/logo.png';
-import Header from '~/components/Layout/Header';
 import { OAuthConfigGoogle } from '~/utils/constants';
 
 export default function Login() {

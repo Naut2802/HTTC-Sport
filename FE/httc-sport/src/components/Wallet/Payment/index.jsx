@@ -44,8 +44,7 @@ export default function Payment() {
         console.log('Nạp Thành Công', response.data);
         try {
             const res = await handleCreatePaymentLinkWallet(idPayment);
-            console.log('lỗi: ', res);
-
+            console.log(res);
             if (res.data.result.success) {
                 window.location.href = res.data.result.checkoutUrl;
             } else {

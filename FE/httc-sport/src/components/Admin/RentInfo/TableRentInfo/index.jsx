@@ -20,7 +20,6 @@ export default function TableRentInfo() {
     const [openPopupDetail, setOpenPopupDetail] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [pageSize, setPageSize] = useState(5);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -46,12 +45,12 @@ export default function TableRentInfo() {
     };
 
     useEffect(() => {
-        fetchData(page, pageSize);
-    }, [page, pageSize]);
+        fetchData(page, rowsPerPage);
+    }, [page, rowsPerPage]);
 
     const columns = [
         { field: 'number', headerName: 'STT', width: 10 },
-        { field: 'id', headerName: 'ID', width: 100 },
+        { field: 'id', headerName: 'ID', width: 80 },
         { field: 'pitchName', headerName: 'Tên Sân', width: 130 },
         { field: 'email', headerName: 'Email', width: 200 },
         { field: 'phoneNumber', headerName: 'Số Điện Thoại', width: 130 },
@@ -77,9 +76,9 @@ export default function TableRentInfo() {
         },
         {
             field: 'paymentStatus',
-            headerName: 'Tình Trạng Thanh Toán',
+            headerName: 'Tình Trạng Thanh Toán Cọc',
             sortable: false,
-            width: 180,
+            width: 200,
             renderCell: (params) => {
                 const { number } = params.row;
                 return !rentInfo[number - 1].paymentStatus ? (
@@ -117,10 +116,12 @@ export default function TableRentInfo() {
     }));
 
     return (
-        <div className="my-3" sx={{ width: 'auto' }}>
-            <DataGrid key={rows.id} rows={rows} columns={columns} pageSizeOptions={[5, 10, 20, 50, 100]} />
+        <div style={{ height: '370px', width: '100%' }}>
+            <DataGrid key={rows.id} rows={rows} columns={columns} hideFooterPagination={true} />
             <TablePagination
                 component="div"
+                sx={{ border: 1, borderColor: 'divider' }}
+                rowsPerPageOptions={[5, 10, 25]}
                 count={100}
                 page={page}
                 onPageChange={handleChangePage}

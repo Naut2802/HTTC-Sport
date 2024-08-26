@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { handleGetPitch, handleGetPitchesAdmin } from '~/apis';
 
-export default function TableListPitch({ onRowClick }) {
+export default function TableListPitch({ onRowClick, onRefresh }) {
     const [pitch, setPitch] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -34,8 +34,9 @@ export default function TableListPitch({ onRowClick }) {
         }
     };
     useEffect(() => {
+        onRefresh.current = fetchData;
         fetchData(page, rowsPerPage);
-    }, [page, rowsPerPage]);
+    }, [page, rowsPerPage, onRefresh]);
 
     const handleEditPitch = async (params) => {
         try {

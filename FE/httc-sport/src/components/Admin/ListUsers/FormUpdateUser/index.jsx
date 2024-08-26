@@ -1,8 +1,8 @@
-import { Box, Button, TextField, Typography, Grid, styled } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
+import { Box, Button, Grid, styled, TextField, Typography } from '@mui/material';
 import { useEffect } from 'react';
-import { handleUpdateUserAdmin } from '~/apis';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { handleUpdateUserAdmin } from '~/apis';
 
 // Custom styled TextField for validation
 const ValidationTextField = styled(TextField)({
@@ -21,7 +21,7 @@ const ValidationTextField = styled(TextField)({
     },
 });
 
-export default function FormUpdateUser({ selectedUser }) {
+export default function FormUpdateUser({ selectedUser, onRefresh }) {
     const { handleSubmit, control, setValue } = useForm();
 
     useEffect(() => {
@@ -45,6 +45,9 @@ export default function FormUpdateUser({ selectedUser }) {
             console.log(re);
 
             toast.success('Cập Nhập Thành Công');
+            if (onRefresh.current) {
+                onRefresh.current();
+            }
         } catch (error) {
             toast.error('Cập Nhập Không Thành Công');
             console.log(error);

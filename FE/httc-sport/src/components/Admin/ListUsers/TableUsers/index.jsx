@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { handleActiveUserAdmin, handleDeleteUserAdmin, handleGetUserAdmin, handleGetUsersAdmin } from '~/apis';
 
-export default function TableUsers({ dataUserTable }) {
+export default function TableUsers({ dataUserTable, onRefresh }) {
     const [users, setUsers] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -18,20 +18,23 @@ export default function TableUsers({ dataUserTable }) {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
+    const fetchData = async (page, size) => {
+        try {
+            const response = await handleGetUserAdmin(page, size);
+            console.log(response.data.result);
+            const dataUser = response.data.result;
+            const filteredUsers = dataUser.filter((user) => !user.roles.some((role) => role.roleName === 'ADMIN'));
+            setUsers(filteredUsers);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async (page, size) => {
-            try {
-                const response = await handleGetUserAdmin(page, size);
-                console.log(response.data.result);
-                const dataUser = response.data.result;
-                const filteredUsers = dataUser.filter((user) => !user.roles.some((role) => role.roleName === 'ADMIN'));
-                setUsers(filteredUsers);
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
+        onRefresh.current = fetchData;
         fetchData(page, rowsPerPage);
-    }, [page, rowsPerPage]);
+    }, [page, rowsPerPage, onRefresh]);
 
     const handleEditUser = async (users) => {
         const userId = users.id;
@@ -51,6 +54,7 @@ export default function TableUsers({ dataUserTable }) {
             const re = await handleDeleteUserAdmin(userId);
             console.log(re.data.result);
             toast.success('Xóa thành công');
+            fetchData();
         } catch (error) {
             toast.error('Xóa không thành công');
             console.log(error);
@@ -67,6 +71,7 @@ export default function TableUsers({ dataUserTable }) {
                 const dataUser = response.data.result;
                 console.log(dataUser);
                 toast.success('Kích hoạt tài khoản thành công');
+                fetchData();
             }
         } catch (error) {
             if (error.response && error.response.status) {
@@ -87,7 +92,7 @@ export default function TableUsers({ dataUserTable }) {
             field: 'phoneNumber',
             headerName: 'Số Điện Thoại',
             width: 180,
-            renderCell: (users) => (users.phoneNumber ? users.phoneNumber : 'Chưa có thông tin'),
+            renderCell: (users) => (users.value ? users.phoneNumber : 'Chưa có thông tin'),
         },
         {
             field: 'isEnabled',

@@ -43,7 +43,7 @@ export default function TableListUserHome() {
             field: 'phoneNumber',
             headerName: 'Số Điện Thoại',
             width: 200,
-            renderCell: (users) => (users.phoneNumber ? users.phoneNumber : 'Chưa có thông tin'),
+            renderCell: (users) => (users.value ? users.phoneNumber : 'Chưa có thông tin'),
         },
         {
             field: 'isEnabled',
@@ -71,7 +71,7 @@ export default function TableListUserHome() {
     ];
 
     return (
-        <div style={{ height: '370px', width: '100%' }}>
+        <div style={{ height: '370px', width: '100%', marginTop: '40px' }}>
             <DataGrid rows={users} columns={columns} getRowId={(row) => row.id} hideFooterPagination={true} />
             <TablePagination
                 component="div"
